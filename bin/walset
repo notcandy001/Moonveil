@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n'
+
+# Directory containing wallpapers (directly in HOME)
+WALL_DIR="$HOME/wallpaper"
+
+# Save current directory (to cd back to)
+CWD="$(pwd)"
+
+# Ensure wallpaper dir exists
+if [[ ! -d "$WALL_DIR" ]]; then
+  echo "Wallpaper directory not found: $WALL_DIR" >&2
+  exit 1
+fi
+
+pushd "$WALL_DIR" >/dev/null || exit 1
+
+# Allow matching nothing without producing the pattern string
+shopt -s nullglob
+files=( *.jpg *.jpeg *.png *.JPG *.PNG *.JPEG )
+shopt -u nullglob
+
+if [[ ${#files[@]} -eq 0 ]]; then
+  echo "No wallpaper files found in $WALL_DIR" >&2
+  popd >/dev/null || true
+  exit 1
+fi
+
+# Grab the user-selected wallpaper via rofi
+SELECTED_WALL=$(printf '%s\n' "${files[@]}" | rofi -dmenu -p "Choose wallpaper:")
+
+# If nothing selected, exit gracefully
+if [[ -z "$SELECTED_WALL" ]]; then
+  popd >/dev/null || true
+  exit 0
+fi
+
+# Determine walset-backend path (use PATH if available, otherwise fallback to ~/.local/bin)
+wal_backend="$(command -v walset-backend || echo "$HOME/.local/bin/walset-backend")"
+
+if [[ ! -x "$wal_backend" ]]; then
+  echo "walset-backend not found or not executable: $wal_backend" >&2
+  popd >/dev/null || true
+  exit 1
+fi
+
+# Call backend with absolute path
+"$wal_backend" "$WALL_DIR/$SELECTED_WALL"
+
+# Go back to original directory
+popd >/dev/null || true
+cd "$CWD" || exit 0

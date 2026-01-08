@@ -1,0 +1,11 @@
+configuration {
+    modi: "drun,run,window";
+    show-icons: true;
+    font: "JetBrainsMono Nerd Font 11";
+}
+
+//@theme "/usr/share/rofi/themes/rounded-template.rasi"
+
+//@theme "/home/user/.local/share/rofi/themes/rounded-template.rasi"
+
+@theme "/home/user/.config/rofi/themes/rounded-template.rasi"

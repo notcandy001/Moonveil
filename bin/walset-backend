@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ================= USER SETTINGS =================
+
+MATUGEN="$(command -v matugen || true)"
+SWWW="$(command -v swww || true)"
+WAYBAR_BIN="$(command -v waybar || true)"
+HYPRCTL="$(command -v hyprctl || true)"
+NOTIFY="$(command -v notify-send || true)"
+
+SWAYNC_BIN="$(command -v swaync || true)"
+SWAYNC_CLIENT="$(command -v swaync-client || true)"
+
+MATUGEN_CONFIG="$HOME/.config/matugen/matugen.toml"
+
+WAYBAR_COLORS="$HOME/.config/waybar/colors.css"
+ROFI_THEME="$HOME/.config/rofi/colors.rasi"
+HYPR_COLORS="$HOME/.config/hypr/colors.conf"
+HYPRLOCK_COLORS="$HOME/.config/hypr/colors.conf"
+GRADIENCE="$HOME/.config/gtk-3.0/colors.css"
+SWAYNC_COLORS="$HOME/.config/swaync/colors.css"
+
+LOG_DIR="/tmp/walset-backend-logs"
+mkdir -p "$LOG_DIR"
+MATUGEN_STDERR="$LOG_DIR/matugen.err"
+RUN_LOG="$LOG_DIR/run.log"
+
+# =================================================
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 /path/to/image" >&2
+  exit 1
+fi
+
+IMAGE="$1"
+
+# ---------------- Checks ----------------
+
+for bin in "$MATUGEN" "$SWWW"; do
+  if [ -z "$bin" ] || [ ! -x "$bin" ]; then
+    echo "Required binary missing: $bin" >&2
+    exit 1
+  fi
+done
+
+if [ ! -f "$MATUGEN_CONFIG" ]; then
+  echo "Matugen config not found: $MATUGEN_CONFIG" >&2
+  exit 1
+fi
+
+# ---------------- Notify ----------------
+
+[ -n "$NOTIFY" ] && "$NOTIFY" "Changing Theme" "Applying wallpaper and generating colors…"
+
+# ---------------- Wallpaper ----------------
+
+"$SWWW" img "$IMAGE" \
+  --transition-type center \
+  --transition-step 255 \
+  --transition-fps 60 \
+  >/dev/null 2>>"$LOG_DIR/swww.err" || true
+
+# Apply wallpaper to hyprlock
+cp -f "$IMAGE" "$HOME/.cache/current_wallpaper"
+pkill -USR1 hyprlock 2>/dev/null || true
+
+# ---------------- Matugen ----------------
+
+if ! "$MATUGEN" image "$IMAGE" -c "$MATUGEN_CONFIG" -v 2>"$MATUGEN_STDERR"; then
+  echo "Matugen failed — see $MATUGEN_STDERR" >&2
+  [ -n "$NOTIFY" ] && "$NOTIFY" "Matugen Failed" "Check logs"
+  exit 1
+fi
+
+echo "Matugen applied" >> "$RUN_LOG"
+
+# ---------------- Validate Outputs ----------------
+
+for f in "$WAYBAR_COLORS" "$ROFI_THEME" "$HYPR_COLORS" "$SWAYNC_COLORS"; do
+  if [ -s "$f" ]; then
+    echo "OK: $f generated" >> "$RUN_LOG"
+  else
+    echo "WARN: $f missing or empty" >> "$RUN_LOG"
+  fi
+done
+
+# ---------------- Reload Waybar ----------------
+
+if pgrep -x waybar >/dev/null 2>&1; then
+  pkill -SIGUSR2 waybar || true
+  sleep 0.12
+  if ! pgrep -x waybar >/dev/null 2>&1 && [ -x "$WAYBAR_BIN" ]; then
+    nohup "$WAYBAR_BIN" >/dev/null 2>&1 &
+  fi
+fi
+
+# ---------------- Reload SwayNC ----------------
+
+if [ -x "$SWAYNC_CLIENT" ]; then
+  if pgrep -x swaync >/dev/null 2>&1; then
+    "$SWAYNC_CLIENT" -rs >/dev/null 2>&1 || true
+    echo "SwayNC reloaded" >> "$RUN_LOG"
+  elif [ -x "$SWAYNC_BIN" ]; then
+    nohup "$SWAYNC_BIN" >/dev/null 2>&1 &
+    echo "SwayNC started" >> "$RUN_LOG"
+  fi
+fi
+
+# ---------------- Reload Rofi ----------------
+
+pkill -x rofi 2>/dev/null || true
+
+# ---------------- Reload Hyprland ----------------
+
+[ -x "$HYPRCTL" ] && "$HYPRCTL" reload >/dev/null 2>&1 || true
+
+# ---------------- Reload Thunar (GTK3) ----------------
+
+if pgrep -x thunar >/dev/null 2>&1; then
+  pkill thunar
+  sleep 0.2
+  thunar >/dev/null 2>&1 &
+fi
+# ---------------- Finish ----------------
+
+[ -n "$NOTIFY" ] && "$NOTIFY" "Theme Applied" "Wallpaper & colors synced"
+
+exit 0

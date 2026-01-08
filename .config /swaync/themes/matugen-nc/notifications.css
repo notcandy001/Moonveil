@@ -1,0 +1,158 @@
+/***
+ *    ┳┓┏┓┏┳┓┳┏┓┳┏┓┏┓┏┳┓┳┏┓┳┓
+ *    ┃┃┃┃ ┃ ┃┣ ┃┃ ┣┫ ┃ ┃┃┃┃┃
+ *    ┛┗┗┛ ┻ ┻┻ ┻┗┛┛┗ ┻ ┻┗┛┛┗
+ */
+
+* {
+  color: @on_surface;
+  all: unset;
+  font-size: 16px;
+  font-family: "GeistMono Nerd Font Propo";
+  transition: 200ms;
+}
+
+.notification-row {
+  color: @on_surface;
+  outline: none;
+  margin: 0;
+  padding: 0px;
+}
+
+/* =========================================================
+   Floating Notifications
+   ========================================================= */
+.floating-notifications.background
+.notification-row
+.notification-background {
+  background: @surface_container_highest;
+  box-shadow: 0 0 8px 0 rgba(0,0,0,.6);
+  border: 1px solid @primary;
+  border-radius: 24px;
+  margin: 16px;
+  padding: 0;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification {
+  padding: 6px;
+  border-radius: 12px;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification.critical {
+  border: 2px solid @error;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification
+.notification-content {
+  margin: 14px;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification > *:last-child > * {
+  min-height: 3.4em;
+}
+
+/* =========================================================
+   Notification Actions
+   ========================================================= */
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification
+> *:last-child > *
+.notification-action {
+  border-radius: 8px;
+  background-color: @surface_bright;
+  margin: 6px;
+  border: 1px solid transparent;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification
+> *:last-child > *
+.notification-action:hover {
+  background-color: alpha(@primary, .4);
+  border: 1px solid @primary;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.notification
+> *:last-child > *
+.notification-action:active {
+  background-color: @primary;
+  color: @surface;
+}
+
+/* =========================================================
+   Content
+   ========================================================= */
+.image {
+  margin: 10px 20px 10px 0px;
+}
+
+.summary {
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.body {
+  font-size: 0.8rem;
+  color: alpha(@on_surface, 0.9);
+}
+
+/* =========================================================
+   Close Button
+   ========================================================= */
+.floating-notifications.background
+.notification-row
+.notification-background
+.close-button {
+  margin: 6px;
+  padding: 2px;
+  border-radius: 6px;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.close-button:hover {
+  background-color: @primary;
+  color: @surface;
+}
+
+.floating-notifications.background
+.notification-row
+.notification-background
+.close-button:active {
+  background-color: @primary;
+  color: @surface;
+}
+
+/* =========================================================
+   Progress Bars
+   ========================================================= */
+.notification.critical progress {
+  background-color: @primary;
+}
+
+.notification.low progress,
+.notification.normal progress {
+  background-color: @primary;
+}

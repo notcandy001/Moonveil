@@ -1,0 +1,2 @@
+#Networkmanger module
+nmtui
