@@ -8,7 +8,7 @@
 </h3>
 
 <h4 align="center">
-  <a href="YOUR_WALLPAPER_REPO_LINK">Wallpaper collection</a>
+  <a href="https://github.com/notcandy001/my-wal">Wallpaper collection</a>
 </h4>
 
 > [!NOTE]
