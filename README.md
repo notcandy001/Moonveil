@@ -45,10 +45,6 @@
 
 ![Rofi Launcher](SCREENSHOT_LINK)
 
-<h4 align="center"> Clipboard </h4>
-
-![Clipboard](SCREENSHOT_LINK)
-
 </details>
 
 <details>
@@ -62,10 +58,10 @@
 
 <details>
 <summary>
-  🔒 Hyprlock
+  🔒 Wlogout
 </summary>
 
-![Hyprlock](SCREENSHOT_LINK)
+![Wlogout](SCREENSHOT_LINK)
 
 </details>
 
