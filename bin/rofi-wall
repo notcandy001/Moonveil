@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+WALLPAPER_DIR="$HOME/wallpaper"
+BACKEND="$HOME/.local/bin/walset-backend"
+CACHE="$HOME/.cache/rofi-wallpapers"
+SIZE=256
+
+mkdir -p "$CACHE"
+
+# Generate thumbnails
+for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
+  [ -f "$img" ] || continue
+  thumb="$CACHE/$(basename "$img")"
+  if [ ! -f "$thumb" ]; then
+    magick "$img" -resize ${SIZE}x${SIZE}^ -gravity center -extent ${SIZE}x${SIZE} "$thumb"
+  fi
+done
+
+# Pipe entries DIRECTLY to rofi (NO VARIABLES)
+CHOICE=$(
+  for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
+    [ -f "$img" ] || continue
+    name="$(basename "$img")"
+    printf '%s\0icon\x1f%s\n' "$name" "$CACHE/$name"
+  done | rofi -dmenu -show-icons -p "Wallpapers"
+)
+
+[ -z "$CHOICE" ] && exit 0
+
+exec "$BACKEND" "$WALLPAPER_DIR/$CHOICE"

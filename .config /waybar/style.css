@@ -1,0 +1,114 @@
+/* Waybar Style using Matugen-generated colors */
+@import "matugen/matugen-waybar.css";
+
+* {
+    border: none;
+    border-radius: 0px;
+    font-family: "JetBrainsMono Nerd Font Propo";
+    font-weight: bold;
+    min-height: 0px;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Whole bar background and rounding */
+#waybar {
+    background-color: transparent;
+    padding: 6px;
+    border-radius: 14px;
+}
+
+/* Tooltip */
+tooltip {
+    background: @surface;
+    border: 1px solid @surface_variant;
+    border-radius: 12px;
+}
+
+tooltip label {
+    color: @on_surface;
+    padding: 6px;
+}
+
+/* Workspaces container */
+#workspaces {
+    background-color: @surface;
+    padding: 5px 3px;
+    margin: 0 0 0 12px;
+    border-radius: 18px;
+    border: 1px solid @surface_variant;
+    color: @on_surface;
+}
+
+/* Workspace buttons */
+#workspaces button {
+    padding: 0px 6px;
+    margin: 0px 3px;
+    border-radius: 30px;
+    color: transparent;
+    background-color: @surface_variant;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Active workspace */
+#workspaces button.active {
+    background-color: @primary;
+    color: @on_primary;
+    min-width: 30px;
+    font-size: 13px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover workspace */
+#workspaces button:hover {
+    background-color: @secondary;
+    color: @on_secondary;
+    border-radius: 16px;
+    min-width: 30px;
+    background-size: 400% 400%;
+}
+
+/* Urgent workspace */
+#workspaces button.urgent {
+    background-color: @error;
+    color: @on_error;
+    border-radius: 16px;
+    min-width: 30px;
+    background-size: 400% 400%;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Module containers */
+#battery,
+#pulseaudio,
+#network,
+#clock,
+#custom-notification {
+    background-color: @surface;
+    padding: 0 15px;
+    margin: 0 0 0 12px;
+    border: 1px solid @surface_variant;
+    border-radius: 12px;
+    color: @on_surface;
+}
+
+/* Individual module colors */
+#clock {
+    color: @primary;
+}
+#custom-notification {
+    color: @on_surface;
+    margin: 0 12px 0 12px;
+}
+
+#pulseaudio {
+    color: @tertiary;
+}
+
+#network {
+    color: @secondary;
+}
+
+#battery {
+    color: @inverse_primary;
+}

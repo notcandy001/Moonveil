@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+WAYBAR="$HOME/.config/waybar"
+STATE="$HOME/.cache/waybar-current"
+
+CHOICE=$(printf "Main\nMinimal" | rofi -dmenu -p "Waybar")
+
+case "$CHOICE" in
+  Main)
+    CFG="$WAYBAR/config.jsonc"
+    CSS="$WAYBAR/style.css"
+    ;;
+  Minimal)
+    CFG="$WAYBAR/minimal.jsonc"
+    CSS="$WAYBAR/style-minimal.css"
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+
+# Save state
+echo "$CFG|$CSS" > "$STATE"
+
+pkill -x waybar
+sleep 0.4
+waybar -c "$CFG" -s "$CSS" &
