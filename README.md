@@ -14,6 +14,10 @@
 > [!NOTE]
 > Designed for writers, night owls, and minimalists.
 
+>   [!Caution]
+>   Requires [Matugen](https://github.com/InioX/matugen) to work
+
+
 <h3 align="center">
   ✨ A Poetic, Minimal Hyprland Rice ✨
 </h3>
