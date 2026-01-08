@@ -1,5 +1,5 @@
 <h2 align="center">
-  <img src="YOUR_BANNER_IMAGE_LINK" alt="Logo"/><br><br>
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/moonvile.png" alt="Logo"/><br><br>
   Moonveil for Hyprland
 </h2>
 
