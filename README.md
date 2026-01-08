@@ -43,7 +43,7 @@
 
 <h4 align="center"> Launcher </h4>
 
-![Rofi Launcher](SCREENSHOT_LINK)
+![Rofi Launcher](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-00-57.png)
 
 </details>
 
@@ -52,8 +52,8 @@
   🧭 Waybar
 </summary>
 
-![Waybar](SCREENSHOT_LINK)
-
+![Waybar](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-09-51.png)
+![Waybar2](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-06-44.png))
 </details>
 
 <details>
