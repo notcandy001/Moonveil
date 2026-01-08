@@ -53,7 +53,7 @@
 </summary>
 
 ![Waybar](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-09-51.png)
-![Waybar2](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-06-44.png))
+![Waybar](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-06-44.png)
 </details>
 
 <details>
@@ -61,7 +61,7 @@
   🔒 Wlogout
 </summary>
 
-![Wlogout](SCREENSHOT_LINK)
+![Wlogout](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-09-11.png)
 
 </details>
 
@@ -70,16 +70,7 @@
   🔔 SwayNC
 </summary>
 
-![SwayNC](SCREENSHOT_LINK)
-
-</details>
-
-<details>
-<summary>
-  ⏻ Wlogout
-</summary>
-
-![Wlogout](SCREENSHOT_LINK)
+![SwayNC](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-11-29.png)
 
 </details>
 
