@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 
+
+#---------------waybar paths----------------------------------#
+#-------------------------------------------------------------#
 WAYBAR="$HOME/.config/waybar"
 STATE="$HOME/.cache/waybar-current"
 
-CHOICE=$(printf "Main\nMinimal" | rofi -dmenu -p "Waybar")
 
+#---------------rofi mode selector----------------------------#
+#-------------------------------------------------------------#
+CHOICE=$(
+  printf "Main\nMinimal" |
+  rofi -dmenu -p "Waybar"
+)
+
+
+#---------------select config---------------------------------#
+#-------------------------------------------------------------#
 case "$CHOICE" in
   Main)
     CFG="$WAYBAR/config.jsonc"
@@ -19,9 +31,14 @@ case "$CHOICE" in
     ;;
 esac
 
-# Save state
+
+#---------------save current state----------------------------#
+#-------------------------------------------------------------#
 echo "$CFG|$CSS" > "$STATE"
 
+
+#---------------restart waybar--------------------------------#
+#-------------------------------------------------------------#
 pkill -x waybar
 sleep 0.4
 waybar -c "$CFG" -s "$CSS" &
