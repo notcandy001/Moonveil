@@ -87,7 +87,7 @@
 
 ### Installer script 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/main/install.sh | bash
+curl -fsSL curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/master/install.sh | bash
 ```
 
 ## Required Packages
