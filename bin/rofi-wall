@@ -38,7 +38,7 @@ CHOICE=$(
   done | rofi -dmenu \
         -show-icons \
         -theme "$HOME/.config/rofi/themes/wallpaper-grid.rasi" \
-        -p "Wallpapers"
+        -p "Select wal"
 )
 
 [ -z "$CHOICE" ] && exit 0
