@@ -1,23 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WALLPAPER_DIR="$HOME/wallpaper"
-BACKEND="$HOME/.local/bin/walset-backend"
-CACHE="$HOME/.cache/rofi-wallpapers"
-SIZE=220   # MUST match element-icon size
+# rofi wallpaper picker + wal color applier
+#-------------------------------------------------------------#
+
+
+#---------------path & variable config------------------------#
+#-------------------------------------------------------------#
+WALLPAPER_DIR="$HOME/wallpaper"                  # wallpaper source directory
+BACKEND="$HOME/.local/bin/walset-backend"        # wallpaper + wal backend
+CACHE="$HOME/.cache/rofi-wallpapers"             # thumbnail cache
+SIZE=220                                         # must match rofi icon size
 
 mkdir -p "$CACHE"
 
-# -------------------------------------------------
-# GENERATE TRUE SQUARE THUMBNAILS (IMPORTANT)
-# -------------------------------------------------
+
+#---------------thumbnail generation--------------------------#
+#-------------------------------------------------------------#
+# creates true square thumbnails for rofi grid
 for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
   [ -f "$img" ] || continue
 
   name="$(basename "$img")"
   thumb="$CACHE/$name"
 
-  # regenerate if missing OR wrong size
   if [ ! -f "$thumb" ]; then
     magick "$img" \
       -resize ${SIZE}x${SIZE}^ \
@@ -27,9 +33,9 @@ for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
   fi
 done
 
-# -------------------------------------------------
-# ROFI MENU
-# -------------------------------------------------
+
+#---------------rofi wallpaper menu---------------------------#
+#-------------------------------------------------------------#
 CHOICE=$(
   for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
     [ -f "$img" ] || continue
@@ -38,12 +44,12 @@ CHOICE=$(
   done | rofi -dmenu \
         -show-icons \
         -theme "$HOME/.config/rofi/themes/wallpaper-grid.rasi" \
-        -p "Select wal"
+        -p "Select wallpaper"
 )
 
 [ -z "$CHOICE" ] && exit 0
 
-# -------------------------------------------------
-# APPLY WALLPAPER
-# -------------------------------------------------
+
+#---------------apply wallpaper-------------------------------#
+#-------------------------------------------------------------#
 exec "$BACKEND" "$WALLPAPER_DIR/$CHOICE"
