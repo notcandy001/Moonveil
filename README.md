@@ -25,7 +25,6 @@
 - Smooth, subtle animations
 - Carefully tuned keybindings
 - Minimal yet expressive UI
-- Writer-focused workflow
 - Easy to customize
 
 ---
