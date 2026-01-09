@@ -24,12 +24,12 @@
 ---
 
 ## Features
-- Clean and distraction-free layout  
-- Smooth, subtle animations  
-- Carefully tuned keybindings  
-- Minimal yet expressive UI  
-- Writer-focused workflow  
-- Easy to customize  
+- Clean and distraction-free layout
+- Smooth, subtle animations
+- Carefully tuned keybindings
+- Minimal yet expressive UI
+- Writer-focused workflow
+- Easy to customize
 
 ---
 
@@ -67,6 +67,21 @@
 </details>
 
 ---
+## TODO
+- [ ] More polish
+- [ ] Better scripts
+- [ ] Additional themes
+- [ ] Documentation improvements
+
+---
+
+## Progress
+- [x] Hyprland
+- [x] Hyprlock
+- [x] Rofi
+- [x] Waybar
+- [x] SwayNC
+- [x] Wlogout
 
 ## Required Packages
 
@@ -85,9 +100,13 @@ Install the following packages for the setup to work as intended.
 - **Wlogout** – Logout / power menu  
 - **SwayNC** – Notification center  
 
-### Utilities
+### Shell & CLI
 - **Zsh** – Default shell  
+- **Oh My Zsh** – Zsh framework  
+- **Powerlevel10k** – Zsh prompt theme  
 - **Eza** – Modern `ls` replacement  
+
+### Utilities
 - **Grim** – Screenshot utility  
 - **Nautilus** – File manager  
 - **Pavucontrol** – Audio control  
@@ -124,3 +143,17 @@ Moonveil’s typography is chosen for clarity, mood, and long writing sessions.
 sudo pacman -S ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 yay -S otf-geist-mono
 fc-cache -fv
+```
+</details> 
+---
+
+## Thanks to
+- Hyprland community
+- Wayland contributors
+- Theme authors & script writers
+- Everyone who shares dotfiles openly
+
+---
+<p align="center">
+  🌙 Moonveil — by <b>cresentmoon</b>
+</p>
