@@ -85,6 +85,11 @@
 - [x] SwayNC
 - [x] Wlogout
 
+### Installer script 
+```bash
+curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/main/install.sh | bash
+```
+
 ## Required Packages
 
 <details>
@@ -126,7 +131,6 @@ Install the following packages for the setup to work as intended.
 </details>
 
 ---
-
 ## Fonts
 
 <details>
