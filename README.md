@@ -11,9 +11,6 @@
   <a href="https://github.com/notcandy001/my-wal">Wallpaper collection</a>
 </h4>
 
-> [!NOTE]  
-> Designed for writers, night owls, and minimalists.
-
 > [!CAUTION]  
 > Requires [Matugen](https://github.com/InioX/matugen) to function correctly.
 
