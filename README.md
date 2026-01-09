@@ -37,7 +37,11 @@
 <h4 align="center">Launcher</h4>
 
 ![Rofi Launcher](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-00-57.png)
+
+<h4 align="center">Wallpaper Selector</h4>
+
 ![Rofi Launcher](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-09_20-42-10.png)
+
 </details>
 
 <details>
