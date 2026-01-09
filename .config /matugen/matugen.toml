@@ -40,6 +40,11 @@ post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme ""; gsettings s
 input_path = '~/.config/matugen/templates/gtk-colors.css'
 output_path = '~/.config/gtk-4.0/colors.css'
 
+# Cava
+[templates.cava]
+input_path = '~/.config/matugen/templates/cava-colors.ini'
+output_path = '~/.config/cava/config'
+
 # swaync 
 [templates.swaync]
 input_path = '~/.config/matugen/templates/matugen-swaync.css'
