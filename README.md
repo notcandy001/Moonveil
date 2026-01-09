@@ -53,16 +53,22 @@
 </details>
 
 <details>
-<summary>🔒 Wlogout</summary>
+<summary>🔒  Hyprlock</summary>
 
-![Wlogout](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-09-11.png)
-
+![Hyprlock](https://github.com/notcandy001/Moonveil-asset/blob/main/hyprlock.png)
 </details>
 
 <details>
 <summary>🔔 SwayNC</summary>
 
 ![SwayNC](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-11-29.png)
+
+</details>
+
+<details>
+<summary>⏻  Wlogout</summary>
+
+![Wlogout](https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-08_22-09-11.png)
 
 </details>
 
@@ -140,12 +146,10 @@ Moonveil’s typography is chosen for clarity, mood, and long writing sessions.
 
 ### Install (Arch Linux)
 ```bash
-sudo pacman -S ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
-yay -S otf-geist-mono
+sudo pacman -S  otf-geist-mono-nerd otf-codenewroman-nerd ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 fc-cache -fv
 ```
 </details> 
----
 
 ## Thanks to
 - Hyprland community
@@ -155,5 +159,5 @@ fc-cache -fv
 
 ---
 <p align="center">
-  🌙 Moonveil — by <b>cresentmoon</b>
+  🌙 Moonveil — by <b>notcandy001</b>
 </p>
