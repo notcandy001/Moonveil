@@ -1,0 +1,95 @@
+/*
+   ┏┓┏┓┓ ┏┓┏┳┓┏┓┳┓
+   ┗┓┣ ┃ ┣  ┃ ┃┃┣┫
+   ┗┛┗┛┗┛┗┛ ┻ ┗┛┛┗
+    
+   
+*/
+
+
+
+@theme "~/.config/rofi/rounded-gray-dark.rasi"
+
+/*--------------------window----------------------------------------------*/
+window {
+    location: center;
+    anchor: center;
+
+    width: 70%;
+    height: 320px;
+
+    border-radius: 18px;
+    background-color: @bg0;
+}
+
+/*--------------------mainbox---------------------------------------------*/
+mainbox {
+    padding: 10px;
+    background-color: transparent;
+}
+
+/*--------------------inputbar--------------------------------------------*/
+inputbar {
+    margin: 0px 0px 8px 0px;
+    padding: 6px 10px;
+
+    background-color: @bg1;
+    border-radius: 12px;
+}
+
+/*--------------------listview / grid-------------------------------------*/
+listview {
+    columns: 5;
+    lines: 1;
+    flow: horizontal;
+
+    fixed-height: true;
+    height: 220px;
+
+    spacing: 16px;
+    padding: 6px;
+
+    background-color: transparent;
+}
+
+/*--------------------element (border container)--------------------------*/
+element {
+    orientation: vertical;
+    spacing: 6px;
+
+    padding: 3px;
+    border-radius: 14px;
+
+    background-color: transparent;
+}
+
+/*--------------------element-icon-----------------------------------------*/
+element-icon {
+    size: 160px;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+/*--------------------selected element (soft transparent border)----------*/
+element selected {
+    background-color: @accent;
+}
+
+/*--------------------text------------------------------------------------*/
+element-text {
+    padding: 2px 0px;
+    horizontal-align: 0.5;
+
+    background-color: transparent;
+    text-color: @fg1;
+}
+
+element selected element-text {
+    background-color: transparent;
+    text-color: @fg0;
+}
+
+/*--------------------scrollbar-------------------------------------------*/
+scrollbar {
+    handle-width: 0px;
+}
