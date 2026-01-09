@@ -1,31 +1,49 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 WALLPAPER_DIR="$HOME/wallpaper"
 BACKEND="$HOME/.local/bin/walset-backend"
 CACHE="$HOME/.cache/rofi-wallpapers"
-SIZE=256
+SIZE=220   # MUST match element-icon size
 
 mkdir -p "$CACHE"
 
-# Generate thumbnails
+# -------------------------------------------------
+# GENERATE TRUE SQUARE THUMBNAILS (IMPORTANT)
+# -------------------------------------------------
 for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
   [ -f "$img" ] || continue
-  thumb="$CACHE/$(basename "$img")"
+
+  name="$(basename "$img")"
+  thumb="$CACHE/$name"
+
+  # regenerate if missing OR wrong size
   if [ ! -f "$thumb" ]; then
-    magick "$img" -resize ${SIZE}x${SIZE}^ -gravity center -extent ${SIZE}x${SIZE} "$thumb"
+    magick "$img" \
+      -resize ${SIZE}x${SIZE}^ \
+      -gravity center \
+      -extent ${SIZE}x${SIZE} \
+      "$thumb"
   fi
 done
 
-# Pipe entries DIRECTLY to rofi (NO VARIABLES)
+# -------------------------------------------------
+# ROFI MENU
+# -------------------------------------------------
 CHOICE=$(
   for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
     [ -f "$img" ] || continue
     name="$(basename "$img")"
     printf '%s\0icon\x1f%s\n' "$name" "$CACHE/$name"
-  done | rofi -dmenu -show-icons -p "Wallpapers"
+  done | rofi -dmenu \
+        -show-icons \
+        -theme "$HOME/.config/rofi/themes/wallpaper-grid.rasi" \
+        -p "Wallpapers"
 )
 
 [ -z "$CHOICE" ] && exit 0
 
+# -------------------------------------------------
+# APPLY WALLPAPER
+# -------------------------------------------------
 exec "$BACKEND" "$WALLPAPER_DIR/$CHOICE"
