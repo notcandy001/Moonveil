@@ -10,21 +10,13 @@ set -e
 DOTFILES_REPO="https://github.com/notcandy001/Moonveil"
 DOTFILES_DIR="$HOME/.moonveil"
 GITHUB_DIR="$HOME/github"
-WALLPAPER_DIR="$HOME/Pictures/Moonveil"
+
+WALLPAPER_REPO="https://github.com/notcandy001/my-wal"
+WALLPAPER_DIR="$HOME/wallpaper"
+
 BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
 
 # ================= UTILS =================
-ask() {
-  while true; do
-    read -rp "$1 [y/n]: " yn
-    case $yn in
-      [Yy]*) return 0 ;;
-      [Nn]*) return 1 ;;
-      *) echo "Please answer y or n." ;;
-    esac
-  done
-}
-
 info()  { echo -e "\e[1;34m[INFO]\e[0m $1"; }
 warn()  { echo -e "\e[1;33m[WARN]\e[0m $1"; }
 error() { echo -e "\e[1;31m[ERR]\e[0m $1"; exit 1; }
@@ -127,9 +119,13 @@ install_fonts() {
 
 # ================= WALLPAPERS =================
 install_wallpapers() {
-  info "Installing Moonveil wallpapers"
-  mkdir -p "$WALLPAPER_DIR"
-  cp -r "$DOTFILES_DIR/wallpapers/"* "$WALLPAPER_DIR/"
+  if [[ -d "$WALLPAPER_DIR/.git" ]]; then
+    warn "Wallpaper collection already exists"
+    return
+  fi
+
+  info "Installing Moonveil wallpaper collection"
+  git clone "$WALLPAPER_REPO" "$WALLPAPER_DIR"
 }
 
 # ================= MAIN =================
@@ -143,18 +139,30 @@ main() {
   echo "╚══════════════════════════════════════╝"
   echo
 
-  ask "Backup existing configs?" && backup_configs
-  ask "Install pacman dependencies?" && install_packages
-  ask "Install yay (AUR helper)?" && install_yay
-  ask "Install AUR packages (matugen, chrome, icons)?" && install_aur_packages && apply_theme
-  ask "Install oh-my-zsh?" && install_ohmyzsh
-  ask "Install Powerlevel10k?" && install_p10k
+  read -rp "Do you want to install Moonveil? [y/n]: " install_choice
+  [[ "$install_choice" != "y" && "$install_choice" != "Y" ]] && {
+    echo "Installation cancelled."
+    exit 0
+  }
 
+  read -rp "Backup existing configs? [y/n]: " backup_choice
+  [[ "$backup_choice" == "y" || "$backup_choice" == "Y" ]] && backup_configs
+
+  read -rp "Install Moonveil wallpaper collection? [y/n]: " wp_choice
+
+  info "Starting Moonveil installation..."
+
+  install_packages
+  install_yay
+  install_aur_packages
+  apply_theme
+  install_ohmyzsh
+  install_p10k
   clone_dotfiles
   install_fonts
   symlink_configs
 
-  ask "Install Moonveil wallpaper collection?" && install_wallpapers
+  [[ "$wp_choice" == "y" || "$wp_choice" == "Y" ]] && install_wallpapers
 
   echo
   info "Moonveil installation complete!"
