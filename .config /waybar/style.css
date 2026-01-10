@@ -1,4 +1,10 @@
-/* Waybar Style using Matugen-generated colors */
+/***
+ *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┏┓┏┓┏┓
+ *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┗┓┗┓
+ *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┗┛
+ *                                     
+ */
+
 @import "matugen/matugen-waybar.css";
 
 * {
