@@ -2,29 +2,38 @@
 
 
 #---------------waybar paths----------------------------------#
-#-------------------------------------------------------------#
 WAYBAR="$HOME/.config/waybar"
 STATE="$HOME/.cache/waybar-current"
 
 
 #---------------rofi mode selector----------------------------#
-#-------------------------------------------------------------#
 CHOICE=$(
-  printf "Main\nMinimal" |
+  printf "Main\nminimal\nblush\ndarkminimal\nslanted-bubbles" |
   rofi -dmenu -p "Waybar"
 )
 
 
 #---------------select config---------------------------------#
-#-------------------------------------------------------------#
 case "$CHOICE" in
   Main)
     CFG="$WAYBAR/config.jsonc"
     CSS="$WAYBAR/style.css"
     ;;
-  Minimal)
-    CFG="$WAYBAR/minimal.jsonc"
-    CSS="$WAYBAR/style-minimal.css"
+    minimal)
+    CFG="$WAYBAR/themes/minimal/config.jsonc"
+    CSS="$WAYBAR/themes/minimal/style.css"
+    ;;
+  blush)
+    CFG="$WAYBAR/themes/blush/config.jsonc"
+    CSS="$WAYBAR/themes/blush/style.css"
+    ;;
+  darkminimal)
+    CFG="$WAYBAR/themes/darkminimal/config.jsonc"
+    CSS="$WAYBAR/themes/darkminimal/style.css"
+    ;;
+  slanted-bubbles)
+    CFG="$WAYBAR/themes/slanted-bubbles/config.jsonc"
+    CSS="$WAYBAR/themes/slanted-bubbles/style.css"
     ;;
   *)
     exit 0
@@ -33,12 +42,10 @@ esac
 
 
 #---------------save current state----------------------------#
-#-------------------------------------------------------------#
 echo "$CFG|$CSS" > "$STATE"
 
 
 #---------------restart waybar--------------------------------#
-#-------------------------------------------------------------#
 pkill -x waybar
 sleep 0.4
 waybar -c "$CFG" -s "$CSS" &
