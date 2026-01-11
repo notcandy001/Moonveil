@@ -1,21 +1,42 @@
+/***
+ *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┏┓┏┓┳┓┏┓┳┏┓
+ *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┃┃┃┃┣ ┃┃┓
+ *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┛┗┻ ┻┗┛
+ */
+
+/*----------Global Properties-------------*/
 {
+    "layer": "top",
     "position": "top",
-    "margin-top": 14,
+    "height": 35,
+
+    "margin-top": 8,
+    "margin-right": 0,
+    "margin-bottom": 0,
+    "margin-left": 0,
+
+/*----------Modules Left------------------*/
     "modules-left": [
         "clock",
-        "hyprland/workspaces",
+        "hyprland/workspaces"
     ],
+
+/*----------Modules Right-----------------*/
     "modules-right": [
         "pulseaudio",
         "network",
         "battery",
-        "custom/notification",
+        "custom/notification"
     ],
+
+/*---------------Clock-------------------*/
     "clock": {
         "interval": 60,
         "format": "{:%H:%M}",
-        "max-length": 25,
+        "max-length": 25
     },
+
+/*----------Hyprland Workspace-----------*/
     "hyprland/workspaces": {
         "format": "{name}",
         "format-icons": {
@@ -26,10 +47,12 @@
             "default": ""
         },
         "persistent-workspaces": {
-            "*": 3, // 5 workspaces by default on every monitor
-            "HDMI-A-1": 3 // but only three on HDMI-A-1
+            "*": 3,
+            "HDMI-A-1": 3
         }
     },
+
+/*---------------Pulseaudio--------------*/
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-bluetooth": "{volume}% {icon}",
@@ -53,18 +76,22 @@
             "Easy Effects Sink"
         ]
     },
-     "network": {
+
+/*---------------Network-----------------*/
+    "network": {
         "format": "{ifname}",
-        "format-wifi": "{essid} ",   // ({signalStrength}%) 
+        "format-wifi": "Nonet ",
         "format-ethernet": "{ipaddr}/{cidr} 󰊗",
-        "format-disconnected": "Disconnected", //An empty format will hide the module.
+        "format-disconnected": "Disconnected",
         "tooltip-format": "{ifname} via {gwaddr} 󰊗",
         "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
         "tooltip-format-ethernet": "{ifname} ",
         "tooltip-format-disconnected": "Disconnected",
         "max-length": 50,
-        "on-click": "kitty nmtui",
+        "on-click": "kitty nmtui"
     },
+
+/*---------------Battery-----------------*/
     "battery": {
         "interval": 15,
         "states": {
@@ -81,6 +108,8 @@
         ],
         "max-length": 25
     },
+
+/*-----------Notification Center---------*/
     "custom/notification": {
         "tooltip": true,
         "format": "<span size='16pt'>{icon}</span>",
@@ -100,5 +129,5 @@
         "on-click": "swaync-client -t -sw",
         "on-click-right": "swaync-client -d -sw",
         "escape": true
-    },
+    }
 }

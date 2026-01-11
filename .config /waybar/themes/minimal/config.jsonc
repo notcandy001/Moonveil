@@ -2,28 +2,35 @@
  *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┳┳┓┳┳┓┳┳┳┓┏┓┓   ┏┓┏┓┳┓┏┓┳┏┓
  *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃┃┃┃┃┃┃┃┃┃┣┫┃ ━━┃ ┃┃┃┃┣ ┃┃┓
  *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┛ ┗┻┛┗┻┛ ┗┛┗┗┛  ┗┛┗┛┛┗┻ ┻┗┛
- *                                              
  */
 
-
+/*----------Global Properties-------------*/
 {
     "layer": "top",
     "position": "top",
     "reload_style_on_change": true,
+
+/*----------Modules Left------------------*/
     "modules-left": [
         "clock",
         "custom/pacman",
         "tray"
     ],
+
+/*----------Modules Center----------------*/
     "modules-center": [
         "hyprland/workspaces"
     ],
+
+/*----------Modules Right-----------------*/
     "modules-right": [
         "group/expand",
         "custom/notification",
         "network",
         "battery"
     ],
+
+/*----------Hyprland Workspaces-----------*/
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
@@ -32,17 +39,13 @@
             "empty": ""
         },
         "persistent-workspaces": {
-            "*": [
-                1,
-                2,
-                3,
-                4,
-                5
-            ]
+            "*": [1, 2, 3, 4, 5]
         }
     },
+
+/*---------------Clock-------------------*/
     "clock": {
-        "format": "{:%I:%M:%p} ",
+        "format": "{:%H:%M}",
         "interval": 1,
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
@@ -55,6 +58,8 @@
             "on-click": "shift_up"
         }
     },
+
+/*---------------Network-----------------*/
     "network": {
         "format-wifi": "",
         "format-ethernet": "",
@@ -64,6 +69,8 @@
         "tooltip-format-ethernet": "{ifname} 🖧 ",
         "on-click": "kitty nmtui"
     },
+
+/*---------------Battery-----------------*/
     "battery": {
         "interval": 30,
         "states": {
@@ -82,8 +89,10 @@
             "󰂀",
             "󰂂",
             "󰁹"
-        ],
+        ]
     },
+
+/*---------------Pacman------------------*/
     "custom/pacman": {
         "format": "󰅢 {}",
         "interval": 30,
@@ -91,16 +100,22 @@
         "exec-if": "exit 0",
         "on-click": "kitty sh -c 'yay -Syu; echo Done - Press enter to exit; read'; pkill -SIGRTMIN+8 waybar",
         "signal": 8,
-        "tooltip": false,
+        "tooltip": false
     },
+
+/*---------------Expand Icon-------------*/
     "custom/expand": {
         "format": "",
         "tooltip": false
     },
+
+/*---------------Endpoint----------------*/
     "custom/endpoint": {
         "format": "|",
         "tooltip": false
     },
+
+/*---------------Utility Group-----------*/
     "group/expand": {
         "orientation": "horizontal",
         "drawer": {
@@ -114,27 +129,37 @@
             "memory",
             "temperature",
             "custom/endpoint"
-        ],
+        ]
     },
+
+/*-----------Notification Center---------*/
     "custom/notification": {
         "tooltip": false,
         "format": "",
         "on-click": "swaync-client -t -sw",
         "escape": true
     },
+
+/*---------------CPU---------------------*/
     "cpu": {
         "format": "󰻠",
         "tooltip": true
     },
+
+/*---------------Memory------------------*/
     "memory": {
         "format": ""
     },
+
+/*---------------Temperature-------------*/
     "temperature": {
         "critical-threshold": 80,
-        "format": "",
+        "format": ""
     },
+
+/*---------------Tray--------------------*/
     "tray": {
         "icon-size": 14,
         "spacing": 10
-    },
+    }
 }

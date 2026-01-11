@@ -9,6 +9,36 @@
 /*-----Surface Transparent Background------*/
 @define-color surface-alpha rgba(16, 21, 16, 0.5);
 
+/* =========================
+   MATERIAL / MATUGEN MAPPING
+========================= */
+
+/* Base surfaces */
+@define-color bg0 @surface;
+@define-color bg2 @surface_variant;
+
+/* Foreground */
+@define-color fg @on_surface;
+
+/* Accents */
+@define-color blue @primary;
+@define-color green @tertiary;
+@define-color aqua @secondary;
+@define-color purple @secondary;
+@define-color orange @primary;
+@define-color red @error;
+
+/* Greys / muted */
+@define-color grey0 @outline;
+@define-color grey11 alpha(@outline, 0.6);
+
+/* Extra (typo-safe) */
+@define-color grray @secondary;
+
+
+
+
+
 /*-----All Colors--------*/
 
 @define-color background #101510;
@@ -110,3 +140,15 @@
 @define-color tertiary_fixed #beeaf6;
 
 @define-color tertiary_fixed_dim #a2ced9;
+
+
+/* ===== Compatibility aliases for custom style.css ===== */
+/* ===== Compatibility aliases for custom style.css ===== */
+
+@define-color bg0 @background;
+@define-color bg1 @surface_container;
+@define-color bg3 @surface_variant;
+@define-color bg4 @surface_container_high;
+
+@define-color fg @primary ;
+@define-color red @error;
