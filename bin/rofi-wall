@@ -6,7 +6,7 @@ set -euo pipefail
 
 
 #---------------path & variable config------------------------#
-#-------------------------------------------------------------#
+
 WALLPAPER_DIR="$HOME/wallpaper"                  # wallpaper source directory
 BACKEND="$HOME/.local/bin/walset-backend"        # wallpaper + wal backend
 CACHE="$HOME/.cache/rofi-wallpapers"             # thumbnail cache
@@ -16,7 +16,7 @@ mkdir -p "$CACHE"
 
 
 #---------------thumbnail generation--------------------------#
-#-------------------------------------------------------------#
+
 # creates true square thumbnails for rofi grid
 for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
   [ -f "$img" ] || continue
@@ -35,7 +35,7 @@ done
 
 
 #---------------rofi wallpaper menu---------------------------#
-#-------------------------------------------------------------#
+
 CHOICE=$(
   for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
     [ -f "$img" ] || continue
@@ -51,5 +51,5 @@ CHOICE=$(
 
 
 #---------------apply wallpaper-------------------------------#
-#-------------------------------------------------------------#
+
 exec "$BACKEND" "$WALLPAPER_DIR/$CHOICE"

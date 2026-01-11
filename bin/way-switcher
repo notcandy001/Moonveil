@@ -8,7 +8,7 @@ STATE="$HOME/.cache/waybar-current"
 
 #---------------rofi mode selector----------------------------#
 CHOICE=$(
-  printf "Main\nminimal\nblush\ndarkminimal\nslanted-bubbles" |
+  printf "Main\nminimal\ncodee\ndarkminimal" |
   rofi -dmenu -p "Waybar"
 )
 
@@ -23,17 +23,13 @@ case "$CHOICE" in
     CFG="$WAYBAR/themes/minimal/config.jsonc"
     CSS="$WAYBAR/themes/minimal/style.css"
     ;;
-  blush)
-    CFG="$WAYBAR/themes/blush/config.jsonc"
-    CSS="$WAYBAR/themes/blush/style.css"
+    codee)
+    CFG="$WAYBAR/themes/codee/config.jsonc"
+    CSS="$WAYBAR/themes/codee/style.css"
     ;;
   darkminimal)
     CFG="$WAYBAR/themes/darkminimal/config.jsonc"
     CSS="$WAYBAR/themes/darkminimal/style.css"
-    ;;
-  slanted-bubbles)
-    CFG="$WAYBAR/themes/slanted-bubbles/config.jsonc"
-    CSS="$WAYBAR/themes/slanted-bubbles/style.css"
     ;;
   *)
     exit 0
