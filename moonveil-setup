@@ -1,21 +1,68 @@
-pkgname=moonveil
-pkgver=1.0.0
-pkgrel=1
-pkgdesc="Moonveil Hyprland dotfiles (home-based, ML4W-style)"
-arch=('any')
-url="https://github.com/notcandy001/Moonveil"
-license=('MIT')
+#!/bin/bash
+set -e
 
+# ==========================================
+# Moonveil Setup (AUR + Home-based)
+# ==========================================
 
-source=("https://github.com/notcandy001/Moonveil/archive/refs/tags/v${pkgver}.tar.gz")
-sha256sums=('SKIP')
+SRC="/usr/share/moonveil/dotfiles"
+MOONVEIL="$HOME/moonveil"
 
-package() {
-  install -d "$pkgdir/usr/share/moonveil"
+CFG_SRC="$MOONVEIL/.config"
+BIN_SRC="$MOONVEIL/bin"
+SHELL_SRC="$MOONVEIL/shell"
 
-  cp -r Moonveil-${pkgver}/dotfiles \
-    "$pkgdir/usr/share/moonveil/"
+BACKUP="$HOME/.config/moonveil-backup-$(date +%s)"
 
-  install -Dm755 Moonveil-${pkgver}/moonveil-setup \
-    "$pkgdir/usr/bin/moonveil-setup"
-}
+echo ":: Moonveil setup starting"
+echo ":: Moonveil directory: $MOONVEIL"
+
+# ----------------------------------
+# Validate installation
+# ----------------------------------
+if [ ! -d "$SRC" ]; then
+  echo "ERROR: Moonveil is not installed."
+  echo "Install via AUR: yay -S moonveil"
+  exit 1
+fi
+
+# ----------------------------------
+# Initialize ~/moonveil
+# ----------------------------------
+if [ ! -d "$MOONVEIL" ]; then
+  echo ":: Creating ~/moonveil"
+  mkdir -p "$MOONVEIL"
+  cp -r "$SRC"/. "$MOONVEIL/"
+else
+  echo ":: ~/moonveil already exists"
+fi
+
+mkdir -p "$HOME/.config" "$HOME/.local/bin" "$BACKUP"
+
+# ----------------------------------
+# Symlink ~/.config/*
+# ----------------------------------
+find "$CFG_SRC" -mindepth 1 -maxdepth 1 -type d | while read -r dir; do
+  name="$(basename "$dir")"
+
+  if [ -e "$HOME/.config/$name" ] && [ ! -L "$HOME/.config/$name" ]; then
+    echo ":: Backing up $name"
+    mv "$HOME/.config/$name" "$BACKUP/"
+  fi
+
+  ln -sfn "$dir" "$HOME/.config/$name"
+done
+
+# ----------------------------------
+# Symlink ~/.local/bin/*
+# ----------------------------------
+ln -sfn "$BIN_SRC"/* "$HOME/.local/bin/" 2>/dev/null || true
+
+# ----------------------------------
+# Shell configs
+# ----------------------------------
+[ -f "$SHELL_SRC/zshrc" ] && ln -sfn "$SHELL_SRC/zshrc" "$HOME/.zshrc"
+[ -f "$SHELL_SRC/p10k.zsh" ] && ln -sfn "$SHELL_SRC/p10k.zsh" "$HOME/.p10k.zsh"
+
+echo ":: Moonveil setup complete"
+echo ":: Restart shell or log out"
