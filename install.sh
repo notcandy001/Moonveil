@@ -1,53 +1,50 @@
 #!/usr/bin/env bash
 # ==================================================
-# Moonveil Installer (Arch Linux)
-# Made by Rahul
+# Moonveil Installer For (Arch Linux)
+# Author: Rahul
 # ==================================================
 
 set -euo pipefail
 
-# ================= USER OPTIONS =================
-BACKUP="${BACKUP:-false}"
-WALLPAPERS="${WALLPAPERS:-false}"
-ZSH_DEFAULT="${ZSH_DEFAULT:-false}"
 
-# ================= CONFIG =================
-INSTALLER_VERSION="1.2.0"
-
-DOTFILES_REPO="https://github.com/notcandy001/Moonveil"
-DOTFILES_DIR="$HOME/.moonveil"
+#---------------Config------------------------------#
+REPO_URL="https://github.com/notcandy001/Moonveil"
+INSTALL_DIR="$HOME/.moonveil"
 GITHUB_DIR="$HOME/github"
 
-WALLPAPER_REPO="https://github.com/notcandy001/my-wal"
-WALLPAPER_DIR="$HOME/wallpaper"
+CONFIG_DIRS=(
+  hypr waybar rofi swaync kitty
+  btop cava fastfetch gtk-3.0 wlogout
+)
 
-BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
-CONFIG_DIRS=(hypr waybar rofi swaync kitty)
 
-# ================= UI =================
+#---------------UI Helpers--------------------------#
 info()  { echo -e "\e[1;34m[INFO]\e[0m $1"; }
 warn()  { echo -e "\e[1;33m[WARN]\e[0m $1"; }
 error() { echo -e "\e[1;31m[ERR]\e[0m $1"; exit 1; }
 
-# ================= CHECKS =================
+
+#---------------Checks------------------------------#
 command -v pacman &>/dev/null || error "Arch Linux only."
 
-# ================= BACKUP =================
-backup_configs() {
-  info "Backing up configs → $BACKUP_DIR"
-  mkdir -p "$BACKUP_DIR/.config"
 
-  for dir in "${CONFIG_DIRS[@]}"; do
-    [[ -d "$HOME/.config/$dir" ]] && \
-      cp -r "$HOME/.config/$dir" "$BACKUP_DIR/.config/"
-  done
+#---------------Clone Repo--------------------------#
+clone_repo() {
+  info "Cloning Moonveil → $INSTALL_DIR"
 
-  [[ -f "$HOME/.zshrc" ]] && cp "$HOME/.zshrc" "$BACKUP_DIR/"
+  if [[ -d "$INSTALL_DIR/.git" ]]; then
+    info "Moonveil already exists, pulling updates"
+    git -C "$INSTALL_DIR" pull
+  else
+    git clone "$REPO_URL" "$INSTALL_DIR"
+  fi
 }
 
-# ================= PACMAN =================
+
+#---------------Pacman Packages---------------------#
 install_packages() {
-  info "Installing pacman packages"
+  info "Installing required packages"
+
   sudo pacman -S --needed --noconfirm \
     base-devel git zsh unzip \
     hyprland waybar rofi kitty swaync hyprlock \
@@ -58,7 +55,8 @@ install_packages() {
     ttf-jetbrains-mono ttf-jetbrains-mono-nerd
 }
 
-# ================= YAY =================
+
+#---------------Yay---------------------------------#
 install_yay() {
   command -v yay &>/dev/null && return
   info "Installing yay"
@@ -68,23 +66,50 @@ install_yay() {
   (cd "$GITHUB_DIR/yay" && makepkg -si --noconfirm)
 }
 
-# ================= AUR =================
+
+#---------------AUR Packages------------------------#
 install_aur_packages() {
   info "Installing AUR packages"
+
   yay -S --needed --noconfirm \
-    matugen google-chrome papirus-icon-theme || \
+    matugen papirus-icon-theme google-chrome || \
     warn "Some AUR packages failed"
 }
 
-# ================= THEMES =================
-apply_theme() {
-  info "Applying GTK theme"
-  gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark" || true
-  gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" || true
+
+#---------------Symlinks----------------------------#
+symlink_configs() {
+  info "Symlinking Moonveil configs"
+
+  mkdir -p "$HOME/.config" "$HOME/.local/bin"
+
+  for dir in "${CONFIG_DIRS[@]}"; do
+    [[ -d "$INSTALL_DIR/.config/$dir" ]] || continue
+    rm -rf "$HOME/.config/$dir"
+    ln -s "$INSTALL_DIR/.config/$dir" "$HOME/.config/$dir"
+  done
+
+  ln -sf "$INSTALL_DIR/.zshrc" "$HOME/.zshrc"
+  ln -sf "$INSTALL_DIR/.p10k.zsh" "$HOME/.p10k.zsh"
+  ln -sf "$INSTALL_DIR/bin/"* "$HOME/.local/bin/" || true
 }
 
-# ================= ZSH =================
-install_zsh_extras() {
+
+#---------------Fonts-------------------------------#
+install_fonts() {
+  [[ -d "$INSTALL_DIR/fonts" ]] || return
+  info "Installing fonts"
+
+  mkdir -p "$HOME/.local/share/fonts"
+  cp -r "$INSTALL_DIR/fonts/"* "$HOME/.local/share/fonts/"
+  fc-cache -fv
+}
+
+
+#---------------Zsh Setup---------------------------#
+install_zsh() {
+  info "Setting up Zsh"
+
   [[ -d "$HOME/.oh-my-zsh" ]] || \
     RUNZSH=no CHSH=no sh -c \
     "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -93,43 +118,11 @@ install_zsh_extras() {
     https://github.com/romkatv/powerlevel10k.git \
     "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" || true
 
-  [[ "$ZSH_DEFAULT" == "true" ]] && chsh -s "$(command -v zsh)" || true
+  chsh -s "$(command -v zsh)" || true
 }
 
-# ================= DOTFILES =================
-clone_dotfiles() {
-  [[ -d "$DOTFILES_DIR" ]] || git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
-}
 
-symlink_configs() {
-  info "Symlinking configs"
-  mkdir -p "$HOME/.config" "$HOME/.local/bin"
-
-  for dir in "${CONFIG_DIRS[@]}"; do
-    rm -rf "$HOME/.config/$dir"
-    ln -s "$DOTFILES_DIR/.config/$dir" "$HOME/.config/$dir"
-  done
-
-  ln -sf "$DOTFILES_DIR/bin/"* "$HOME/.local/bin/" || true
-}
-
-# ================= FONTS =================
-install_fonts() {
-  [[ -d "$DOTFILES_DIR/fonts" ]] || return
-  info "Installing fonts"
-  mkdir -p "$HOME/.local/share/fonts"
-  cp -r "$DOTFILES_DIR/fonts/"* "$HOME/.local/share/fonts/"
-  fc-cache -fv
-}
-
-# ================= WALLPAPERS =================
-install_wallpapers() {
-  [[ "$WALLPAPERS" == "true" ]] || return
-  [[ -d "$WALLPAPER_DIR/.git" ]] || \
-    git clone "$WALLPAPER_REPO" "$WALLPAPER_DIR"
-}
-
-# ================= MAIN =================
+#---------------Main--------------------------------#
 clear
 cat <<EOF
 ╔══════════════════════════════════════╗
@@ -138,19 +131,14 @@ cat <<EOF
 ╚══════════════════════════════════════╝
 EOF
 
-[[ "$BACKUP" == "true" ]] && backup_configs
-
+clone_repo
 install_packages
 install_yay
 install_aur_packages
-apply_theme
-install_zsh_extras
-clone_dotfiles
 install_fonts
 symlink_configs
-install_wallpapers
+install_zsh
 
 echo
 info "Moonveil installed successfully"
-echo "✨ Made by Rahul"
 echo "➡ Log out or reboot"
