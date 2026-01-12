@@ -80,8 +80,8 @@ install_packages() {
     adw-gtk-theme  \
     noto-fonts noto-fonts-emoji \
     ttf-jetbrains-mono ttf-jetbrains-mono-nerd \
-    otf-geist-mono \
-    ttf-codenewroman
+    otf-geist-mono-nerd \
+    otf-codenewroman-nerd
 }
 
 
