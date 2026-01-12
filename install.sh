@@ -101,7 +101,7 @@ install_aur() {
   msg "Installing AUR packages"
 
   yay -S --needed --noconfirm \
-    matugen \
+    matugen-bin \
     papirus-icon-theme 
 }
 
