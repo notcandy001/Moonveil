@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+# ==========================================
+# Moonveil Setup
+# Safe • Idempotent • AUR-ready
+# ==========================================
+
+# Allow override for testing; default for real installs
+SRC="${SRC:-/usr/share/moonveil/dotfiles}"
+
+CFG="$SRC/.config"
+BIN="$SRC/bin"
+SHELL="$SRC/shell"
+
+BACKUP="$HOME/.config/moonveil-backup-$(date +%s)"
+
+echo ":: Moonveil setup starting"
+echo ":: Backup directory: $BACKUP"
+
+# Ensure directories exist
+mkdir -p "$HOME/.config" "$HOME/.local/bin" "$BACKUP"
+
+# -----------------------------
+# Link ~/.config/*
+# -----------------------------
+if [ -d "$CFG" ]; then
+  find "$CFG" -mindepth 1 -maxdepth 1 -type d | while read -r dir; do
+    name="$(basename "$dir")"
+
+    # Backup only real dirs (not symlinks)
+    if [ -e "$HOME/.config/$name" ] && [ ! -L "$HOME/.config/$name" ]; then
+      echo ":: Backing up config: $name"
+      mv "$HOME/.config/$name" "$BACKUP/"
+    fi
+
+    ln -sfn "$dir" "$HOME/.config/$name"
+  done
+fi
+
+# -----------------------------
+# Link ~/.local/bin/*
+# -----------------------------
+if [ -d "$BIN" ]; then
+  ln -sfn "$BIN"/* "$HOME/.local/bin/" 2>/dev/null || true
+fi
+
+# -----------------------------
+# Shell files
+# -----------------------------
+[ -f "$SHELL/zshrc" ] && ln -sfn "$SHELL/zshrc" "$HOME/.zshrc"
+[ -f "$SHELL/p10k.zsh" ] && ln -sfn "$SHELL/p10k.zsh" "$HOME/.p10k.zsh"
+
+echo ":: Moonveil setup complete"
+echo ":: Restart your shell or log out"
+
