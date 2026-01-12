@@ -12,7 +12,6 @@ OK="$(tput setaf 2)[OK]$(tput sgr0)"
 INFO="$(tput setaf 4)[INFO]$(tput sgr0)"
 WARN="$(tput setaf 3)[WARN]$(tput sgr0)"
 ERR="$(tput setaf 1)[ERR]$(tput sgr0)"
-ACTION="$(tput setaf 6)[ACTION]$(tput sgr0)"
 RESET="$(tput sgr0)"
 
 
@@ -28,9 +27,9 @@ CONFIG_DIRS=(
 
 
 #---------------Helpers-----------------------------#
-die() { echo "${ERR} $1"; exit 1; }
-msg() { echo "${INFO} $1"; }
-warn(){ echo "${WARN} $1"; }
+die()  { echo "${ERR} $1"; exit 1; }
+msg()  { echo "${INFO} $1"; }
+warn() { echo "${WARN} $1"; }
 
 
 #---------------Distro Detection-------------------#
@@ -42,7 +41,6 @@ fi
 
 case "$ID" in
   arch)
-    PKG="pacman"
     INSTALL="sudo pacman -S --needed --noconfirm"
     ;;
   *)
@@ -53,7 +51,7 @@ esac
 
 #---------------Git Check---------------------------#
 if ! command -v git &>/dev/null; then
-  msg "Git not found, installing..."
+  msg "Git not found, installing"
   $INSTALL git || die "Failed to install git"
 fi
 
@@ -70,22 +68,24 @@ clone_or_update() {
 }
 
 
-#---------------Packages----------------------------#
+#---------------Pacman Packages--------------------#
 install_packages() {
-  msg "Installing base packages"
+  msg "Installing pacman packages"
 
   $INSTALL \
     base-devel zsh unzip \
     hyprland waybar rofi kitty swaync hyprlock \
     grim slurp wl-clipboard \
-    nautilus adw-gtk3 nwg-look lxappearance \
-    otf-geist-mono-nerd \  otf-codenewroman-nerd \ 
+    nautilus nwg-look lxappearance \
+    adw-gtk-theme  \
     noto-fonts noto-fonts-emoji \
-    ttf-jetbrains-mono ttf-jetbrains-mono-nerd
+    ttf-jetbrains-mono ttf-jetbrains-mono-nerd \
+    otf-geist-mono \
+    ttf-codenewroman
 }
 
 
-#---------------AUR--------------------------------#
+#---------------Yay (AUR Helper)-------------------#
 install_yay() {
   command -v yay &>/dev/null && return
 
@@ -95,16 +95,20 @@ install_yay() {
   (cd "$GITHUB_DIR/yay" && makepkg -si --noconfirm)
 }
 
+
+#---------------AUR Packages-----------------------#
 install_aur() {
   msg "Installing AUR packages"
+
   yay -S --needed --noconfirm \
-    matugen papirus-icon-theme 
+    matugen \
+    papirus-icon-theme 
 }
 
 
 #---------------Symlinks----------------------------#
 symlink_configs() {
-  msg "Linking configs"
+  msg "Linking Moonveil configs"
 
   mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
@@ -120,17 +124,17 @@ symlink_configs() {
 }
 
 
-#---------------Fonts-------------------------------#
+#---------------Fonts (Repo Fonts)------------------#
 install_fonts() {
   [[ -d "$INSTALL_DIR/fonts" ]] || return
-  msg "Installing fonts"
+  msg "Installing bundled fonts"
   mkdir -p "$HOME/.local/share/fonts"
   cp -r "$INSTALL_DIR/fonts/"* "$HOME/.local/share/fonts/"
   fc-cache -fv
 }
 
 
-#---------------Zsh---------------------------------#
+#---------------Zsh Setup---------------------------#
 setup_zsh() {
   msg "Setting up Zsh"
 
