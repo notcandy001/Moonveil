@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+SRC="/usr/share/moonveil/dotfiles"
+CFG="$SRC/.config"
+BIN="$SRC/bin"
+SHELL="$SRC/shell"
+
+BACKUP="$HOME/.config/moonveil-backup-$(date +%s)"
+
+echo ":: Moonveil setup starting"
+echo ":: Backup directory: $BACKUP"
+
+mkdir -p "$BACKUP"
+mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.local/bin"
+
+# Backup + link configs
+for dir in "$CFG"/*; do
+  name=$(basename "$dir")
+  if [ -e "$HOME/.config/$name" ]; then
+    mv "$HOME/.config/$name" "$BACKUP/"
+  fi
+  ln -s "$dir" "$HOME/.config/$name"
+done
+
+# Link user scripts
+ln -sf "$BIN"/* "$HOME/.local/bin/"
+
+# Link shell files
+ln -sf "$SHELL/.zshrc" "$HOME/.zshrc"
+ln -sf "$SHELL/.p10k.zsh" "$HOME/.p10k.zsh"
+
+echo ":: Moonveil setup complete"
