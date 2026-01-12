@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 # ==================================================
-# Moonveil Installer For (Arch Linux)
-# Author: Rahul
+# Moonveil Installer
+# Author: Rahul (notcandy001)
 # ==================================================
 
 set -euo pipefail
 
 
+#---------------Colors & UI-------------------------#
+OK="$(tput setaf 2)[OK]$(tput sgr0)"
+INFO="$(tput setaf 4)[INFO]$(tput sgr0)"
+WARN="$(tput setaf 3)[WARN]$(tput sgr0)"
+ERR="$(tput setaf 1)[ERR]$(tput sgr0)"
+ACTION="$(tput setaf 6)[ACTION]$(tput sgr0)"
+RESET="$(tput sgr0)"
+
+
 #---------------Config------------------------------#
-REPO_URL="https://github.com/notcandy001/Moonveil"
+REPO_URL="https://github.com/notcandy001/Moonveil.git"
 INSTALL_DIR="$HOME/.moonveil"
 GITHUB_DIR="$HOME/github"
 
@@ -18,68 +27,83 @@ CONFIG_DIRS=(
 )
 
 
-#---------------UI Helpers--------------------------#
-info()  { echo -e "\e[1;34m[INFO]\e[0m $1"; }
-warn()  { echo -e "\e[1;33m[WARN]\e[0m $1"; }
-error() { echo -e "\e[1;31m[ERR]\e[0m $1"; exit 1; }
+#---------------Helpers-----------------------------#
+die() { echo "${ERR} $1"; exit 1; }
+msg() { echo "${INFO} $1"; }
+warn(){ echo "${WARN} $1"; }
 
 
-#---------------Checks------------------------------#
-command -v pacman &>/dev/null || error "Arch Linux only."
+#---------------Distro Detection-------------------#
+if [[ -f /etc/os-release ]]; then
+  . /etc/os-release
+else
+  die "Cannot detect Linux distribution"
+fi
+
+case "$ID" in
+  arch)
+    PKG="pacman"
+    INSTALL="sudo pacman -S --needed --noconfirm"
+    ;;
+  *)
+    die "Moonveil currently supports Arch Linux only"
+    ;;
+esac
 
 
-#---------------Clone Repo--------------------------#
-clone_repo() {
-  info "Cloning Moonveil → $INSTALL_DIR"
+#---------------Git Check---------------------------#
+if ! command -v git &>/dev/null; then
+  msg "Git not found, installing..."
+  $INSTALL git || die "Failed to install git"
+fi
 
+
+#---------------Clone / Update----------------------#
+clone_or_update() {
   if [[ -d "$INSTALL_DIR/.git" ]]; then
-    info "Moonveil already exists, pulling updates"
+    msg "Moonveil already installed, updating"
     git -C "$INSTALL_DIR" pull
   else
+    msg "Cloning Moonveil"
     git clone "$REPO_URL" "$INSTALL_DIR"
   fi
 }
 
 
-#---------------Pacman Packages---------------------#
+#---------------Packages----------------------------#
 install_packages() {
-  info "Installing required packages"
+  msg "Installing base packages"
 
-  sudo pacman -S --needed --noconfirm \
-    base-devel git zsh unzip \
+  $INSTALL \
+    base-devel zsh unzip \
     hyprland waybar rofi kitty swaync hyprlock \
     grim slurp wl-clipboard \
-    nautilus nautilus-share nautilus-image-converter \
-    adw-gtk3 nwg-look lxappearance \
+    nautilus adw-gtk3 nwg-look lxappearance \
     noto-fonts noto-fonts-emoji \
     ttf-jetbrains-mono ttf-jetbrains-mono-nerd
 }
 
 
-#---------------Yay---------------------------------#
+#---------------AUR--------------------------------#
 install_yay() {
   command -v yay &>/dev/null && return
-  info "Installing yay"
 
+  msg "Installing yay (AUR helper)"
   mkdir -p "$GITHUB_DIR"
   git clone https://aur.archlinux.org/yay.git "$GITHUB_DIR/yay"
   (cd "$GITHUB_DIR/yay" && makepkg -si --noconfirm)
 }
 
-
-#---------------AUR Packages------------------------#
-install_aur_packages() {
-  info "Installing AUR packages"
-
+install_aur() {
+  msg "Installing AUR packages"
   yay -S --needed --noconfirm \
-    matugen papirus-icon-theme google-chrome || \
-    warn "Some AUR packages failed"
+    matugen papirus-icon-theme 
 }
 
 
 #---------------Symlinks----------------------------#
 symlink_configs() {
-  info "Symlinking Moonveil configs"
+  msg "Linking configs"
 
   mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
@@ -98,17 +122,16 @@ symlink_configs() {
 #---------------Fonts-------------------------------#
 install_fonts() {
   [[ -d "$INSTALL_DIR/fonts" ]] || return
-  info "Installing fonts"
-
+  msg "Installing fonts"
   mkdir -p "$HOME/.local/share/fonts"
   cp -r "$INSTALL_DIR/fonts/"* "$HOME/.local/share/fonts/"
   fc-cache -fv
 }
 
 
-#---------------Zsh Setup---------------------------#
-install_zsh() {
-  info "Setting up Zsh"
+#---------------Zsh---------------------------------#
+setup_zsh() {
+  msg "Setting up Zsh"
 
   [[ -d "$HOME/.oh-my-zsh" ]] || \
     RUNZSH=no CHSH=no sh -c \
@@ -126,19 +149,19 @@ install_zsh() {
 clear
 cat <<EOF
 ╔══════════════════════════════════════╗
-║  Moonveil Installer                  ║
-║           Made by Rahul              ║
+║   Moonveil Installer                 ║
+║   Minimal • Aesthetic • Hyprland     ║
 ╚══════════════════════════════════════╝
 EOF
 
-clone_repo
+clone_or_update
 install_packages
 install_yay
-install_aur_packages
+install_aur
 install_fonts
 symlink_configs
-install_zsh
+setup_zsh
 
 echo
-info "Moonveil installed successfully"
-echo "➡ Log out or reboot"
+echo "${OK} Moonveil installed successfully"
+echo "➡ Reboot or log out"
