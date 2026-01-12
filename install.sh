@@ -79,6 +79,7 @@ install_packages() {
     hyprland waybar rofi kitty swaync hyprlock \
     grim slurp wl-clipboard \
     nautilus adw-gtk3 nwg-look lxappearance \
+    otf-geist-mono-nerd \  otf-codenewroman-nerd \ 
     noto-fonts noto-fonts-emoji \
     ttf-jetbrains-mono ttf-jetbrains-mono-nerd
 }
