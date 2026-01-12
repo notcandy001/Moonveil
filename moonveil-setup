@@ -6,7 +6,7 @@ set -e
 # ==========================================
 
 SRC="/usr/share/moonveil/dotfiles"
-MOONVEIL="$HOME/moonveil"
+MOONVEIL="$HOME/Moonveil"
 
 CFG_SRC="$MOONVEIL/.config"
 BIN_SRC="$MOONVEIL/bin"
