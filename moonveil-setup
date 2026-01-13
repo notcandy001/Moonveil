@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # ==========================================
-# Moonveil Setup (AUR + Home-based)
+# Moonveil Setup Script (FIXED)
 # ==========================================
 
 SRC="/usr/share/moonveil/dotfiles"
@@ -15,20 +15,23 @@ SHELL_SRC="$MOONVEIL/shell"
 BACKUP="$HOME/.config/moonveil-backup-$(date +%s)"
 
 echo ":: Moonveil setup starting"
-echo ":: Moonveil directory: $MOONVEIL"
+echo ":: Source      : $SRC"
+echo ":: Destination : $MOONVEIL"
+echo ":: Backup dir  : $BACKUP"
+echo
 
-# ----------------------------------
-# Validate installation
-# ----------------------------------
+# ------------------------------------------
+# Sanity check
+# ------------------------------------------
 if [ ! -d "$SRC" ]; then
   echo "ERROR: Moonveil is not installed."
-  echo "Install via AUR: yay -S moonveil"
+  echo "Install it first: yay -S moonveil"
   exit 1
 fi
 
-# ----------------------------------
+# ------------------------------------------
 # Initialize ~/moonveil
-# ----------------------------------
+# ------------------------------------------
 if [ ! -d "$MOONVEIL" ]; then
   echo ":: Creating ~/moonveil"
   mkdir -p "$MOONVEIL"
@@ -39,30 +42,51 @@ fi
 
 mkdir -p "$HOME/.config" "$HOME/.local/bin" "$BACKUP"
 
-# ----------------------------------
+# ------------------------------------------
 # Symlink ~/.config/*
-# ----------------------------------
-find "$CFG_SRC" -mindepth 1 -maxdepth 1 -type d | while read -r dir; do
-  name="$(basename "$dir")"
+# ------------------------------------------
+echo ":: Linking .config directories"
 
-  if [ -e "$HOME/.config/$name" ] && [ ! -L "$HOME/.config/$name" ]; then
-    echo ":: Backing up $name"
-    mv "$HOME/.config/$name" "$BACKUP/"
-  fi
+if [ -d "$CFG_SRC" ]; then
+  for dir in "$CFG_SRC"/*; do
+    [ -d "$dir" ] || continue
+    name="$(basename "$dir")"
 
-  ln -sfn "$dir" "$HOME/.config/$name"
-done
+    if [ -e "$HOME/.config/$name" ] && [ ! -L "$HOME/.config/$name" ]; then
+      echo "   ↳ Backing up $name"
+      mv "$HOME/.config/$name" "$BACKUP/"
+    fi
 
-# ----------------------------------
+    ln -sfn "$dir" "$HOME/.config/$name"
+  done
+fi
+
+# ------------------------------------------
 # Symlink ~/.local/bin/*
-# ----------------------------------
-ln -sfn "$BIN_SRC"/* "$HOME/.local/bin/" 2>/dev/null || true
+# ------------------------------------------
+echo ":: Linking bin scripts"
 
-# ----------------------------------
-# Shell configs
-# ----------------------------------
-[ -f "$SHELL_SRC/zshrc" ] && ln -sfn "$SHELL_SRC/zshrc" "$HOME/.zshrc"
-[ -f "$SHELL_SRC/p10k.zsh" ] && ln -sfn "$SHELL_SRC/p10k.zsh" "$HOME/.p10k.zsh"
+if [ -d "$BIN_SRC" ]; then
+  for file in "$BIN_SRC"/*; do
+    [ -f "$file" ] || continue
+    chmod +x "$file"
+    ln -sfn "$file" "$HOME/.local/bin/$(basename "$file")"
+  done
+fi
 
+# ------------------------------------------
+# Symlink shell configs
+# ------------------------------------------
+echo ":: Linking shell configs"
+
+if [ -f "$SHELL_SRC/zshrc" ]; then
+  ln -sfn "$SHELL_SRC/zshrc" "$HOME/.zshrc"
+fi
+
+if [ -f "$SHELL_SRC/p10k.zsh" ]; then
+  ln -sfn "$SHELL_SRC/p10k.zsh" "$HOME/.p10k.zsh"
+fi
+
+echo
 echo ":: Moonveil setup complete"
-echo ":: Restart shell or log out"
+echo ":: Restart your shell or log out"
