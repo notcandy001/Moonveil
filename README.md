@@ -91,7 +91,9 @@
 
 ### Installer script 
 ```bash
-curl -fsSL curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/master/install.sh | bash
+yay -S moonveil
+moonveil-setup
+
 ```
 
 ## Required Packages
