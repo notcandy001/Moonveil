@@ -8,6 +8,9 @@
     fg1:    #FFFFFF;
     fg2:    @primary;
     fg3:    #3D3D3D;
+    accent: #3D3D3D80;
+    background-color: @bg0;
+    text-color:       @fg0;
 }
 
 
