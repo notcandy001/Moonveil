@@ -3,51 +3,50 @@
  *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┃┃┃┃┣ ┃┃┓
  *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┛┗┻ ┻┗┛
  */
-
 /*----------Global Properties-------------*/
 {
     "position": "top",
     "margin-top": 8,
-
-/*----------Modules Left------------------*/
+    /*----------Modules Left------------------*/
     "modules-left": [
         "custom/apps",
         "clock",
         "mpris"
     ],
-
-/*----------Modules Center----------------*/
+    /*----------Modules Center----------------*/
     "modules-center": [
         "hyprland/workspaces",
         "custom/notification"
     ],
-
-/*----------Modules Right-----------------*/
+    /*----------Modules Right-----------------*/
     "modules-right": [
         "tray",
         "pulseaudio",
         "network"
     ],
-
-/*---------------Apps Launcher------------*/
+    /*---------------Apps Launcher------------*/
     "custom/apps": {
         "format": "TheFool",
         "font-family": "JetBrainsMono Nerd Font",
         "font-weight": 400,
         "on-click": "rofi -show drun"
     },
-
-/*---------------Clock-------------------*/
+    /*---------------Clock-------------------*/
     "clock": {
-        "format": "  {:%H:%M}",
+        "format": " {:%H:%M}",
         "format-alt": "{:%A  %e %B}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
-
-/*----------Hyprland Workspaces-----------*/
+    /*----------Hyprland Workspaces-----------*/
     "hyprland/workspaces": {
         "persistent-workspaces": {
-            "*": [1, 2, 3, 4, 5]
+            "*": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
         },
         "on-click": "activate",
         "format": "{windows}",
@@ -83,7 +82,7 @@
             "title<.*whatsapp.*>": "",
             "title<.*zapzap.*>": "",
             "title<.*messenger.*>": "",
-            "title<.*facebook.*>": "",
+            "title<.*facebook.*>": " ",
             "title<.*reddit.*>": "",
             "title<.*ChatGPT.*>": "󰚩",
             "class<.*ChatGPT.*>": "󰚩",
@@ -93,13 +92,14 @@
             "class<slack>": "",
             "class<mpv>": "",
             "class<celluloid|Zoom>": "",
-            "class<Cider>": "󰎆",
+            "class<Cider>": "󰎆 ",
             "title<.*Picture-in-Picture.*>": "",
             "title<.*youtube.*>": "",
             "class<vlc>": "󰕼",
             "title<.*cmus.*>": "",
             "class<[Ss]potify>": "",
-            "class<virt-manager>": "",
+            "class<virt-macodeger>": "",
+            "class<.virt-manager-wrapped>": "",
             "class<virtualbox manager>": "💽",
             "title<virtualbox>": "💽",
             "class<remmina>": "🖥️",
@@ -109,26 +109,32 @@
             "title<.*github.*>": "",
             "class<mousepad>": "",
             "class<libreoffice-writer>": "",
-            "class<libreoffice-startcenter>": "󰏆",
+            "class<libreoffice-startcenter>": " 󰏆",
             "class<libreoffice-calc>": "",
+            "title<.*nvim ~.*>": "",
             "class<org.gnome.Nautilus>": "󰣆",
             "title<.*vim.*>": "",
             "title<.*figma.*>": "",
             "title<.*jira.*>": "",
             "class<jetbrains-idea>": "",
+            "title<*.VSCode.*>": "󰨞",
+            "class<.*code.*>": "󰨞",
             "class<obs|com.obsproject.Studio>": "",
+            "class<polkit-gnome-authentication-agent-1>": "󰒃",
+            "class<nwg-look>": "",
+            "class<[Pp]avucontrol|org.pulseaudio.pavucontrol>": "󱡫",
             "class<steam>": "",
             "class<thunar|nemo>": "󰝰",
             "class<Gparted>": "",
             "class<gimp>": "",
+            "class<emulator>": "📱",
             "class<android-studio>": "",
             "class<org.pipewire.Helvum>": "󰓃",
             "class<localsend>": "",
             "class<PrusaSlicer|UltiMaker-Cura|OrcaSlicer>": "󰹛"
         }
     },
-
-/*---------------Pulseaudio--------------*/
+    /*---------------Pulseaudio--------------*/
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-bluetooth": "{volume}% {icon}",
@@ -141,16 +147,26 @@
             "phone-muted": "",
             "portable": "",
             "car": "",
-            "default": ["", ""]
+            "default": [
+                "",
+                ""
+            ]
         },
         "scroll-step": 1,
         "on-click": "pavucontrol",
-        "ignored-sinks": ["Easy Effects Sink"]
+        "ignored-sinks": [
+            "Easy Effects Sink"
+        ]
     },
-
-/*---------------Network-----------------*/
+    /*---------------Network-----------------*/
     "network": {
-        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+        "format-icons": [
+            "󰤯",
+            "󰤟",
+            "󰤢",
+            "󰤥",
+            "󰤨"
+        ],
         "format": "{ifname}",
         "format-wifi": "Nonet {icon}",
         "format-ethernet": "󰌘 ethernet",
@@ -162,8 +178,7 @@
         "spacing": 1,
         "on-click": "kitty nmtui"
     },
-
-/*-----------Notification Center---------*/
+    /*-----------Notification Center---------*/
     "custom/notification": {
         "tooltip": true,
         "format": "<span size='16pt'>{icon}</span>",
@@ -184,8 +199,7 @@
         "on-click-right": "swaync-client -d -sw",
         "escape": true
     },
-
-/*---------------MPRIS-------------------*/
+    /*---------------MPRIS-------------------*/
     "mpris": {
         "interval": 10,
         "format": "{player_icon} {dynamic}",
@@ -213,8 +227,12 @@
             "playing": "",
             "stopped": ""
         },
-        "dynamic-order": ["artist"],
-        "ignored-players": ["zen"],
+        "dynamic-order": [
+            "artist"
+        ],
+        "ignored-players": [
+            "zen"
+        ],
         "max-length": 25
     }
 }
