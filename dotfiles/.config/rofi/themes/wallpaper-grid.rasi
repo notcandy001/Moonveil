@@ -2,11 +2,7 @@
    ┏┓┏┓┓ ┏┓┏┳┓┏┓┳┓
    ┗┓┣ ┃ ┣  ┃ ┃┃┣┫
    ┗┛┗┛┗┛┗┛ ┻ ┗┛┛┗
-    
-   
 */
-
-
 
 @theme "~/.config/rofi/rounded-gray-dark.rasi"
 
@@ -30,11 +26,19 @@ mainbox {
 
 /*--------------------inputbar--------------------------------------------*/
 inputbar {
-    margin: 0px 0px 8px 0px;
-    padding: 6px 10px;
+    background-color:   @bg1;
+    border-color:       @bg3;
 
-    background-color: @bg1;
-    border-radius: 12px;
+    border:         2px;
+    border-radius:  16px;
+
+    padding:    8px 16px;
+    spacing:    8px;
+    children:   [  entry ];
+}
+entry {
+    placeholder:        "Select wallpaper";
+    placeholder-color:  @fg3;
 }
 
 /*--------------------listview / grid-------------------------------------*/
