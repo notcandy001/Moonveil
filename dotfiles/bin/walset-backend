@@ -88,6 +88,16 @@ fi
 
 echo "Matugen applied" >> "$RUN_LOG"
 
+
+#---------------reload neovim (nvchad / chadwal)---------------#
+
+NVIM_SERVER="$(ls /run/user/$UID/nvim.* 2>/dev/null | head -n1 || true)"
+
+if [ -n "$NVIM_SERVER" ] && [ -S "$NVIM_SERVER" ]; then
+  nvim --server "$NVIM_SERVER" --remote-send \
+    "<cmd>silent! lua package.loaded['base46']=nil; require('base46').load_all_highlights()<CR>"
+fi
+
 #---------------validate generated outputs--------------------#
 
 for f in "$WAYBAR_COLORS" "$ROFI_THEME" "$HYPR_COLORS" "$SWAYNC_COLORS"; do
@@ -131,15 +141,6 @@ pkill -x rofi 2>/dev/null || true
 #---------------reload hyprland-------------------------------#
 
 [ -x "$HYPRCTL" ] && "$HYPRCTL" reload >/dev/null 2>&1 || true
-
-
-#---------------reload thunar (gtk3)--------------------------#
-
-if pgrep -x thunar >/dev/null 2>&1; then
-  pkill thunar
-  sleep 0.2
-  thunar >/dev/null 2>&1 &
-fi
 
 
 #---------------finish----------------------------------------#
