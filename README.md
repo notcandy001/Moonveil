@@ -160,8 +160,6 @@ fc-cache -fv
 ## Thanks to
 - Hyprland community
 - Wayland contributors
-- Theme authors & script writers
-- Everyone who shares dotfiles openly
 
 ---
 <p align="center">
