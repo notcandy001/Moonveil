@@ -31,9 +31,7 @@
 
 /*----------Modules Right-----------------*/
     "modules-right": [
-        "custom/swaync",
-        "tray",
-        "bluetooth",
+        "custom/notification",
         "network",
         "custom/pacman",
         "custom/colorpicker",
@@ -176,15 +174,14 @@
         }
     },
 
-/*-----------Notification Center----------*/
-    "custom/swaync": {
+/*-----------Notification Center---------*/
+    "custom/notification": {
         "tooltip": false,
-        "format": "{icon}",
-        "return-type": "json",
-        "exec": "swaync-client -swb",
+        "format": "",
         "on-click": "swaync-client -t -sw",
-        "on-click-right": "swaync-client -d -sw"
+        "escape": true
     },
+
 
 /*---------------Power Menu---------------*/
     "custom/power-menu": {

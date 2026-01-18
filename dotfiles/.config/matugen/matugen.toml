@@ -53,7 +53,7 @@ input_path = '~/.config/matugen/templates/matugen-swaync.css'
 output_path = '~/.config/swaync/matugen/matugen-swaync.css'
 post_hook = 'swaync-client -rs'
 
-#nvim
+
 [templates.nvim]
 input_path = '~/.config/nvim/pywal/matugen.lua'
 output_path = '~/.cache/wal/base46-dark.lua'

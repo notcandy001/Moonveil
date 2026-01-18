@@ -19,17 +19,21 @@ case "$CHOICE" in
     CFG="$WAYBAR/config.jsonc"
     CSS="$WAYBAR/style.css"
     ;;
-    minimal)
+  minimal)
     CFG="$WAYBAR/themes/minimal/config.jsonc"
     CSS="$WAYBAR/themes/minimal/style.css"
     ;;
-    codee)
+  codee)
     CFG="$WAYBAR/themes/codee/config.jsonc"
     CSS="$WAYBAR/themes/codee/style.css"
     ;;
   darkminimal)
     CFG="$WAYBAR/themes/darkminimal/config.jsonc"
     CSS="$WAYBAR/themes/darkminimal/style.css"
+    ;;
+  monochrome)
+    CFG="$WAYBAR/themes/monochrome/config.jsonc"
+    CSS="$WAYBAR/themes/monochrome/style.css"
     ;;
   *)
     exit 0

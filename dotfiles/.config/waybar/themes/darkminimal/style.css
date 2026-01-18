@@ -119,7 +119,7 @@ window#waybar.hidden {
 #custom-colorpicker,
 #backlight,
 #pulseaudio,
-#custom-swaync,
+#custom-notification,
 #network {
     background-color: @surface;
     padding: 0 7px;
@@ -127,7 +127,7 @@ window#waybar.hidden {
 }
 
 /*----------Bluetooth--------------------*/
-#bluetooth {
+#custom-notification {
     color: @primary;
     border-radius: 10px 0 0 10px;
 }
