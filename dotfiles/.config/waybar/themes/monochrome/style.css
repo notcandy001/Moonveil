@@ -4,8 +4,8 @@
  *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┗┛
  */
 
-/*----------Import Matugen Colors--------*/
-@import "../../matugen/matugen-waybar.css";
+/*----------Color Definitions------------*/
+@import "../../colors/monochrome.css";
 
 /*----------Global Reset-----------------*/
 * {
@@ -70,7 +70,6 @@ tooltip label {
     color: @on_secondary;
     border-radius: 16px;
     min-width: 30px;
-    background-size: 400% 400%;
 }
 
 /*----------Workspace Urgent-------------*/
@@ -78,7 +77,6 @@ tooltip label {
     background-color: @red;
     color: @bg0;
     border-radius: 16px;
-    background-size: 400% 400%;
     transition: all 150ms ease-in-out;
 }
 

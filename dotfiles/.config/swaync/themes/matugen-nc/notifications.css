@@ -4,41 +4,47 @@
  *    ┛┗┗┛ ┻ ┻┻ ┻┗┛┛┗ ┻ ┻┗┛┛┗
  */
 
+/* =========================================================
+   Global
+   ========================================================= */
 * {
-  color: @on_surface;
   all: unset;
-  font-size: 16px;
   font-family: "GeistMono Nerd Font Propo";
-  transition: 200ms;
+  font-size: 16px;
+  color: @on_surface;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 .notification-row {
-  color: @on_surface;
   outline: none;
   margin: 0;
-  padding: 0px;
+  padding: 0;
 }
 
 /* =========================================================
-   Floating Notifications
+   Floating Notifications (Main Container)
    ========================================================= */
 .floating-notifications.background
 .notification-row
 .notification-background {
-  background: @surface_container_highest;
-  box-shadow: 0 0 8px 0 rgba(0,0,0,.6);
-  border: 1px solid @primary;
+  background-color: alpha(@surface_container_highest, 0.9);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+  border: 1px solid alpha(@primary, 0.5);
   border-radius: 24px;
   margin: 16px;
   padding: 0;
 }
 
+/* =========================================================
+   Notification Card
+   ========================================================= */
 .floating-notifications.background
 .notification-row
 .notification-background
 .notification {
-  padding: 6px;
-  border-radius: 12px;
+  background-color: transparent;
+  padding: 8px;
+  border-radius: 16px;
 }
 
 .floating-notifications.background
@@ -48,6 +54,9 @@
   border: 2px solid @error;
 }
 
+/* =========================================================
+   Content
+   ========================================================= */
 .floating-notifications.background
 .notification-row
 .notification-background
@@ -64,6 +73,28 @@
 }
 
 /* =========================================================
+   Images
+   ========================================================= */
+.image {
+  margin: 10px 20px 10px 0px;
+  border-radius: 12px;
+}
+
+/* =========================================================
+   Text
+   ========================================================= */
+.summary {
+  font-weight: 700;
+  font-size: 1rem;
+  color: @on_surface;
+}
+
+.body {
+  font-size: 0.85rem;
+  color: alpha(@on_surface, 0.85);
+}
+
+/* =========================================================
    Notification Actions
    ========================================================= */
 .floating-notifications.background
@@ -72,10 +103,11 @@
 .notification
 > *:last-child > *
 .notification-action {
-  border-radius: 8px;
-  background-color: @surface_bright;
+  border-radius: 10px;
+  background-color: alpha(@surface_bright, 0.95);
   margin: 6px;
-  border: 1px solid transparent;
+  padding: 8px 14px;
+  border: 1px solid alpha(@on_surface, 0.12);
 }
 
 .floating-notifications.background
@@ -84,8 +116,8 @@
 .notification
 > *:last-child > *
 .notification-action:hover {
-  background-color: alpha(@primary, .4);
-  border: 1px solid @primary;
+  background-color: alpha(@primary, 0.35);
+  border-color: alpha(@primary, 0.6);
 }
 
 .floating-notifications.background
@@ -99,23 +131,6 @@
 }
 
 /* =========================================================
-   Content
-   ========================================================= */
-.image {
-  margin: 10px 20px 10px 0px;
-}
-
-.summary {
-  font-weight: 800;
-  font-size: 1rem;
-}
-
-.body {
-  font-size: 0.8rem;
-  color: alpha(@on_surface, 0.9);
-}
-
-/* =========================================================
    Close Button
    ========================================================= */
 .floating-notifications.background
@@ -123,17 +138,18 @@
 .notification-background
 .close-button {
   margin: 6px;
-  padding: 2px;
-  border-radius: 6px;
+  padding: 4px;
+  border-radius: 8px;
   background-color: transparent;
   border: 1px solid transparent;
+  color: alpha(@on_surface, 0.7);
 }
 
 .floating-notifications.background
 .notification-row
 .notification-background
 .close-button:hover {
-  background-color: @primary;
+  background-color: alpha(@primary, 0.35);
   color: @surface;
 }
 
@@ -148,8 +164,13 @@
 /* =========================================================
    Progress Bars
    ========================================================= */
+progress {
+  background-color: alpha(@on_surface, 0.15);
+  border-radius: 999px;
+}
+
 .notification.critical progress {
-  background-color: @primary;
+  background-color: @error;
 }
 
 .notification.low progress,

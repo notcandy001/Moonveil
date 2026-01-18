@@ -8,12 +8,12 @@
    Base
    ========================================================= */
 * {
-  color: @on_surface;
   all: unset;
-  font-size: 16px;
   font-family: "GeistMono Nerd Font Propo";
+  font-size: 16px;
   font-weight: bold;
-  transition: 200ms;
+  color: @on_surface;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 /* Avoid annoying background */
@@ -22,23 +22,24 @@
 }
 
 /* =========================================================
-   CONTROL CENTER
+   CONTROL CENTER (Main Panel)
    ========================================================= */
 .control-center {
-  background: @surface_container_highest;
+  background-color: alpha(@surface_container_highest, 0.9);
   border-radius: 24px;
-  border: 1px solid @primary;
-  box-shadow: 0 0 10px 0 rgba(0,0,0,.6);
+  border: 1px solid alpha(@primary, 0.55);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
   margin: 18px;
   padding: 12px;
 }
 
 /* =========================================================
-   Notifications
+   Notifications (inside control center)
    ========================================================= */
-.control-center .notification-row .notification-background,
-.control-center .notification-row .notification-background .notification.critical {
-  background-color: alpha(@tertiary, .55);
+.control-center
+.notification-row
+.notification-background {
+  background-color: alpha(@tertiary, 0.5);
   border-radius: 16px;
   margin: 4px 0px;
   padding: 4px;
@@ -48,7 +49,8 @@
 .notification-row
 .notification-background
 .notification.critical {
-  color: @error;
+  background-color: alpha(@error, 0.25);
+  color: @on_surface;
 }
 
 .control-center
@@ -67,16 +69,19 @@
   min-height: 3.4em;
 }
 
-/* Notification actions */
+/* =========================================================
+   Notification Actions
+   ========================================================= */
 .control-center
 .notification-row
 .notification-background
 .notification > *:last-child > *
 .notification-action {
-  background: alpha(@primary, .6);
+  background-color: alpha(@primary, 0.55);
   color: @on_surface;
   border-radius: 12px;
   margin: 6px;
+  padding: 6px 12px;
 }
 
 .control-center
@@ -84,7 +89,8 @@
 .notification-background
 .notification > *:last-child > *
 .notification-action:hover {
-  background: @primary;
+  background-color: @primary;
+  color: @surface;
 }
 
 .control-center
@@ -93,6 +99,7 @@
 .notification > *:last-child > *
 .notification-action:active {
   background-color: @primary;
+  color: @surface;
 }
 
 /* =========================================================
@@ -104,7 +111,7 @@
 .close-button {
   background: transparent;
   border-radius: 6px;
-  color: @on_surface;
+  color: alpha(@on_surface, 0.8);
   margin: 0px;
   padding: 4px;
 }
@@ -113,7 +120,7 @@
 .notification-row
 .notification-background
 .close-button:hover {
-  background-color: @primary;
+  background-color: alpha(@primary, 0.4);
   color: @surface;
 }
 
@@ -154,20 +161,17 @@
 
 .notification-group-collapse-button:hover,
 .notification-group-close-all-button:hover {
-  background: alpha(@primary, .55);
+  background-color: alpha(@primary, 0.45);
 }
 
 /* =========================================================
    Widgets
    ========================================================= */
-
-/* Label widget */
 .widget-label {
   margin: 6px 6px 6px 140px;
-  color: @tertiary;
+  color: alpha(@tertiary, 0.85);
 }
 
-/* Title / Clear */
 .widget-title {
   color: @on_surface;
   font-size: 1.2em;
@@ -175,17 +179,18 @@
 }
 
 .widget-title button {
-  background: @surface_container_highest;
+  background-color: alpha(@surface_container_highest, 0.9);
   border-radius: 6px;
   padding: 4px 16px;
 }
 
 .widget-title button:hover {
-  background-color: alpha(@primary, .55);
+  background-color: alpha(@primary, 0.45);
 }
 
 .widget-title button:active {
   background-color: @primary;
+  color: @surface;
 }
 
 /* =========================================================
@@ -198,21 +203,17 @@
 }
 
 .widget-dnd > switch {
-  background: @surface_container_highest;
+  background-color: alpha(@surface_container_highest, 0.9);
   border-radius: 8px;
   padding: 2px;
 }
 
 .widget-dnd > switch:hover {
-  background: alpha(@primary, .55);
+  background-color: alpha(@primary, 0.45);
 }
 
 .widget-dnd > switch:checked {
-  background: @primary;
-}
-
-.widget-dnd > switch:checked:hover {
-  background: alpha(@primary, .55);
+  background-color: @primary;
 }
 
 .widget-dnd > switch slider {
@@ -228,7 +229,7 @@
   padding: 6px 2px;
   margin: 6px;
   border-radius: 12px;
-  background: @surface_container_highest;
+  background-color: alpha(@surface_container_highest, 0.9);
   color: @on_surface;
 }
 
@@ -240,14 +241,14 @@
 }
 
 .widget-buttons-grid > flowbox > flowboxchild > button:hover {
-  background: alpha(@primary, .55);
+  background-color: alpha(@primary, 0.45);
 }
 
 .widget-buttons-grid
 > flowbox
 > flowboxchild
 > button.toggle:checked {
-  background: alpha(@primary, .55);
+  background-color: alpha(@primary, 0.5);
 }
 
 .widget-buttons-grid
@@ -261,15 +262,15 @@
    MPRIS
    ========================================================= */
 .widget-mpris {
-  background: alpha(@primary, .2);
+  background-color: alpha(@primary, 0.25);
   border-radius: 16px;
-  color: @surface;
+  color: @on_surface;
   padding: 6px;
   margin: 20px 6px;
 }
 
 .widget-mpris button {
-  color: alpha(@surface, .9);
+  color: alpha(@on_surface, 0.9);
   border-radius: 6px;
 }
 
@@ -277,7 +278,7 @@
   color: @on_surface;
 }
 
-/* Album container must be opaque */
+/* Album container stays opaque for readability */
 .widget-mpris-player {
   background: @tertiary;
   padding: 6px 10px;
