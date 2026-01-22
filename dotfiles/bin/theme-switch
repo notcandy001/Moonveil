@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+BASE="$HOME/.config"
+SCHEME_DIR="$BASE/colorscheme"
+
+# --------------------ROFI SELECT (when no arg)--------------------
+
+if [ -z "$1" ]; then
+    THEME="$(ls "$SCHEME_DIR" | rofi -dmenu -i -p "Colorscheme")"
+else
+    THEME="$1"
+fi
+
+# silent exit
+[ -z "$THEME" ] && exit 0
+[ ! -d "$SCHEME_DIR/$THEME" ] && exit 0
+
+
+#-------------------- HYPRLAND --------------------
+
+[ -f "$SCHEME_DIR/$THEME/hypr.conf" ] && \
+echo "source = $SCHEME_DIR/$THEME/hypr.conf" > \
+"$BASE/hypr/colors.conf"
+
+
+#-------------------- WAYBAR --------------------
+
+if [ "$THEME" = "main" ]; then
+    # main theme writes to root style.css
+    echo "@import \"$SCHEME_DIR/$THEME/waybar/style.css\";" > \
+    "$BASE/waybar/style.css"
+else
+    # other themes write to their own folder
+    [ -d "$BASE/waybar/themes/$THEME" ] && \
+    echo "@import \"$SCHEME_DIR/$THEME/waybar/style.css\";" > \
+    "$BASE/waybar/themes/$THEME/style.css"
+fi
+
+
+#-------------------- ROFI --------------------
+
+[ -f "$SCHEME_DIR/$THEME/rofi/rounded-gray-dark.rasi" ] && \
+echo "@import \"$SCHEME_DIR/$THEME/rofi/rounded-gray-dark.rasi\"" > \
+"$BASE/rofi/rounded-gray-dark.rasi"
+
+#-------------------- SWAYNC --------------------
+
+[ -f "$SCHEME_DIR/$THEME/swaync/style.css" ] && \
+echo "@import \"$SCHEME_DIR/$THEME/swaync/style.css\";" > \
+"$BASE/swaync/colors.css"
+
+#-------------------- HYPRLOCK --------------------
+
+[ -f "$SCHEME_DIR/$THEME/hyprlock/style.css" ] && \
+echo "@import \"$SCHEME_DIR/$THEME/hyprlock/style.css\";" > \
+"$BASE/hypr/hyprlock/style.css"
+
+#-------------------- RELOAD --------------------
+
+pkill -USR2 waybar 2>/dev/null
+swaync-client -rs 2>/dev/null
+hyprctl reload >/dev/null 2>&1
