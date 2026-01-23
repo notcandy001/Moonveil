@@ -1,44 +1,70 @@
 #!/usr/bin/env bash
 
-
 #---------------waybar paths----------------------------------#
 WAYBAR="$HOME/.config/waybar"
+THEMES="$WAYBAR/themes"
 STATE="$HOME/.cache/waybar-current"
 
 
-#---------------rofi mode selector----------------------------#
-CHOICE=$(
-  printf "Main\nminimal\ncodee\ndarkminimal" |
-  rofi -dmenu -p "Waybar"
-)
+#---------------detect current theme--------------------------#
+CURRENT=""
+
+if [[ -f "$STATE" ]]; then
+  IFS="|" read -r CUR_CFG CUR_CSS < "$STATE"
+
+  if [[ "$CUR_CFG" == "$WAYBAR/config.jsonc" ]]; then
+    CURRENT="Main"
+  else
+    CURRENT="$(basename "$(dirname "$CUR_CFG")")"
+  fi
+fi
+
+
+#---------------build rofi list-------------------------------#
+THEME_LIST=""
+
+add_item() {
+  local name="$1"
+  if [[ "$name" == "$CURRENT" ]]; then
+    THEME_LIST+="$name [in use]\n"
+  else
+    THEME_LIST+="$name\n"
+  fi
+}
+
+# Main theme
+add_item "Main"
+
+# Auto-detect themes
+if [[ -d "$THEMES" ]]; then
+  for dir in "$THEMES"/*; do
+    [[ -d "$dir" ]] && add_item "$(basename "$dir")"
+  done
+fi
+
+
+#---------------rofi selector---------------------------------#
+CHOICE=$(printf "%b" "$THEME_LIST" | rofi -dmenu -p "Waybar")
+
+[[ -z "$CHOICE" ]] && exit 0
+
+# Clean selection
+CHOICE="${CHOICE%% *}"
 
 
 #---------------select config---------------------------------#
-case "$CHOICE" in
-  Main)
-    CFG="$WAYBAR/config.jsonc"
-    CSS="$WAYBAR/style.css"
-    ;;
-  minimal)
-    CFG="$WAYBAR/themes/minimal/config.jsonc"
-    CSS="$WAYBAR/themes/minimal/style.css"
-    ;;
-  codee)
-    CFG="$WAYBAR/themes/codee/config.jsonc"
-    CSS="$WAYBAR/themes/codee/style.css"
-    ;;
-  darkminimal)
-    CFG="$WAYBAR/themes/darkminimal/config.jsonc"
-    CSS="$WAYBAR/themes/darkminimal/style.css"
-    ;;
-  monochrome)
-    CFG="$WAYBAR/themes/monochrome/config.jsonc"
-    CSS="$WAYBAR/themes/monochrome/style.css"
-    ;;
-  *)
-    exit 0
-    ;;
-esac
+if [[ "$CHOICE" == "Main" ]]; then
+  CFG="$WAYBAR/config.jsonc"
+  CSS="$WAYBAR/style.css"
+else
+  CFG="$THEMES/$CHOICE/config.jsonc"
+  CSS="$THEMES/$CHOICE/style.css"
+
+  if [[ ! -f "$CFG" || ! -f "$CSS" ]]; then
+    notify-send "Waybar" "Theme '$CHOICE' is missing config or style"
+    exit 1
+  fi
+fi
 
 
 #---------------save current state----------------------------#
