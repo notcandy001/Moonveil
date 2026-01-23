@@ -3,47 +3,47 @@
  *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃┃┃┃┃┃┃┃┃┃┣┫┃ ━━┃ ┃┃┃┃┣ ┃┃┓
  *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┛ ┗┻┛┗┻┛ ┗┛┗┗┛  ┗┛┗┛┛┗┻ ┻┗┛
  */
-
 /*----------Global Properties-------------*/
 {
     "layer": "top",
     "position": "top",
     "reload_style_on_change": true,
-
-/*----------Modules Left------------------*/
+    /*----------Modules Left------------------*/
     "modules-left": [
         "clock",
         "custom/pacman",
         "tray"
     ],
-
-/*----------Modules Center----------------*/
+    /*----------Modules Center----------------*/
     "modules-center": [
         "hyprland/workspaces"
     ],
-
-/*----------Modules Right-----------------*/
+    /*----------Modules Right-----------------*/
     "modules-right": [
         "group/expand",
         "custom/notification",
         "network",
         "battery"
     ],
-
-/*----------Hyprland Workspaces-----------*/
+    /*----------Hyprland Workspaces-----------*/
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
-            "active": "",
-            "default": "",
-            "empty": ""
+            "urgent": "",
+            "default": "",
+            "active": "󰮯"
         },
         "persistent-workspaces": {
-            "*": [1, 2, 3, 4, 5]
+            "*": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
         }
     },
-
-/*---------------Clock-------------------*/
+    /*---------------Clock-------------------*/
     "clock": {
         "format": "{:%H:%M}",
         "interval": 1,
@@ -58,8 +58,7 @@
             "on-click": "shift_up"
         }
     },
-
-/*---------------Network-----------------*/
+    /*---------------Network-----------------*/
     "network": {
         "format-wifi": "",
         "format-ethernet": "",
@@ -69,8 +68,7 @@
         "tooltip-format-ethernet": "{ifname} 🖧 ",
         "on-click": "kitty nmtui"
     },
-
-/*---------------Battery-----------------*/
+    /*---------------Battery-----------------*/
     "battery": {
         "interval": 30,
         "states": {
@@ -91,8 +89,7 @@
             "󰁹"
         ]
     },
-
-/*---------------Pacman------------------*/
+    /*---------------Pacman------------------*/
     "custom/pacman": {
         "format": "󰅢 {}",
         "interval": 30,
@@ -102,20 +99,17 @@
         "signal": 8,
         "tooltip": false
     },
-
-/*---------------Expand Icon-------------*/
+    /*---------------Expand Icon-------------*/
     "custom/expand": {
         "format": "",
         "tooltip": false
     },
-
-/*---------------Endpoint----------------*/
+    /*---------------Endpoint----------------*/
     "custom/endpoint": {
         "format": "|",
         "tooltip": false
     },
-
-/*---------------Utility Group-----------*/
+    /*---------------Utility Group-----------*/
     "group/expand": {
         "orientation": "horizontal",
         "drawer": {
@@ -131,35 +125,34 @@
             "custom/endpoint"
         ]
     },
-
-/*-----------Notification Center---------*/
+    /*-----------Notification Center---------*/
     "custom/notification": {
         "tooltip": false,
         "format": "",
         "on-click": "swaync-client -t -sw",
         "escape": true
     },
-
-/*---------------CPU---------------------*/
+    /*---------------CPU---------------------*/
     "cpu": {
         "format": "󰻠",
         "tooltip": true
     },
-
-/*---------------Memory------------------*/
+    /*---------------Memory------------------*/
     "memory": {
         "format": ""
     },
-
-/*---------------Temperature-------------*/
+    /*---------------Temperature-------------*/
     "temperature": {
         "critical-threshold": 80,
         "format": ""
     },
-
-/*---------------Tray--------------------*/
+    /*---------------Tray--------------------*/
     "tray": {
         "icon-size": 14,
         "spacing": 10
     }
 }
+/*  "format-icons": {
+ "active": "",
+ "default": "",
+ "empty": "" */
