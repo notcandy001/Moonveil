@@ -12,7 +12,7 @@ window {
     anchor: center;
 
     width: 70%;
-    height: 320px;
+    height: 300px;          /* ↓ reduced from 320 */
 
     border-radius: 18px;
     background-color: @bg0;
@@ -20,7 +20,7 @@ window {
 
 /*--------------------mainbox---------------------------------------------*/
 mainbox {
-    padding: 10px;
+    padding: 8px 10px;      /* ↓ tighter vertical padding */
     background-color: transparent;
 }
 
@@ -34,8 +34,9 @@ inputbar {
 
     padding:    8px 16px;
     spacing:    8px;
-    children:   [  entry ];
+    children:   [ entry ];
 }
+
 entry {
     placeholder:        "Select wallpaper";
     placeholder-color:  @fg3;
@@ -51,7 +52,7 @@ listview {
     height: 220px;
 
     spacing: 16px;
-    padding: 6px;
+    padding: 4px;           /* ↓ reduced from 6 */
 
     background-color: transparent;
 }
@@ -67,14 +68,14 @@ element {
     background-color: transparent;
 }
 
-/*--------------------element-icon-----------------------------------------*/
+/*--------------------element-icon----------------------------------------*/
 element-icon {
     size: 160px;
     border-radius: 10px;
     background-color: transparent;
 }
 
-/*--------------------selected element (soft transparent border)----------*/
+/*--------------------selected element------------------------------------*/
 element selected {
     background-color: @accent;
 }
