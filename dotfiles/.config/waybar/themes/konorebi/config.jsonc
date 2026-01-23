@@ -1,0 +1,130 @@
+{
+  "layer": "top",
+  "position": "top",
+  "margin-left": 10,
+  "margin-right": 10,
+  "margin-top": 3,
+  "margin-bottom": -6,
+
+  "modules-center": [
+    "clock",
+    "hyprland/workspaces",
+    "pulseaudio",
+    "custom/notification",
+    "custom/power"
+  ],
+
+  "hyprland/workspaces": {
+    "active-only": false,
+    "all-outputs": true,
+    "on-click": "activate",
+	"format": "{icon}",
+    "persistent-workspaces": {
+      "*": [1, 2, 3, 4, 5]
+    },
+    "format-icons": {
+	"1": "一",
+	"2": "二",
+	"3": "三",
+	"4": "四",
+	"5": "五",
+	"6": "六",
+	"7": "七",
+	"8": "八",
+	"9": "九",
+	"10": "十"
+}
+  },
+  "clock": {
+    "timezone": "Asia/Kolkata",
+    "tooltip": false,
+    "format": "{:%H:%M}",
+    "interval": 1
+  },
+
+  "network": {
+    "format-wifi": "󰤢",
+    "format-ethernet": "󰈀 ",
+    "format-disconnected": "󰤠 ",
+    "interval": 5,
+    "tooltip": false,
+    "on-click": "nm-connection-editor"
+  },
+
+  "pulseaudio": {
+    "format": "{icon}",
+    "format-muted": " ",
+    "format-icons": {
+      "default": ["", "", " "]
+    },
+    "tooltip": false,
+    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+  },
+  "custom/power": {
+    "format": " ",
+    "on-click": "~/.config/hypr/scripts/wlogout.sh",
+    "tooltip": false
+  },
+  "tray": {
+    "icon-size": 21,
+    "spacing": 10,
+    "icons": {
+      "blueman": "bluetooth",
+      "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
+    }
+  },
+  "custom/notification": {
+    "tooltip": true,
+    "format": "<span size='11.5pt'>{icon}</span>",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂜",
+      "dnd-notification": "󰂠",
+      "dnd-none": "󰪓",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰪑",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+  "custom/mpd-prev": {
+    "format": "󰒮",
+    "on-click": "mpc prev",
+    "tooltip": false
+  },
+  "mpd": {
+    "format": "{stateIcon}",
+    "format-paused": "",
+    "format-stopped": "",
+    "state-icons": {
+      "playing": "",
+      "paused": "",
+      "stopped": ""
+    },
+    "max-length": 20,
+    "ellipsis": true,
+    "tooltip": false,
+    "on-click": "mpc toggle",
+    "on-scroll-up": "mpc next",
+    "on-scroll-down": "mpc prev"
+  },
+  "custom/mpd-next": {
+    "format": "󰒭",
+    "on-click": "mpc next",
+    "tooltip": false
+  },
+  "custom/menu": {
+    "format": "{}",
+    "exec": "echo ; echo 󱓟 app launcher",
+    "interval": 86400, // once every day
+    "tooltip": false,
+    "on-click": "pkill rofi || rofi -show drun",
+    "on-click-right": "~/.config/hypr/wppicker.sh"
+  }
+}
