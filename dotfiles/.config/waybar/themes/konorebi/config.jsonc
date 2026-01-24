@@ -1,3 +1,10 @@
+/***
+ *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┏┓┏┓┳┓┏┓┳┏┓
+ *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┃┃┃┃┣ ┃┃┓
+ *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┛┗┻ ┻┗┛
+ */
+
+/*----------Global Properties-------------*/
 {
   "layer": "top",
   "position": "top",
@@ -8,12 +15,14 @@
 
   "modules-center": [
     "clock",
+    "mpris",
     "hyprland/workspaces",
     "pulseaudio",
     "custom/notification",
-    "custom/power"
+    "battery"
   ],
 
+/*----------Hyprland Workspace-----------*/
   "hyprland/workspaces": {
     "active-only": false,
     "all-outputs": true,
@@ -35,22 +44,73 @@
 	"10": "十"
 }
   },
+
+/*---------------Clock-------------------*/
   "clock": {
     "timezone": "Asia/Kolkata",
     "tooltip": false,
     "format": "{:%H:%M}",
     "interval": 1
   },
+ /*---------------MPRIS-------------------*/
+"mpris": {
+    "interval": 1,
 
+    /* Display */
+    "format": "{player_icon} {dynamic}",
+    "format-paused": "{status_icon} {title}",
+    "max-length": 30,
+
+    /* Dynamic text priority */
+    "dynamic-order": ["title", "artist"],
+
+    /* Controls */
+    "on-click": "playerctl previous",
+    "on-click-middle": "playerctl play-pause",
+    "on-click-right": "playerctl next",
+
+    /* Scroll (volume control) */
+    "scroll-step": 5.0,
+    "on-scroll-up": "$HOME/.config/hypr/scripts/volume.sh --inc",
+    "on-scroll-down": "$HOME/.config/hypr/scripts/volume.sh --dec",
+
+    /* Tooltip */
+    "tooltip": true,
+    "tooltip-format": "{status_icon} {title}\n{artist}\n\n󰒮 Previous\n󰐎 Play / Pause\n󰒭 Next",
+
+    /* Icons */
+    "player-icons": {
+        "spotify": "󰎆",
+        "mpv": "󰐹",
+        "vlc": "󰕼",
+        "firefox": "",
+        "chromium": "",
+        "mopidy": "",
+        "kdeconnect": "",
+        "default": ""
+    },
+
+    "status-icons": {
+        "playing": "",
+        "paused": "",
+        "stopped": ""
+    },
+
+    /* Ignore noise */
+    "ignored-players": ["zen"]
+},
+
+/*---------------Network-----------------*/
   "network": {
     "format-wifi": "󰤢",
     "format-ethernet": "󰈀 ",
     "format-disconnected": "󰤠 ",
     "interval": 5,
     "tooltip": false,
-    "on-click": "nm-connection-editor"
+    "on-click": ""
   },
 
+/*---------------Pulseaudio--------------*/
   "pulseaudio": {
     "format": "{icon}",
     "format-muted": " ",
@@ -60,11 +120,26 @@
     "tooltip": false,
     "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
   },
-  "custom/power": {
-    "format": " ",
-    "on-click": "~/.config/hypr/scripts/wlogout.sh",
-    "tooltip": false
-  },
+
+/*---------------Battery-----------------*/
+    "battery": {
+        "interval": 15,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "max-length": 25
+    },
+
+/*---------------tray-----------------*/    
   "tray": {
     "icon-size": 21,
     "spacing": 10,
@@ -73,6 +148,8 @@
       "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
     }
   },
+  
+/*-----------Notification Center---------*/
   "custom/notification": {
     "tooltip": true,
     "format": "<span size='11.5pt'>{icon}</span>",
@@ -92,39 +169,5 @@
     "on-click": "swaync-client -t -sw",
     "on-click-right": "swaync-client -d -sw",
     "escape": true
-  },
-  "custom/mpd-prev": {
-    "format": "󰒮",
-    "on-click": "mpc prev",
-    "tooltip": false
-  },
-  "mpd": {
-    "format": "{stateIcon}",
-    "format-paused": "",
-    "format-stopped": "",
-    "state-icons": {
-      "playing": "",
-      "paused": "",
-      "stopped": ""
-    },
-    "max-length": 20,
-    "ellipsis": true,
-    "tooltip": false,
-    "on-click": "mpc toggle",
-    "on-scroll-up": "mpc next",
-    "on-scroll-down": "mpc prev"
-  },
-  "custom/mpd-next": {
-    "format": "󰒭",
-    "on-click": "mpc next",
-    "tooltip": false
-  },
-  "custom/menu": {
-    "format": "{}",
-    "exec": "echo ; echo 󱓟 app launcher",
-    "interval": 86400, // once every day
-    "tooltip": false,
-    "on-click": "pkill rofi || rofi -show drun",
-    "on-click-right": "~/.config/hypr/wppicker.sh"
   }
 }
