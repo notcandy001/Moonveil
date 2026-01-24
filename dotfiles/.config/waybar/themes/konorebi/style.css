@@ -82,7 +82,8 @@
 }
 
 /* --- System Modules --- */
-#custom-power,
+#mpris,
+#battery,
 #custom-notification,
 #pulseaudio,
 #network {
