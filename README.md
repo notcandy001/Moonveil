@@ -21,7 +21,8 @@
     <img src="https://img.shields.io/github/stars/notcandy001/moonveil?style=for-the-badge&logo=github&color=E3B341&logoColor=D9E0EE&labelColor=000000" alt="GitHub stars">
   </a>
   <a href="https://discord.gg/5EyaJDtE">
-    <img src="https://img.shields.io/discord/669048311034150914?style=for-the-badge&logo=discord&logoColor=D9E0EE&labelColor=000000&color=5865F2&label=Discord" alt="Discord">
+    <img src="https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=D9E0EE&labelColor=000000"
+         alt="Discord">
   </a>
 </p>
 
