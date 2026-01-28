@@ -15,7 +15,7 @@
     <img src="https://img.shields.io/badge/Powered%20by-Matugen-FAFAFA?style=for-the-badge&logo=python&color=FAFAFA&logoColor=D9E0EE&labelColor=000000" alt="Powered by Matugen"> 
   </a>
 <a href="https://github.com/Fabric-Development/fabric/">
-    <img src="https://img.shields.io/badge/And%20by-Fabric-FAFAFA?style=for-the-badge&logo=python&color=FAFAFA&logoColor=D9E0EE&labelColor=000000" alt="Powered by Fabric">    
+    <img src="https://img.shields.io/badge/And%20-Fabric-FAFAFA?style=for-the-badge&logo=python&color=FAFAFA&logoColor=D9E0EE&labelColor=000000" alt="Powered by Fabric">    
   <sub><sup><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp" alt="Sparkles" width="25" height="25"/></sup></sub>
   </a>
   </p>
