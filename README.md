@@ -133,6 +133,12 @@ Install the following packages for the setup to work as intended.
 - **LXAppearance** – GTK theme manager  
 - **Bibata Modern Ice** – Cursor theme  
 
+### Required Fonts
+- **Geist Mono (OTF)** – Primary UI & terminal font  
+- **Geist Mono Nerd Font** – Icon support  
+- **PP Neue Machina** – Display / clock font  
+- **JetBrainsMono Nerd Font** – Symbols & fallback
+
 ### Package Management
 - **yay** – AUR helper  
 
@@ -141,25 +147,25 @@ Install the following packages for the setup to work as intended.
 </details>
 
 ---
-## Fonts
+<h2><sub><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" alt="Rocket" width="25" height="25" /></sub> Roadmap</h2>
 
-<details>
-<summary>🔤 Fonts Used</summary>
+- [x] Hyprland
+- [x]  Hyprlock
+- [x] Rofi
+- [x] Waybar
+- [x] SwayNC
+- [x] Wlogout
+- [x] More polish
+- [x] Better scripts
+- [x] Additional themes
+- [x] Documentation improvements
+- [x] Calendar
+- [x] Clipboard Manager
+- [x] Color Picker
+- [x] Customizable UI
+- [x] Emoji Picker
 
-Moonveil’s typography is chosen for clarity, mood, and long writing sessions.
 
-### Required Fonts
-- **Geist Mono (OTF)** – Primary UI & terminal font  
-- **Geist Mono Nerd Font** – Icon support  
-- **PP Neue Machina** – Display / clock font  
-- **JetBrainsMono Nerd Font** – Symbols & fallback  
-
-### Install (Arch Linux)
-```bash
-sudo pacman -S  otf-geist-mono-nerd otf-codenewroman-nerd ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
-fc-cache -fv
-```
-</details> 
 
 ## Thanks to
 - Hyprland community
