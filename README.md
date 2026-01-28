@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/A%20quiet%20rice%20for-HYPRLAND-1E1E2E?style=for-the-badge&logo=linux&logoColor=white">
 
   <img src="https://img.shields.io/badge/Powered%20by-MATUGEN-313244?style=for-the-badge&logo=palette&logoColor=white">
-
+<p align="center">
   <sub><sup>
     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
          width="25" height="25"/>
