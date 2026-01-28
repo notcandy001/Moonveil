@@ -5,23 +5,19 @@
 </p>
 
 <p align="center">
-  <img
-    src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
-    width="25"
-    height="25"
-    style="vertical-align: middle; margin-right: 6px;"
-  />
+  <sub><sup>
+    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
+         width="25" height="25"/>
+  </sup></sub>
 
   <img src="https://img.shields.io/badge/A%20quiet%20rice%20for-HYPRLAND-1E1E2E?style=for-the-badge&logo=linux&logoColor=white">
 
   <img src="https://img.shields.io/badge/Powered%20by-MATUGEN-313244?style=for-the-badge&logo=palette&logoColor=white">
 
-  <img
-    src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
-    width="25"
-    height="25"
-    style="vertical-align: middle; margin-left: 6px;"
-  />
+  <sub><sup>
+    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
+         width="25" height="25"/>
+  </sup></sub>
 </p>
 
 <p align="center">
@@ -37,7 +33,6 @@
     <img src="https://img.shields.io/discord/YOUR_SERVER_ID?style=for-the-badge&logo=discord&logoColor=white&labelColor=1E1E2E&color=7289DA">
   </a>
 </p>
-
 
 ---
 
