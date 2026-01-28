@@ -4,7 +4,6 @@ set -euo pipefail
 # rofi wallpaper picker + wal color applier
 #-------------------------------------------------------------#
 
-
 #---------------path & variable config------------------------#
 
 WALLPAPER_DIR="$HOME/wallpaper"                  # wallpaper source directory
@@ -14,33 +13,42 @@ SIZE=220                                         # must match rofi icon size
 
 mkdir -p "$CACHE"
 
-
 #---------------thumbnail generation--------------------------#
 
-# creates true square thumbnails for rofi grid
-for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
-  [ -f "$img" ] || continue
+# supported formats (including gif)
+shopt -s nullglob
+IMAGES=("$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp,gif})
+shopt -u nullglob
 
+for img in "${IMAGES[@]}"; do
   name="$(basename "$img")"
-  thumb="$CACHE/$name"
+  thumb="$CACHE/$name.png"
 
+  # create thumbnail once
   if [ ! -f "$thumb" ]; then
-    magick "$img" \
-      -resize ${SIZE}x${SIZE}^ \
-      -gravity center \
-      -extent ${SIZE}x${SIZE} \
-      "$thumb"
+    if [[ "$img" == *.gif ]]; then
+      # take FIRST FRAME of gif
+      magick "$img[0]" \
+        -resize ${SIZE}x${SIZE}^ \
+        -gravity center \
+        -extent ${SIZE}x${SIZE} \
+        "$thumb"
+    else
+      magick "$img" \
+        -resize ${SIZE}x${SIZE}^ \
+        -gravity center \
+        -extent ${SIZE}x${SIZE} \
+        "$thumb"
+    fi
   fi
 done
-
 
 #---------------rofi wallpaper menu---------------------------#
 
 CHOICE=$(
-  for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp}; do
-    [ -f "$img" ] || continue
+  for img in "${IMAGES[@]}"; do
     name="$(basename "$img")"
-    printf '%s\0icon\x1f%s\n' "$name" "$CACHE/$name"
+    printf '%s\0icon\x1f%s\n' "$name" "$CACHE/$name.png"
   done | rofi -dmenu \
         -show-icons \
         -theme "$HOME/.config/rofi/themes/wallpaper-grid.rasi" \
@@ -48,7 +56,6 @@ CHOICE=$(
 )
 
 [ -z "$CHOICE" ] && exit 0
-
 
 #---------------apply wallpaper-------------------------------#
 
