@@ -119,7 +119,12 @@ Install the following packages for the setup to work as intended.
 - **SwayNC** – Notification center  
 - **fabric**
 - **fabric-cli**
-- **gray** 
+- **gray**
+- **python-gobject**
+- **python-setproctitle**
+
+
+
 
 ### Shell & CLI
 - **Zsh** – Default shell  
