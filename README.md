@@ -11,7 +11,8 @@
   </sup></sub>
 
   <img src="https://img.shields.io/badge/A%20quiet%20rice%20for-HYPRLAND-1E1E2E?style=for-the-badge&logo=linux&logoColor=white">
- <img src="https://img.shields.io/badge/Powered%20by-MATUGEN%20%7C%20FABRIC-313244?style=for-the-badge&logo=python&logoColor=white">
+
+  <img src="https://img.shields.io/badge/Powered%20by-MATUGEN%20%7C%20FABRIC-313244?style=for-the-badge&logo=python&logoColor=white&labelColor=1E1E2E">
 
   <sub><sup>
     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
@@ -23,7 +24,7 @@
   <a href="https://github.com/notcandy001/Moonveil/stargazers">
     <img src="https://img.shields.io/github/stars/notcandy001/Moonveil?style=for-the-badge&logo=github&label=Stars&color=E5C890&labelColor=1E1E2E">
   </a>
-  
+
   <a href="https://discord.gg/YOUR_INVITE">
     <img src="https://img.shields.io/discord/YOUR_SERVER_ID?style=for-the-badge&logo=discord&logoColor=white&labelColor=1E1E2E&color=7289DA">
   </a>
