@@ -24,6 +24,10 @@
   <a href="https://github.com/notcandy001/moonveil/stargazers">
     <img src="https://img.shields.io/github/stars/notcandy001/moonveil?style=for-the-badge&logo=github&color=E3B341&logoColor=D9E0EE&labelColor=000000" alt="GitHub stars">
   </a>
+    <a href="https://github.com/notcandy001/moonveil">
+    <img src="https://img.shields.io/badge/Maintained-Yes-blue?style=for-the-badge&logo=linux&logoColor=D9E0EE&labelColor=292324&color=3362E1" 
+      alt="Maintained">
+    </a>
   <a href="https://discord.gg/5EyaJDtE">
     <img src="https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=D9E0EE&labelColor=000000"
          alt="Discord">
