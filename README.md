@@ -24,11 +24,7 @@
   <a href="https://github.com/notcandy001/Moonveil/stargazers">
     <img src="https://img.shields.io/github/stars/notcandy001/Moonveil?style=for-the-badge&logo=github&label=Stars&color=E5C890&labelColor=1E1E2E">
   </a>
-
-  <a href="https://ko-fi.com/notcandy001">
-    <img src="https://img.shields.io/badge/Support%20me-Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white&labelColor=1E1E2E">
-  </a>
-
+  
   <a href="https://discord.gg/YOUR_INVITE">
     <img src="https://img.shields.io/discord/YOUR_SERVER_ID?style=for-the-badge&logo=discord&logoColor=white&labelColor=1E1E2E&color=7289DA">
   </a>
