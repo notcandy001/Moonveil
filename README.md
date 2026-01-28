@@ -122,8 +122,15 @@ Install the following packages for the setup to work as intended.
 - **gray**
 - **python-gobject**
 - **python-fabric-git**
-
-
+- **python-psutil**
+- **python-watchdog**
+- **python-pillow**
+- **python-toml**
+- **python-ijson**
+- **gnome-bluetooth-3.0**
+- **python-numpy**
+- **vte3**
+- **python-requests**
 
 
 
