@@ -96,3 +96,73 @@ Installation
 ```bash
 yay -S moonveil
 moonveil-setup
+```
+## Required Packages
+
+<details>
+<summary>📦 Dependencies</summary>
+
+Moonveil relies on a small, intentional set of tools.  
+Install the following packages for the setup to work as intended.
+
+### Core
+- **Hyprland** – Wayland compositor  
+- **Matugen** – Dynamic color generation (**required**)  
+- **Waybar** – Status bar  
+- **Rofi** – Application launcher  
+- **Hyprlock** – Lock screen  
+- **Wlogout** – Logout / power menu  
+- **SwayNC** – Notification center  
+- **fabric**
+- **fabric-cli**
+- **gray** 
+
+### Shell & CLI
+- **Zsh** – Default shell  
+- **Oh My Zsh** – Zsh framework  
+- **Powerlevel10k** – Zsh prompt theme  
+- **Eza** – Modern `ls` replacement  
+
+### Utilities
+- **Grim** – Screenshot utility  
+- **Nautilus** – File manager  
+- **Pavucontrol** – Audio control  
+
+### Theming & Appearance
+- **GTK Themes** (e.g. `adw-gtk3`, custom themes)  
+- **LXAppearance** – GTK theme manager  
+- **Bibata Modern Ice** – Cursor theme  
+
+### Package Management
+- **yay** – AUR helper  
+
+> ⚠️ Without **Matugen**, colors and accents will not update dynamically.
+
+</details>
+
+---
+## Fonts
+
+<details>
+<summary>🔤 Fonts Used</summary>
+
+Moonveil’s typography is chosen for clarity, mood, and long writing sessions.
+
+### Required Fonts
+- **Geist Mono (OTF)** – Primary UI & terminal font  
+- **Geist Mono Nerd Font** – Icon support  
+- **PP Neue Machina** – Display / clock font  
+- **JetBrainsMono Nerd Font** – Symbols & fallback  
+
+### Install (Arch Linux)
+```bash
+sudo pacman -S  otf-geist-mono-nerd otf-codenewroman-nerd ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
+fc-cache -fv
+```
+</details> 
+
+## Thanks to
+- Hyprland community
+- Wayland contributors
+
+
