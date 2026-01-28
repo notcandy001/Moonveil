@@ -47,7 +47,7 @@
 - Clean, distraction-free layout
 - Poetic and minimal design language
 - Subtle, smooth animations
-- Matugen-powered dynamic colors
+- Matugen & fabric-powered dynamic colors
 - Carefully tuned keybindings
 - Easy to extend and customize
 
