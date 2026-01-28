@@ -138,7 +138,8 @@ Install the following packages for the setup to work as intended.
 - **Zsh** – Default shell  
 - **Oh My Zsh** – Zsh framework  
 - **Powerlevel10k** – Zsh prompt theme  
-- **Eza** – Modern `ls` replacement  
+- **Eza** – Modern `ls` replacement
+- **power-profiles-daemon**
 
 ### Utilities
 - **Grim** – Screenshot utility  
