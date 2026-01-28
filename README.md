@@ -112,6 +112,9 @@ Install the following packages for the setup to work as intended.
 - **Hyprlock** – Lock screen  
 - **Wlogout** – Logout / power menu  
 - **SwayNC** – Notification center  
+- **fabric**
+- **fabric-cli-**
+- **gray** 
 
 ### Shell & CLI
 - **Zsh** – Default shell  
