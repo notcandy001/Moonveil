@@ -1,17 +1,33 @@
 #!/usr/bin/env bash
 
-#---------------waybar paths----------------------------------#
 WAYBAR="$HOME/.config/waybar"
 THEMES="$WAYBAR/themes"
 STATE="$HOME/.cache/waybar-current"
 
+MOONBAR_CMD="$HOME/.local/bin/moonbar-run"
+MOONBAR_PROC="ax-shell"
 
-#---------------detect current theme--------------------------#
+mkdir -p "$(dirname "$STATE")"
+
+kill_moonbar() {
+  pkill -9 "$MOONBAR_PROC" 2>/dev/null
+  sleep 0.4
+}
+
+launch_moonbar() {
+  kill_moonbar
+  pkill -x waybar 2>/dev/null
+
+  nohup "$MOONBAR_CMD" >/dev/null 2>&1 &
+  disown
+}
+
 CURRENT=""
 
-if [[ -f "$STATE" ]]; then
+if pgrep -f "$MOONBAR_PROC" >/dev/null; then
+  CURRENT="Moonbar"
+elif [[ -f "$STATE" ]]; then
   IFS="|" read -r CUR_CFG CUR_CSS < "$STATE"
-
   if [[ "$CUR_CFG" == "$WAYBAR/config.jsonc" ]]; then
     CURRENT="Main"
   else
@@ -19,59 +35,51 @@ if [[ -f "$STATE" ]]; then
   fi
 fi
 
-
-#---------------build rofi list-------------------------------#
 THEME_LIST=""
 
 add_item() {
-  local name="$1"
-  if [[ "$name" == "$CURRENT" ]]; then
-    THEME_LIST+="$name [in use]\n"
-  else
-    THEME_LIST+="$name\n"
-  fi
+  [[ "$1" == "$CURRENT" ]] && THEME_LIST+="$1 [in use]\n" || THEME_LIST+="$1\n"
 }
 
-# Main theme
 add_item "Main"
 
-# Auto-detect themes
 if [[ -d "$THEMES" ]]; then
   for dir in "$THEMES"/*; do
     [[ -d "$dir" ]] && add_item "$(basename "$dir")"
   done
 fi
 
+add_item "Moonbar"
 
-#---------------rofi selector---------------------------------#
-CHOICE=$(printf "%b" "$THEME_LIST" | rofi -dmenu -p "Waybar")
-
+CHOICE=$(printf "%b" "$THEME_LIST" | rofi -dmenu -p "Bar")
 [[ -z "$CHOICE" ]] && exit 0
-
-# Clean selection
 CHOICE="${CHOICE%% *}"
 
+if [[ "$CHOICE" == "Moonbar" ]]; then
+  echo "Moonbar" > "$STATE"
+  launch_moonbar
+  exit 0
+fi
 
-#---------------select config---------------------------------#
+CFG=""
+CSS=""
+
 if [[ "$CHOICE" == "Main" ]]; then
   CFG="$WAYBAR/config.jsonc"
   CSS="$WAYBAR/style.css"
 else
   CFG="$THEMES/$CHOICE/config.jsonc"
   CSS="$THEMES/$CHOICE/style.css"
-
-  if [[ ! -f "$CFG" || ! -f "$CSS" ]]; then
-    notify-send "Waybar" "Theme '$CHOICE' is missing config or style"
-    exit 1
-  fi
 fi
 
+if [[ ! -f "$CFG" || ! -f "$CSS" ]]; then
+  notify-send "Waybar" "Theme '$CHOICE' is missing config or style"
+  exit 1
+fi
 
-#---------------save current state----------------------------#
-echo "$CFG|$CSS" > "$STATE"
-
-
-#---------------restart waybar--------------------------------#
+kill_moonbar
 pkill -x waybar
 sleep 0.4
+
+echo "$CFG|$CSS" > "$STATE"
 waybar -c "$CFG" -s "$CSS" &

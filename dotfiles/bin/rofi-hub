@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+SCRIPTS="$HOME/.local/bin"
+
+CHOICE=$(
+  printf "󰸉  Wallpaper\n  Waybar Layout\n" |
+  rofi -dmenu -p "moonveil"
+)
+
+case "$CHOICE" in
+  "󰸉  Wallpaper")
+    exec "$SCRIPTS/rofi-wall"
+    ;;
+  "  Waybar Layout")
+    exec "$SCRIPTS/way-switcher"
+    ;;
+  *)
+    exit 0
+    ;;
+esac
