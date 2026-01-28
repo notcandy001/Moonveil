@@ -150,21 +150,20 @@ Install the following packages for the setup to work as intended.
 <h2><sub><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" alt="Rocket" width="25" height="25" /></sub> Roadmap</h2>
 
 - [x] Hyprland
-- [x]  Hyprlock
+- [x] Hyprlock
 - [x] Rofi
 - [x] Waybar
 - [x] SwayNC
 - [x] Wlogout
-- [x] More polish
-- [x] Better scripts
-- [x] Additional themes
-- [x] Documentation improvements
 - [x] Calendar
 - [x] Clipboard Manager
 - [x] Color Picker
 - [x] Customizable UI
 - [x] Emoji Picker
-
+- [ ] More polish
+- [ ] Better scripts
+- [ ] Additional themes
+- [ ] Documentation improvements
 
 
 ## Thanks to
