@@ -121,7 +121,8 @@ Install the following packages for the setup to work as intended.
 - **fabric-cli**
 - **gray**
 - **python-gobject**
-- **python-setproctitle**
+- **python-fabric-git**
+
 
 
 
