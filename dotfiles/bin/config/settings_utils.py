@@ -53,7 +53,7 @@ def ensure_matugen_config():
         "config": {
             "reload_apps": True,
             "wallpaper": {
-                "command": "awww",
+                "command": "swww",
                 "arguments": [
                     "img",
                     "-t",

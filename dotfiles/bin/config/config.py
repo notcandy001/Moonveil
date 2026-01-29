@@ -28,7 +28,7 @@ if __name__ == "__main__" and not __package__:
     from config.settings_utils import load_bind_vars
 else:
     from .data import APP_NAME, APP_NAME_CAP
-    from .settings_gui import HyprConfGUI
+   
     from .settings_utils import load_bind_vars
 
 

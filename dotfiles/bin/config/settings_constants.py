@@ -49,7 +49,7 @@ DEFAULTS = {
     "suffix_toggle": "B",
     "prefix_css": "SUPER SHIFT",
     "suffix_css": "B",
-    "wallpapers_dir": get_relative_path("../../../wallpaper"),
+    "wallpapers_dir": get_relative_path("/home/user/wallpaper"),
     "prefix_restart_inspector": "SUPER CTRL ALT",
     "suffix_restart_inspector": "B",
     "bar_position": "Top",
