@@ -235,13 +235,11 @@ Install the following packages for the setup to work as intended.
 - [ ] Documentation improvements
 
 
-## Thanks to
+## Special Thanks to
 
-- **[Hyprland Community](https://github.com/hyprwm)**  
-  Thanks to the Hyprland maintainers and contributors for creating and maintaining an outstanding Wayland compositor.
+- **[Hyprland Community](https://github.com/hyprwm)** Thanks to the Hyprland maintainers and contributors for creating and maintaining an outstanding Wayland compositor.
 
-- **[Wayland Contributors](https://wayland.freedesktop.org)**  
-  Appreciation to the Wayland developers and contributors for providing the foundation for modern Linux desktops.
+- **[Wayland Contributors](https://wayland.freedesktop.org)** Appreciation to the Wayland developers and contributors for providing the foundation for modern Linux desktops.
 
 
 
