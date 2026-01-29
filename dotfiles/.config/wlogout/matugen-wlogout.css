@@ -20,7 +20,7 @@ window {
 /* BUTTONS */
 button {
     background-repeat: no-repeat;
-    background-position: center 35%;
+    background-position: center 75%;
     background-size: 20%;
     background-color: transparent;
     animation: gradient_f 20s ease-in infinite;
@@ -29,8 +29,8 @@ button {
     border-radius: 36px;
     margin: 10px;
 
-    min-width: 120px;
-    min-height: 120px;
+    min-width: 50px;
+    min-height: 50px;
     padding: 20px;
 }
 
