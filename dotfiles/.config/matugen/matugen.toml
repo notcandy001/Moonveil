@@ -100,5 +100,4 @@ blend = true
 [templates.fullbar]
 input_path = '~/.config/matugen/templates/matugen-waybar.css'
 output_path = '~/.local/bin/moonbar/styles/colors.css'
-post_hook    =   'pkill -9 "ax-shell"' 
 #---------------bar-end----------------
