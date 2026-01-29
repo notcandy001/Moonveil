@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-#---------------Moonveil Setup Script-------------------#
+#--------------- Moonveil Setup Script ----------------#
 
 SRC="/usr/share/moonveil/dotfiles"
 MOONVEIL="$HOME/moonveil"
@@ -13,22 +13,19 @@ SHELL_SRC="$MOONVEIL/shell"
 WALLPAPER_DIR="$HOME/wallpaper"
 WALLPAPER_REPO="https://github.com/notcandy001/my-wal.git"
 
-BACKUP="$HOME/.config/moonveil-backup-$(date +%s)"
-
 echo ":: Moonveil setup starting"
 echo ":: Source      : $SRC"
 echo ":: Destination : $MOONVEIL"
-echo ":: Backup dir  : $BACKUP"
 echo
 
-#---------------Sanity Check-------------------#
+#--------------- Sanity Check ----------------#
 if [ ! -d "$SRC" ]; then
   echo "ERROR: Moonveil is not installed."
   echo "Install it first: yay -S moonveil"
   exit 1
 fi
 
-#---------------Initialize ~/moonveil-------------------#
+#--------------- Initialize ~/moonveil ----------------#
 if [ ! -d "$MOONVEIL" ]; then
   echo ":: Creating ~/moonveil"
   mkdir -p "$MOONVEIL"
@@ -37,55 +34,41 @@ else
   echo ":: ~/moonveil already exists"
 fi
 
-mkdir -p "$HOME/.config" "$HOME/.local/bin" "$BACKUP"
+mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
-#---------------Symlink ~/.config/*-------------------#
+#--------------- Symlink ~/.config ----------------#
 echo ":: Linking .config directories"
 
 if [ -d "$CFG_SRC" ]; then
   for dir in "$CFG_SRC"/*; do
     [ -d "$dir" ] || continue
-    name="$(basename "$dir")"
-
-    if [ -e "$HOME/.config/$name" ] && [ ! -L "$HOME/.config/$name" ]; then
-      echo "   ↳ Backing up $name"
-      mv "$HOME/.config/$name" "$BACKUP/"
-    fi
-
-    ln -sfn "$dir" "$HOME/.config/$name"
+    ln -sfn "$dir" "$HOME/.config/$(basename "$dir")"
   done
 fi
 
-#---------------Symlink ~/.local/bin/*-------------------#
-echo ":: Linking bin scripts"
+#--------------- Symlink ~/.local/bin ----------------#
+echo ":: Linking bin files and folders (INCLUDING moonbar + theme)"
 
 if [ -d "$BIN_SRC" ]; then
-  for file in "$BIN_SRC"/*; do
-    [ -f "$file" ] || continue
-    chmod +x "$file"
-    ln -sfn "$file" "$HOME/.local/bin/$(basename "$file")"
+  for item in "$BIN_SRC"/*; do
+    name="$(basename "$item")"
+    ln -sfn "$item" "$HOME/.local/bin/$name"
+    [ -f "$item" ] && chmod +x "$item"
   done
 fi
 
-#---------------Symlink Shell Configs-------------------#
+#--------------- Shell Configs ----------------#
 echo ":: Linking shell configs"
 
-if [ -f "$SHELL_SRC/zshrc" ]; then
-  ln -sfn "$SHELL_SRC/zshrc" "$HOME/.zshrc"
-fi
+[ -f "$SHELL_SRC/zshrc" ] && ln -sfn "$SHELL_SRC/zshrc" "$HOME/.zshrc"
+[ -f "$SHELL_SRC/p10k.zsh" ] && ln -sfn "$SHELL_SRC/p10k.zsh" "$HOME/.p10k.zsh"
 
-if [ -f "$SHELL_SRC/p10k.zsh" ]; then
-  ln -sfn "$SHELL_SRC/p10k.zsh" "$HOME/.p10k.zsh"
-fi
-
-#---------------Wallpaper-------------------#
+#--------------- Wallpaper ----------------#
 echo ":: Setting up wallpapers"
 
 if [ -d "$WALLPAPER_DIR/.git" ]; then
-  echo "   ↳ Updating wallpaper collection"
   git -C "$WALLPAPER_DIR" pull --quiet
 else
-  echo "   ↳ Cloning wallpaper collection to ~/wallpaper"
   git clone --depth=1 "$WALLPAPER_REPO" "$WALLPAPER_DIR"
 fi
 
