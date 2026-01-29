@@ -135,53 +135,78 @@ moonveil-setup
 Moonveil relies on a small, intentional set of tools.  
 Install the following packages for the setup to work as intended.
 
+## 📦 Pacman Packages
 ### Core
-- **Hyprland** – Wayland compositor  
-- **Matugen** – Dynamic color generation (**required**)  
-- **Waybar** – Status bar  
-- **Rofi** – Application launcher  
-- **Hyprlock** – Lock screen  
-- **Wlogout** – Logout / power menu  
-- **SwayNC** – Notification center  
-- **fabric**
-- **fabric-cli**
-- **gray**
+- **Hyprland** – Wayland compositor
+- **Waybar** – Status bar
+- **Rofi** – Application launcher
+- **Hyprlock** – Lock screen
+- **Wlogout** – Logout / power menu
+- **SwayNC** – Notification center
+- **gnome-bluetooth-3.0**
+- **vte3**
+- **imagemagick**
+
+### Shell & CLI
+- **Zsh** – Default shell
+- **power-profiles-daemon**
+
+### Utilities
+- **Grim** – Screenshot utility
+- **Nautilus** – File manager
+- **Pavucontrol** – Audio control
+
+### Theming & Appearance
+- **LXAppearance** – GTK theme manager
+
+### Python Dependencies
+- **python**
 - **python-gobject**
-- **python-fabric-git**
 - **python-psutil**
 - **python-watchdog**
 - **python-pillow**
 - **python-toml**
 - **python-ijson**
-- **gnome-bluetooth-3.0**
 - **python-numpy**
-- **vte3**
 - **python-requests**
 
+### Fonts
+- **JetBrainsMono Nerd Font**
+- **Noto Fonts Emoji**
+- **Noto Fonts CJK**
 
+---
+
+## 📦 Yay (AUR) Packages
+
+### Core
+- **Matugen** – Dynamic color generation (**required**)
+- **python-fabric-git**
+- **fabric-cli**
+- **python-setproctitle**
+- **gray**
 
 ### Shell & CLI
-- **Zsh** – Default shell  
-- **Oh My Zsh** – Zsh framework  
-- **Powerlevel10k** – Zsh prompt theme  
+- **Oh My Zsh** – Zsh framework
+- **Powerlevel10k** – Zsh prompt theme
 - **Eza** – Modern `ls` replacement
-- **power-profiles-daemon**
-
-### Utilities
-- **Grim** – Screenshot utility  
-- **Nautilus** – File manager  
-- **Pavucontrol** – Audio control  
 
 ### Theming & Appearance
-- **GTK Themes** (e.g. `adw-gtk3`, custom themes)  
-- **LXAppearance** – GTK theme manager  
-- **Bibata Modern Ice** – Cursor theme  
+- **adw-gtk-theme** – GTK theme
+- **Bibata Modern Ice** – Cursor theme
 
-### Required Fonts
-- **Geist Mono (OTF)** – Primary UI & terminal font  
-- **Geist Mono Nerd Font** – Icon support  
-- **PP Neue Machina** – Display / clock font  
-- **JetBrainsMono Nerd Font** – Symbols & fallback
+### Fonts
+- **Geist Mono (OTF)** – Primary UI & terminal font
+- **Geist Mono Nerd Font** – Icon support
+- **PP Neue Machina** – Display / clock font
+
+---
+
+## 📝 Notes
+- Run `fc-cache -fv` after installing fonts
+- **PP Neue Machina** may require manual installation
+- **Matugen** should be integrated with Hyprland, Waybar, GTK & Rofi
+
 
 ### Package Management
 - **yay** – AUR helper  
