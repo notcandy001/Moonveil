@@ -71,7 +71,7 @@ Screenshots
 
 <table align="center">
   <tr>
-    <td colspan="2">
+    <td colspan="3">
       <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_19-02-18.png">
     </td>
   </tr>
