@@ -1,6 +1,5 @@
 [config]
 
-
 # kitty
 [templates.kitty]
 input_path = '~/.config/matugen/templates/kitty-colors.conf'
