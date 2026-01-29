@@ -85,17 +85,17 @@ NOTIF_POS = _get_config_var("notif_pos")
 
 BAR_COMPONENTS_VISIBILITY = {
     "button_apps": _get_config_var("bar_button_apps_visible"),
-    "systray": _get_config_var("bar_systray_visible"),
-    "control": _get_config_var("bar_control_visible"),
+    "systray":  _get_config_var("bar_systray_visible"),
+    "control": False,  #_get_config_var("bar_control_visible"),
     "network": _get_config_var("bar_network_visible"),
-    "button_tools": False, #_get_config_var("bar_tools_visible"),
+    "button_tools":  False,   #_get_config_var("bar_button_tools_visible"),
     "sysprofiles": _get_config_var("bar_sysprofiles_visible"),
     "button_overview": _get_config_var("bar_button_overview_visible"),
-    "ws_container": _get_config_var("bar_ws_container_visible"),
+    "ws_container": False, #_get_config_var("bar_ws_container_visible"),
     "weather": _get_config_var("bar_weather_visible"),
     "battery": _get_config_var("bar_battery_visible"),
     "metrics": False, #_get_config_var("bar_metrics_visible"),
-    "language": False, #_get_config_var("bar_language_visible"),
+    "language":   False,   #_get_config_var("bar_language_visible"),
     "date_time": _get_config_var("bar_date_time_visible"),
     "button_power": _get_config_var("bar_button_power_visible"),
 }
