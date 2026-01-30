@@ -45,6 +45,8 @@ PACKAGES=(
   pavucontrol
   wl-clipboard
   libnotify
+  swww
+  awww-get
 
   # ---- Shell ----
   zsh
