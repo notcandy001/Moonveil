@@ -21,7 +21,6 @@ MOONSHELL_DIR="$HOME/.config/moonshell"
 PACKAGES=(
 
   # ---- Core ----
-  hyprland
   waybar
   rofi
   hyprlock
@@ -81,6 +80,7 @@ PACKAGES=(
   noto-fonts-emoji
   otf-geist-mono
   ttf-geist-mono-nerd
+  otf-codenewroman-nerd 
 )
 
 # --------------------------------------------------
