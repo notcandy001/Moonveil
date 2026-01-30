@@ -48,7 +48,8 @@
 > [!CAUTION]
 > **Matugen is required.**  
 > Moonveil relies on dynamic color generation and will not function correctly without it.
-> [!Project Note]
+> 
+> ## Project Note
 > Moonveil previously experimented with the **Ax-Shell bar component only**.  
 > The rest of the environment, configuration, and workflow are **original and independently maintained**.
 > Ax-Shell has since been **officially discontinued and archived**.  
