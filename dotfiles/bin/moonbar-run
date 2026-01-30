@@ -2,7 +2,7 @@
 
 # Moonbar launcher
 
-export MOONBAR_ROOT="$HOME/.local/bin/bar"
+export MOONBAR_ROOT="$HOME/.config/moonshell/bar"
 export PYTHONPATH="$MOONBAR_ROOT"
 export FABRIC_LOG_LEVEL=INFO
 
