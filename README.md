@@ -53,7 +53,7 @@
 > Moonveil previously experimented with the **Ax-Shell bar component only**.  
 > The rest of the environment, configuration, and workflow are **original and independently maintained**.
 > Ax-Shell has since been **officially discontinued and archived**.  
->  Moonveil now ships with its own maintained bar implementation (**Moonshell**) and does **not depend on Ax-ShellS-Bar**.
+>  Moonveil now ships with its own maintained bar implementation (**Moonshell**) and does **not depend on Ax-Shells-Bar**.
 ---
 
 <h2 align="center">✨ Features</h2>
