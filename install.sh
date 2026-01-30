@@ -46,7 +46,7 @@ PACKAGES=(
   wl-clipboard
   libnotify
   swww
-  awww-get
+  awww-git
 
   # ---- Shell ----
   zsh
