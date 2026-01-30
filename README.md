@@ -130,7 +130,7 @@ Installation
 ### Arch Linux (AUR)
 
 ```bash
-curl -fsSL https://github.com/notcandy001/Moonveil/blob/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/master/install.sh | bash
 ```
 ## Required Packages
 
