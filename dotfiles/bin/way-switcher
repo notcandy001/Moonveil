@@ -4,9 +4,15 @@ WAYBAR="$HOME/.config/waybar"
 THEMES="$WAYBAR/themes"
 STATE="$HOME/.cache/waybar-current"
 
+MOONBAR_CMD="$HOME/.local/bin/moonbar-run"
+MOONBAR_PROC="moonshell"
 
 mkdir -p "$(dirname "$STATE")"
 
+kill_moonbar() {
+  pkill -x "$MOONBAR_PROC" 2>/dev/null
+  sleep 0.4
+}
 
 launch_moonbar() {
   kill_moonbar
@@ -18,7 +24,8 @@ launch_moonbar() {
 
 CURRENT=""
 
-
+if pgrep -x "$MOONBAR_PROC" >/dev/null; then
+  CURRENT="Moonbar"
 elif [[ -f "$STATE" ]]; then
   IFS="|" read -r CUR_CFG CUR_CSS < "$STATE"
   if [[ "$CUR_CFG" == "$WAYBAR/config.jsonc" ]]; then
