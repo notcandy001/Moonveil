@@ -11,7 +11,7 @@ set -o pipefail
 MOONVEIL_REPO="https://github.com/notcandy001/moonveil.git"
 MOONSHELL_REPO="https://github.com/notcandy001/moonshell.git"
 
-MOONVEIL_DIR="$HOME/.config/moonveil"
+MOONVEIL_DIR="$HOME/.config/"
 MOONSHELL_DIR="$HOME/.config/moonshell"
 
 # -----------------------------
