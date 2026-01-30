@@ -226,9 +226,9 @@ Install the following packages for the setup to work as intended.
 - [x] Wlogout
 - [x] Calendar
 - [x] Clipboard Manager
-- [x] Color Picker
-- [x] Customizable UI
-- [x] Emoji Picker
+- [ ] Color Picker
+- [ ] Customizable UI
+- [ ] Emoji Picker
 - [ ] More polish
 - [ ] Better scripts
 - [ ] Additional themes
