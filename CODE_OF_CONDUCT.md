@@ -41,7 +41,7 @@ The following will not be tolerated:
 Maintainers may take action if behavior goes against this code.
 Actions may include warnings, content removal, or limiting participation.
 
-The goal is always to protect the project and the community — not to punish.
+The goal is always to protect the project and the community not to punish.
 
 ## Scope
 
