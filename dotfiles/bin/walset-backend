@@ -1,151 +1,107 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#-----binaries-----
-
+#——— binaries ————————————————————————————
 MATUGEN="$(command -v matugen || true)"
 SWWW="$(command -v swww || true)"
-WAYBAR_BIN="$(command -v waybar || true)"
 HYPRCTL="$(command -v hyprctl || true)"
 NOTIFY="$(command -v notify-send || true)"
-SWAYNC_BIN="$(command -v swaync || true)"
-SWAYNC_CLIENT="$(command -v swaync-client || true)"
-UWSM="$(command -v uwsm || true)"
-MOONSHELL_CMD="$HOME/.local/bin/moonbar-run"
+MOONBAR_RUN="$HOME/.local/bin/moonbar-run"
 
-#-----paths-----
+#——— process names ——————————————————————
+MOONBAR_PROC="moonshell"
 
+#——— config paths ——————————————————————
 MATUGEN_CONFIG="$HOME/.config/matugen/matugen.toml"
+
 WAYBAR_COLORS="$HOME/.config/waybar/colors.css"
-ROFI_THEME="$HOME/.config/rofi/colors.rasi"
+ROFI_COLORS="$HOME/.config/rofi/colors.rasi"
 HYPR_COLORS="$HOME/.config/hypr/colors.conf"
 HYPRLOCK_COLORS="$HOME/.config/hypr/colors.conf"
 SWAYNC_COLORS="$HOME/.config/swaync/colors.css"
+GTK_COLORS="$HOME/.config/gtk-3.0/colors.css"
 
-#-----logs-----
-
-LOG_DIR="/tmp/walset-backend-logs"
+#——— cache & logs ——————————————————————
+CACHE_WALL="$HOME/.cache/current_wallpaper"
+LOG_DIR="/tmp/walset-backend"
 mkdir -p "$LOG_DIR"
-MATUGEN_STDERR="$LOG_DIR/matugen.err"
-RUN_LOG="$LOG_DIR/run.log"
 
-#-----args-----
+MATUGEN_LOG="$LOG_DIR/matugen.log"
+SWWW_LOG="$LOG_DIR/swww.log"
 
+#——— args ——————————————————————————————
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 /path/to/image" >&2
+  echo "Usage: walset-backend /path/to/image" >&2
   exit 1
 fi
 
 IMAGE="$1"
+[ -f "$IMAGE" ] || { echo "Image not found: $IMAGE"; exit 1; }
 
-#-----deps-----
-
+#——— dependency checks ——————————————————
 for bin in "$MATUGEN" "$SWWW"; do
-  if [ -z "$bin" ] || [ ! -x "$bin" ]; then
-    echo "Missing binary: $bin" >&2
+  if [ -z "$bin" ]; then
+    echo "Missing dependency: $bin" >&2
     exit 1
   fi
 done
 
-[ -f "$MATUGEN_CONFIG" ] || { echo "Missing matugen config"; exit 1; }
+[ -f "$MATUGEN_CONFIG" ] || {
+  echo "Missing matugen config: $MATUGEN_CONFIG" >&2
+  exit 1
+}
 
-#-----notify-----
-
+#——— notify start ——————————————————————
 [ -n "$NOTIFY" ] && "$NOTIFY" "Moonveil" "Applying wallpaper & theme…"
 
-#-----swww-transition-----
+#——— detect moonbar state —————————————
+MOONBAR_WAS_RUNNING=false
+if pgrep -x "$MOONBAR_PROC" >/dev/null; then
+  MOONBAR_WAS_RUNNING=true
+fi
 
-TRANSITIONS=(
-  any 
-  wipe
-   grow 
-   center 
-   outer 
-   random 
-   wave 
-   fade 
-   left 
-   right 
-   top 
-   bottom
-)
-TRANSITION="${TRANSITIONS[RANDOM % ${#TRANSITIONS[@]}]}"
+#——— kill moonbar ONLY if running ——————
+if [ "$MOONBAR_WAS_RUNNING" = true ]; then
+  pkill -x "$MOONBAR_PROC"
+  sleep 0.4
+fi
 
+#——— apply wallpaper (swww) ———————————
 "$SWWW" img "$IMAGE" \
-  --transition-type "$TRANSITION" \
-  --transition-step 255 \
+  --transition-type any \
   --transition-fps 60 \
-  >/dev/null 2>>"$LOG_DIR/swww.err" || true
+  --transition-step 255 \
+  >"$SWWW_LOG" 2>&1 || true
 
-cp -f "$IMAGE" "$HOME/.cache/current_wallpaper"
+#——— sync wallpaper for lockscreen —————
+cp -f "$IMAGE" "$CACHE_WALL"
 pkill -USR1 hyprlock 2>/dev/null || true
 
-#-----matugen-----
+#——— generate colors (matugen) —————————
+"$MATUGEN" image "$IMAGE" \
+  -c "$MATUGEN_CONFIG" \
+  -v >"$MATUGEN_LOG" 2>&1
 
-if ! "$MATUGEN" image "$IMAGE" -c "$MATUGEN_CONFIG" -v 2>"$MATUGEN_STDERR"; then
-  [ -n "$NOTIFY" ] && "$NOTIFY" "Matugen failed" "Check logs"
-  exit 1
-fi
-
-echo "Matugen OK" >> "$RUN_LOG"
-
-#-----reload-neovim-----
-
-NVIM_SERVER="$(ls /run/user/$UID/nvim.* 2>/dev/null | head -n1 || true)"
-if [ -n "$NVIM_SERVER" ] && [ -S "$NVIM_SERVER" ]; then
-  nvim --server "$NVIM_SERVER" --remote-send \
-    "<cmd>silent! lua package.loaded['base46']=nil; require('base46').load_all_highlights()<CR>"
-fi
-
-#-----validate-----
-
-for f in "$WAYBAR_COLORS" "$ROFI_THEME" "$HYPR_COLORS" "$SWAYNC_COLORS"; do
-  [ -s "$f" ] && echo "OK $f" >> "$RUN_LOG" || echo "WARN $f" >> "$RUN_LOG"
+#——— validate outputs ——————————————————
+for f in \
+  "$WAYBAR_COLORS" \
+  "$ROFI_COLORS" \
+  "$HYPR_COLORS" \
+  "$SWAYNC_COLORS" \
+  "$GTK_COLORS"
+do
+  [ -s "$f" ] || echo "WARN: $f missing or empty" >>"$LOG_DIR/warn.log"
 done
 
-#-----reload-waybar-----
-
-if pgrep -x waybar >/dev/null; then
-  pkill -SIGUSR2 waybar || true
-  sleep 0.15
-  pgrep -x waybar >/dev/null || nohup "$WAYBAR_BIN" >/dev/null 2>&1 &
-fi
-
-#-----reload-swaync-----
-
-if [ -x "$SWAYNC_CLIENT" ]; then
-  if pgrep -x swaync >/dev/null; then
-    "$SWAYNC_CLIENT" -rs >/dev/null 2>&1 || true
-  else
-    nohup "$SWAYNC_BIN" >/dev/null 2>&1 &
-  fi
-fi
-
-#-----reload-rofi-----
-
-pkill -x rofi 2>/dev/null || true
-
-#-----reload-hyprland-----
-
+#——— reload hyprland ——————————————————
 [ -x "$HYPRCTL" ] && "$HYPRCTL" reload >/dev/null 2>&1 || true
 
-#-----reload-moonshell-----
-
-if pgrep -x moonshell >/dev/null; then
-  pkill -TERM -x moonshell || true
-  for _ in {1..40}; do
-    pgrep -x moonshell >/dev/null || break
-    sleep 0.1
-  done
+#——— restart moonbar ONLY if it was running —
+if [ "$MOONBAR_WAS_RUNNING" = true ]; then
+  nohup "$MOONBAR_RUN" >/dev/null 2>&1 &
 fi
 
-if [ -x "$MOONSHELL_CMD" ] && [ -n "$UWSM" ]; then
-  uwsm app -- "$MOONSHELL_CMD" >/dev/null 2>&1 &
-  disown
-fi
-
-#-----finish-----
-
-[ -n "$NOTIFY" ] && "$NOTIFY" "Moonveil" "Wallpaper & theme applied"
+#——— notify done ——————————————————————
+[ -n "$NOTIFY" ] && "$NOTIFY" "Moonveil" "Wallpaper & colors applied"
 
 exit 0
