@@ -1,0 +1,145 @@
+#---------------- Application & Launcher ----------------#
+
+[[keybind]]
+category = "Applications"
+combo = "SUPER + Enter"
+action = "Open terminal (Kitty)"
+
+[[keybind]]
+category = "Applications"
+combo = "SUPER + B"
+action = "Open Chrome"
+
+[[keybind]]
+category = "Applications"
+combo = "SUPER + E"
+action = "Open File Manager (Nautilus)"
+
+[[keybind]]
+category = "Applications"
+combo = "SUPER + Shift + C"
+action = "Open VS Code"
+
+[[keybind]]
+category = "Applications"
+combo = "SUPER + Alt + K"
+action = "Open Keybinds App"
+
+
+#---------------- Hypr Scripts ----------------#
+
+[[keybind]]
+category = "System"
+combo = "SUPER + L"
+action = "Lock screen"
+
+[[keybind]]
+category = "System"
+combo = "SUPER + Shift + Q"
+action = "Logout menu"
+
+[[keybind]]
+category = "System"
+combo = "SUPER + Shift + T"
+action = "Open LXAppearance"
+
+
+#---------------- Waybar & Screenshots ----------------#
+
+[[keybind]]
+category = "Bar"
+combo = "SUPER + D"
+action = "Launch Waybar / Bar script"
+
+[[keybind]]
+category = "Bar"
+combo = "Print"
+action = "Screenshot"
+
+
+#---------------- Rofi ----------------#
+
+[[keybind]]
+category = "Launcher"
+combo = "SUPER + R"
+action = "Rofi launcher"
+
+[[keybind]]
+category = "Launcher"
+combo = "SUPER + Shift + W"
+action = "Wallpaper selector"
+
+[[keybind]]
+category = "Launcher"
+combo = "SUPER + Ctrl + W"
+action = "Bar switcher"
+
+[[keybind]]
+category = "Launcher"
+combo = "SUPER + T"
+action = "Rofi hub"
+
+
+#---------------- Window Focus ----------------#
+
+[[keybind]]
+category = "Window"
+combo = "SUPER + Arrow Keys"
+action = "Move focus"
+
+
+#---------------- Workspaces ----------------#
+
+[[keybind]]
+category = "Workspace"
+combo = "SUPER + 1..9"
+action = "Switch workspace"
+
+[[keybind]]
+category = "Workspace"
+combo = "SUPER + Shift + 1..9"
+action = "Move window to workspace"
+
+
+#---------------- Scratchpad ----------------#
+
+[[keybind]]
+category = "Workspace"
+combo = "SUPER + S"
+action = "Toggle scratchpad"
+
+[[keybind]]
+category = "Workspace"
+combo = "SUPER + Shift + S"
+action = "Move window to scratchpad"
+
+
+#---------------- Mouse ----------------#
+
+[[keybind]]
+category = "Mouse"
+combo = "SUPER + Left Click"
+action = "Move window"
+
+[[keybind]]
+category = "Mouse"
+combo = "SUPER + Right Click"
+action = "Resize window"
+
+
+#---------------- Media & Brightness ----------------#
+
+[[keybind]]
+category = "Media"
+combo = "XF86Audio Keys"
+action = "Volume / Mute / Mic"
+
+[[keybind]]
+category = "Media"
+combo = "XF86Brightness Keys"
+action = "Brightness control"
+
+[[keybind]]
+category = "Media"
+combo = "XF86Media Keys"
+action = "Music control"

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Prevent multiple instances
+if pgrep -f "Moonveil Control Center" >/dev/null; then
+  exit 0
+fi
+
+# Launch
+exec python "$HOME/Moonveil/control-center/main.py"
