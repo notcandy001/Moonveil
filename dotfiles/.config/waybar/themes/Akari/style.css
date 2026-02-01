@@ -1,159 +1,113 @@
 /* --- Global Styles --- */
 @import "../../matugen/matugen-waybar.css";
 
+
+
 * {
-  font-family: "Google Sans Flex", "SF Pro Display",
-    "Segoe UI", "GeistMono Nerd Font Propo",
-    "Noto Sans CJK SC", "Noto Sans CJK JP",
-    sans-serif;
-  min-height: 0;
-  font-size: 0.8rem;
-}
-
-/* --- Waybar Container --- */
-#waybar {
-  border-radius: 100px;
-  margin: 0px;
-  font-weight: 500;
-  background-color: transparent;
-}
-
-.modules-center {
-  background-color: @on_primary_fixed;
-  border-radius: 100px;
-}
-
-/* --- Workspaces --- */
-#workspaces {
-  padding: 0.2rem 2px;
-  border-radius: 100px;
-  margin-left: 6px;
-  margin-right: 6px;
-  background: @on_primary_fixed;
-  color: @on_surface;
-  min-width: 0;
   border: none;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  border-radius: 0px;
+  font-family: "Rubik", "JetBrainsMono Nerd Font Propo",
+               "Noto Sans CJK JP", "Noto Sans CJK KR";
+  font-size: 14px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Center container */
+.modules-center {
+  background: @bg0;
+  padding: 6px 12px;
+  border-radius: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Window title */
+window#waybar {
+  background: transparent;
+}
+
+/* Tooltip */
+tooltip {
+  background: @bg2;
+  border: 1px solid @bg3;
+  border-radius: 12px;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 6px;
+}
+
+/* Workspaces */
+#workspaces {
+  background: transparent;
+  padding: 0;
+  margin: 0 10px 0 10px;
+  border: none;
+  box-shadow: none;
 }
 
 #workspaces button {
-  color: @primary_fixed;
-  border-radius: 100px;
-  padding: 0.2rem 0.45rem;
+  padding: 0px 6px;
   margin: 0px 2px;
-  background: inherit;
-  border: none;
-  outline: none;
-  transition: all 0.25s ease-in-out;
+  border-radius: 16px;
+  color: @grey0;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
 }
 
 #workspaces button.active {
-  background: linear-gradient(
-    120deg,
-    @primary,
-    @tertiary,
-    @secondary,
-    @primary,
-    @secondary,
-    @tertiary,
-    @primary
-  );
-  color: @scrim;
-  padding: 0.2rem 0.8rem;
-  min-width: 22px;
+  background: linear-gradient(135deg, @blue 0%, @purple 50%, @red 100%);
+  color: @bg0;
+  min-width: 40px;
+  transition: all 0.3s ease-in-out;
 }
 
 #workspaces button:hover {
-  background-color: @tertiary;
-  color: @scrim;
-  padding: 0.2rem 0.8rem;
-  min-width: 22px;
+  background-color: @bg3;
+  color: @fg;
 }
 
-/* --- Clock --- */
+#workspaces button.urgent {
+  background-color: @red;
+  color: @bg0;
+}
+
+/* Modules */
+#custom-media,
+#window,
+#custom-launcher,
+#network,
+#submap,
+#power-profiles-daemon,
+#custom-home-folder {
+  background-color: @bg0;
+  padding: 0 8px;
+  margin: 0 5px;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+#submap {
+  color: @aqua;
+}
+
+#custom-launcher {
+  color: @fg;
+}
+
 #clock {
-  color: @primary;
-  background-color: @on_primary_fixed;
-  padding: 0.2rem 0.6rem;
-  margin: 4px 4px;
-  border-radius: 100px;
-  min-width: 0;
-  border: none;
+  color: @fg;
+  margin: 0;
 }
 
-/* --- System Modules --- */
-#mpris,
-#battery,
-#custom-notification,
-#pulseaudio,
-#network {
-  background-color: @on_primary_fixed;
-  padding: 0.2rem 0.6rem;
-  margin: 4px 4px;
-  border-radius: 100px;
-  min-width: 0;
-  color: @tertiary;
-  border: none;
+#custom-media {
+  color: @aqua;
+  margin: 0 0 0 10px;
 }
 
-#custom-power {
-  padding-right: 0.4rem;
-  color: @error;
-  min-width: 14px;
-  transition: all 0.2s ease-in-out;
-}
-
-#tray {
-  padding-right: 0.4rem;
-}
-
-#custom-notification {
-  padding-right: 0.85rem;
-  transition: all 0.2s ease-in-out;
-}
-
-/* --- MPD --- */
-#mpd,
-#custom-mpd-prev,
-#custom-mpd-next {
-  color: @primary;
-  background-color: @on_primary_fixed;
-  padding: 0.2rem 0.6rem;
-  margin: 4px 0px;
-  border-radius: 100px;
-  min-width: 0;
-  border: none;
-  transition: all 0.2s ease-in-out;
-}
-
-#custom-mpd-prev {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  margin-left: 8px;
-  padding-left: 8px;
-  padding-right: 4px;
-}
-
-#custom-mpd-next {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding-left: 4px;
-  padding-right: 8px;
-}
-
-#custom-mpd-prev:hover,
-#custom-mpd-next:hover {
-  background-color: @surface_container_highest;
-}
-
-/* --- Menu --- */
-#custom-menu {
-  background-color: @surface;
-  padding: 0.2rem 0.6rem;
-  margin: 4px 4px;
-  border-radius: 100px;
-  color: @on_surface;
-  min-width: 12px;
-  border: none;
-  transition: all 0.2s ease-in-out;
+#custom-weather {
+  color: @fg;
 }
