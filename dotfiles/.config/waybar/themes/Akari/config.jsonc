@@ -1,6 +1,6 @@
 /***
- *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┏┓┏┓┳┓┏┓┳┏┓
- *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┃┃┃┃┣ ┃┃┓
+ *    ┓    ┏┏┓┓┏┳┓┏┓┳┓  ┏┓┏┓┳┓┏┓┳┏┓
+ *    ┃┃┃┣┫┗┫┣┫┣┫┣┫  ┃ ┃┃┃┃┣ ┃┃┓
  *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┛┗┻ ┻┗┛
  */
 
@@ -10,15 +10,15 @@
   "position": "top",
   "margin-left": 10,
   "margin-right": 10,
-  "margin-top": 3,
-  "margin-bottom": -6,
+  "margin-top": 6,
+  "margin-bottom": -5,
 
   "modules-center": [
     "clock",
     "mpris",
     "hyprland/workspaces",
     "pulseaudio",
-    "custom/notification",
+    "network",
     "battery"
   ],
 
@@ -107,7 +107,7 @@
     "format-disconnected": "󰤠 ",
     "interval": 5,
     "tooltip": false,
-    "on-click": ""
+    "on-click": "kitty nmtui"
   },
 
 /*---------------Pulseaudio--------------*/
@@ -138,36 +138,5 @@
         ],
         "max-length": 25
     },
-
-/*---------------tray-----------------*/    
-  "tray": {
-    "icon-size": 21,
-    "spacing": 10,
-    "icons": {
-      "blueman": "bluetooth",
-      "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
-    }
-  },
   
-/*-----------Notification Center---------*/
-  "custom/notification": {
-    "tooltip": true,
-    "format": "<span size='11.5pt'>{icon}</span>",
-    "format-icons": {
-      "notification": "󱅫",
-      "none": "󰂜",
-      "dnd-notification": "󰂠",
-      "dnd-none": "󰪓",
-      "inhibited-notification": "󰂛",
-      "inhibited-none": "󰪑",
-      "dnd-inhibited-notification": "󰂛",
-      "dnd-inhibited-none": "󰪑"
-    },
-    "return-type": "json",
-    "exec-if": "which swaync-client",
-    "exec": "swaync-client -swb",
-    "on-click": "swaync-client -t -sw",
-    "on-click-right": "swaync-client -d -sw",
-    "escape": true
-  }
 }
