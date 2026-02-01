@@ -16,7 +16,8 @@
     ],
     /*----------Modules Center----------------*/
     "modules-center": [
-        "hyprland/workspaces"
+        "hyprland/workspaces",
+        "custom/moonveil"
     ],
     /*----------Modules Right-----------------*/
     "modules-right": [
@@ -150,7 +151,13 @@
     "tray": {
         "icon-size": 14,
         "spacing": 10
-    }
+    },
+/*-----------Moonveil Center---------*/    
+   "custom/moonveil": {
+  "format": " ",
+  "tooltip": "Moonveil Control Center",
+  "on-click": "bash ~/.config/control-center/launch"
+}
 }
 /*  "format-icons": {
  "active": "",

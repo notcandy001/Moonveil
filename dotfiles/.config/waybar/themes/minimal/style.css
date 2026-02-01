@@ -56,6 +56,16 @@ tooltip-label {
     padding: 5px;
 }
 
+/*----------Moonveil center-------------*/
+#custom-moonveil  {
+    margin-right: 6px;
+    background-image: url("../../../assets/moonveil.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    padding-right: 15px;
+}
+
 /*----------Hover Highlight--------------*/
 #clock:hover,
 #custom-pacman:hover,

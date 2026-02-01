@@ -73,13 +73,22 @@ tooltip label {
   background-color: @red;
   color: @bg0;
 }
+/*----------Moonveil center-------------*/
+#custom-moonveil  {
+    margin-right: 6px;
+    background-image: url("../../../assets/moonveil.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    padding-right: 15px;
+}
+
 
 /* Modules */
 #custom-media,
 #window,
 #custom-launcher,
 #network,
-#submap,
 #power-profiles-daemon,
 #custom-home-folder {
   background-color: @bg0;
@@ -88,6 +97,7 @@ tooltip label {
   border-radius: 0;
   border: none;
   box-shadow: none;
+ 
 }
 
 #submap {
@@ -111,3 +121,4 @@ tooltip label {
 #custom-weather {
   color: @fg;
 }
+

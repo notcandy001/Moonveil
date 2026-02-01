@@ -19,6 +19,7 @@
     "hyprland/workspaces",
     "pulseaudio",
     "network",
+    "custom/moonveil",
     "battery"
   ],
 
@@ -139,4 +140,10 @@
         "max-length": 25
     },
   
+/*-----------Moonveil Center---------*/    
+   "custom/moonveil": {
+  "format": " ",
+  "tooltip": "Moonveil Control Center",
+  "on-click": "bash ~/.config/control-center/launch"
+}
 }
