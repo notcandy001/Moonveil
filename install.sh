@@ -45,7 +45,8 @@ PACKAGES=(
   wl-clipboard
   libnotify
   swww
-  awww-git
+  hyprpicker
+  hyprshot
 
   # ---- Shell ----
   zsh
