@@ -1,5 +1,6 @@
 [config]
 
+
 # kitty
 [templates.kitty]
 input_path = '~/.config/matugen/templates/kitty-colors.conf'
@@ -98,5 +99,5 @@ blend = true
 #-------------full-bar-----------------
 [templates.fullbar]
 input_path = '~/.config/matugen/templates/matugen-waybar.css'
-output_path = '~/.local/bin/moonbar/styles/colors.css'
+output_path = '~/.config/moonshell/styles/colors.css'
 #---------------bar-end----------------
