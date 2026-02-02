@@ -13,6 +13,7 @@ MOONSHELL_REPO="https://github.com/notcandy001/moonshell.git"
 
 MOONVEIL_DIR="$HOME/moonveil"
 MOONSHELL_DIR="$HOME/.config/moonshell"
+DOTFILES_DIR="$MOONVEIL_DIR/dotfiles"
 
 # --------------------------------------------------
 # Packages
@@ -81,7 +82,7 @@ PACKAGES=(
   noto-fonts-emoji
   otf-geist-mono
   ttf-geist-mono-nerd
-  otf-codenewroman-nerd 
+  otf-codenewroman-nerd
 )
 
 # --------------------------------------------------
@@ -141,15 +142,14 @@ else
 fi
 
 # --------------------------------------------------
-# Symlink Moonveil .config/*
+# Symlink Moonveil dotfiles/.config/*
 # --------------------------------------------------
 
 echo ":: Linking Moonveil config directories"
-
 mkdir -p "$HOME/.config"
 
-if [ -d "$MOONVEIL_DIR/.config" ]; then
-  for dir in "$MOONVEIL_DIR/.config/"*; do
+if [ -d "$DOTFILES_DIR/.config" ]; then
+  for dir in "$DOTFILES_DIR/.config/"*; do
     [ -d "$dir" ] || continue
     name="$(basename "$dir")"
 
@@ -158,34 +158,42 @@ if [ -d "$MOONVEIL_DIR/.config" ]; then
       continue
     fi
 
+    echo "  -> $name"
     ln -sfn "$dir" "$HOME/.config/$name"
   done
+else
+  echo "!! dotfiles/.config not found"
 fi
 
 # --------------------------------------------------
-# Symlinks (Moonveil bin / share / shell)
+# Symlink Moonveil dotfiles/bin/*
 # --------------------------------------------------
 
-echo ":: Linking Moonveil files"
-
+echo ":: Linking Moonveil bin scripts"
 mkdir -p "$HOME/.local/bin"
-mkdir -p "$HOME/.local/share"
 
-# bin/*
-if [ -d "$MOONVEIL_DIR/bin" ]; then
-  for file in "$MOONVEIL_DIR/bin/"*; do
+if [ -d "$DOTFILES_DIR/bin" ]; then
+  for file in "$DOTFILES_DIR/bin/"*; do
     [ -f "$file" ] || continue
     chmod +x "$file"
     ln -sfn "$file" "$HOME/.local/bin/$(basename "$file")"
   done
 fi
 
-# share/nvim
-if [ -d "$MOONVEIL_DIR/share/nvim" ]; then
-  ln -sfn "$MOONVEIL_DIR/share/nvim" "$HOME/.local/share/nvim"
+# --------------------------------------------------
+# Symlink Neovim config
+# --------------------------------------------------
+
+mkdir -p "$HOME/.local/share"
+
+if [ -d "$DOTFILES_DIR/share/nvim" ]; then
+  ln -sfn "$DOTFILES_DIR/share/nvim" "$HOME/.local/share/nvim"
 fi
 
-# zsh + p10k
+# --------------------------------------------------
+# Zsh + Powerlevel10k
+# --------------------------------------------------
+
 if [ -f "$MOONVEIL_DIR/shell/zshrc" ]; then
   ln -sfn "$MOONVEIL_DIR/shell/zshrc" "$HOME/.zshrc"
 fi
@@ -211,8 +219,9 @@ sudo systemctl enable NetworkManager --now
 echo
 echo "✅ Moonveil installed in ~/moonveil"
 echo "✅ Moonshell installed in ~/.config/moonshell"
-echo "✅ Moonveil configs linked into ~/.config"
+echo "✅ dotfiles/.config linked to ~/.config"
+echo "✅ bin scripts linked to ~/.local/bin"
+echo "✅ Neovim config linked"
 echo "ℹ️ No bar was auto-started"
-echo "👉 Choose and launch your bar manually"
-echo "👉 For wallpaer use mood shift+w key "
-echo "👉 For waybar & moonbar use mood ctrl+w key" 
+echo "👉 Use Super+Ctrl+W to switch bars"
+echo "👉 Use Super+Shift+W for wallpapers"
