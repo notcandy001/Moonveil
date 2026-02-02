@@ -104,7 +104,7 @@ class MainWindow(Gtk.ApplicationWindow):
         title.add_css_class("title-1")
 
         desc = Gtk.Label(
-             label= "Moonveil began as a personal experiment and evolved into\na focused Hyprland setup designed for calm, clarity,\nand distraction-free workflows."
+            label= "Moonveil began as a personal experiment and evolved into\na focused Hyprland setup designed for calm, clarity,\nand distraction-free workflows."
         )
         desc.set_wrap(True)
 

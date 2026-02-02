@@ -6,7 +6,7 @@ import os
 
 
 KEYBINDS_FILE = os.path.expanduser(
-    "~/Moonveil/.config/keybinds.toml"
+    "~/.config/keybinds.toml"
 )
 
 

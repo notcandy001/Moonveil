@@ -6,4 +6,4 @@ if pgrep -f "Moonveil Control Center" >/dev/null; then
 fi
 
 # Launch
-exec python "$HOME/Moonveil/control-center/main.py"
+exec python "$HOME/.config/control-center/main.py"
