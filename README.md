@@ -232,7 +232,7 @@ Install the following packages for the setup to work as intended.
 - [x] Calendar
 - [x] Clipboard Manager
 - [x] Emoji Picker
-- [ ] Color Picker
+- [x] Color Picker
 - [ ] Customizable UI
 - [ ] More polish
 - [ ] Better scripts
@@ -246,5 +246,6 @@ Install the following packages for the setup to work as intended.
 
 - **[Wayland Contributors](https://wayland.freedesktop.org)** Appreciation to the Wayland developers and contributors for providing the foundation for modern Linux desktops.
 
+-  **[aadritobasu](https://github.com/aadritobasu)** Huge thanks to for Akaris Jsonc I’ve yanked parts of it.
 
 
