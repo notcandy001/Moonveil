@@ -4,7 +4,7 @@ AUTOSTART_FILE = os.path.expanduser(
     "~/.config/hypr/modules/autostart.conf"
 )
 
-ENTRY = "exec-once = moonveil-control-center --auto"
+ENTRY = "exec-once = ~/.local/bin/moonveil-control-center"
 
 def _read():
     if not os.path.exists(AUTOSTART_FILE):
