@@ -13,7 +13,6 @@ MOONSHELL_REPO="https://github.com/notcandy001/moonshell.git"
 
 MOONVEIL_DIR="$HOME/moonveil"
 MOONSHELL_DIR="$HOME/.config/moonshell"
-DOTFILES_DIR="$MOONVEIL_DIR/dotfiles"
 
 # --------------------------------------------------
 # Packages
@@ -21,14 +20,14 @@ DOTFILES_DIR="$MOONVEIL_DIR/dotfiles"
 
 PACKAGES=(
 
-  # ---- Core ----
+  # --- Core ---
   waybar
   rofi
   hyprlock
   wlogout
   swaync
 
-  # ---- System ----
+  # --- System ---
   gnome-bluetooth-3.0
   vte3
   imagemagick
@@ -38,7 +37,7 @@ PACKAGES=(
   network-manager-applet
   nm-connection-editor
 
-  # ---- Utilities ----
+  # --- Utilities ---
   grim
   slurp
   nautilus
@@ -49,13 +48,13 @@ PACKAGES=(
   hyprpicker
   hyprshot
 
-  # ---- Shell ----
+  # --- Shell ---
   zsh
   oh-my-zsh-git
   zsh-theme-powerlevel10k
   eza
 
-  # ---- Python / Fabric ----
+  # --- Python ---
   python
   python-gobject
   python-psutil
@@ -66,16 +65,18 @@ PACKAGES=(
   python-numpy
   python-requests
   python-setproctitle
+
+  # --- Fabric ---
   python-fabric-git
   fabric-cli
 
-  # ---- Theming ----
+  # --- Theming ---
   matugen-bin
   adw-gtk-theme
   lxappearance
   bibata-cursor-theme
 
-  # ---- Fonts ----
+  # --- Fonts ---
   ttf-jetbrains-mono-nerd
   noto-fonts
   noto-fonts-cjk
@@ -86,7 +87,7 @@ PACKAGES=(
 )
 
 # --------------------------------------------------
-# Safety check
+# Safety
 # --------------------------------------------------
 
 if [ "$(id -u)" -eq 0 ]; then
@@ -95,7 +96,7 @@ if [ "$(id -u)" -eq 0 ]; then
 fi
 
 # --------------------------------------------------
-# AUR helper detection
+# AUR helper
 # --------------------------------------------------
 
 aur_helper="yay"
@@ -111,10 +112,10 @@ elif ! command -v yay &>/dev/null; then
 fi
 
 # --------------------------------------------------
-# Install dependencies
+# Install packages
 # --------------------------------------------------
 
-echo ":: Installing dependencies"
+echo ":: Installing packages"
 $aur_helper -Syy --needed --noconfirm "${PACKAGES[@]}" || true
 
 # --------------------------------------------------
@@ -142,38 +143,37 @@ else
 fi
 
 # --------------------------------------------------
-# Symlink Moonveil dotfiles/.config/*
+# Symlink Moonveil .config/*
 # --------------------------------------------------
 
 echo ":: Linking Moonveil config directories"
+
+SRC_CONFIG="$MOONVEIL_DIR/dotfiles/.config"
 mkdir -p "$HOME/.config"
 
-if [ -d "$DOTFILES_DIR/.config" ]; then
-  for dir in "$DOTFILES_DIR/.config/"*; do
+if [ -d "$SRC_CONFIG" ]; then
+  for dir in "$SRC_CONFIG"/*; do
     [ -d "$dir" ] || continue
     name="$(basename "$dir")"
 
-    # do NOT touch moonshell
-    if [ "$name" = "moonshell" ]; then
-      continue
-    fi
+    # do not overwrite moonshell
+    [ "$name" = "moonshell" ] && continue
 
-    echo "  -> $name"
     ln -sfn "$dir" "$HOME/.config/$name"
   done
-else
-  echo "!! dotfiles/.config not found"
 fi
 
 # --------------------------------------------------
-# Symlink Moonveil dotfiles/bin/*
+# Symlink bin/*
 # --------------------------------------------------
 
 echo ":: Linking Moonveil bin scripts"
+
+SRC_BIN="$MOONVEIL_DIR/dotfiles/bin"
 mkdir -p "$HOME/.local/bin"
 
-if [ -d "$DOTFILES_DIR/bin" ]; then
-  for file in "$DOTFILES_DIR/bin/"*; do
+if [ -d "$SRC_BIN" ]; then
+  for file in "$SRC_BIN"/*; do
     [ -f "$file" ] || continue
     chmod +x "$file"
     ln -sfn "$file" "$HOME/.local/bin/$(basename "$file")"
@@ -181,17 +181,18 @@ if [ -d "$DOTFILES_DIR/bin" ]; then
 fi
 
 # --------------------------------------------------
-# Symlink Neovim config
+# Symlink Neovim
 # --------------------------------------------------
 
+SRC_NVIM="$MOONVEIL_DIR/dotfiles/share/nvim"
 mkdir -p "$HOME/.local/share"
 
-if [ -d "$DOTFILES_DIR/share/nvim" ]; then
-  ln -sfn "$DOTFILES_DIR/share/nvim" "$HOME/.local/share/nvim"
+if [ -d "$SRC_NVIM" ]; then
+  ln -sfn "$SRC_NVIM" "$HOME/.local/share/nvim"
 fi
 
 # --------------------------------------------------
-# Zsh + Powerlevel10k
+# Zsh / P10k
 # --------------------------------------------------
 
 if [ -f "$MOONVEIL_DIR/shell/zshrc" ]; then
@@ -203,7 +204,7 @@ if [ -f "$MOONVEIL_DIR/shell/p10k.zsh" ]; then
 fi
 
 # --------------------------------------------------
-# Network setup
+# Network
 # --------------------------------------------------
 
 if systemctl is-enabled --quiet iwd 2>/dev/null; then
@@ -217,11 +218,10 @@ sudo systemctl enable NetworkManager --now
 # --------------------------------------------------
 
 echo
-echo "✅ Moonveil installed in ~/moonveil"
-echo "✅ Moonshell installed in ~/.config/moonshell"
-echo "✅ dotfiles/.config linked to ~/.config"
-echo "✅ bin scripts linked to ~/.local/bin"
-echo "✅ Neovim config linked"
-echo "ℹ️ No bar was auto-started"
-echo "👉 Use Super+Ctrl+W to switch bars"
-echo "👉 Use Super+Shift+W for wallpapers"
+echo "✅ Moonveil installed at ~/moonveil"
+echo "✅ Moonshell installed at ~/.config/moonshell"
+echo "✅ Configs linked from dotfiles/.config"
+echo "✅ Scripts linked to ~/.local/bin (including moonveil-control-center)"
+echo "ℹ️ Nothing auto-started"
+echo "👉 Start bars manually using Mod ctrl + w  (Waybar / Moonshell)"
+echo "👉 For wallpapers use Mod Shift + w "
