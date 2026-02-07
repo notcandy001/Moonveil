@@ -1,11 +1,168 @@
-/***
- *    ┏┓┓ ┏┏┓┓┏┳┓┏┓
- *    ┗┓┃┃┃┣┫┗┫┃┃┃ 
- *    ┗┛┗┻┛┛┗┗┛┛┗┗┛
- *                 
- */
+@import url("../waybar/matugen/matugen-waybar.css");
 
+* {
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 14px;
+}
 
-@import 'matugen/matugen-swaync.css';
-@import 'themes/matugen-nc/notifications.css';
-@import 'themes/matugen-nc/control-center.css';
+.notification {
+  border-radius: 12px;
+  padding: 2px;
+  margin: 3px;
+  background-color: alpha(@on_secondary_fixed, 0.8);
+  border: 1px solid on_tertiary_container;
+}
+
+.notification-content {
+  padding: 2px;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 11px;
+  color: @on_primary_container;
+}
+
+.notification-body {
+  font-size: 10px;
+  color: alpha(@on_secondary_fixed, 0.85);
+  border-radius: 14px;
+}
+
+.notification-action {
+  border-radius: 8px;
+  padding: 2px 3px;
+  margin: 1px;
+  font-size: 10px;
+}
+
+.notification-icon {
+  margin-right: 8px;
+}
+
+.control-center {
+  border-radius: 14px;
+  padding: 10px;
+  background-color: alpha(@on_secondary_fixed, 0.7);
+  border: 1px solid alpha(@on_tertiary_container, 0.06);
+}
+
+.control-center-list {
+  margin-top: 6px;
+  border-radius: 14px;
+}
+
+.widget-title {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.widget-dnd {
+  border-radius: 10px;
+  padding: 6px;
+}
+
+button {
+  border-radius: 8px;
+  padding: 4px 6px;
+  font-size: 10px;
+}
+
+/* Volume slider */
+.widget-volume {
+  margin: 6px 2px 10px 2px;
+}
+
+.widget-volume scale {
+  min-height: 1px;
+}
+
+.widget-volume trough {
+  min-height: 4px;
+  border-radius: 999px;
+  background-color: alpha(on_primary_container, 0.48);
+}
+
+.widget-volume highlight {
+  min-height: 4px;
+  border-radius: 999px;
+  background-color: @on_primary_container;
+}
+
+.widget-volume slider {
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 999px;
+}
+
+.widget-buttons-grid button {
+  min-width: 44px;
+  min-height: 34px;
+  margin: 4px;
+  border-radius: 12px;
+
+  background-color: alpha(@on_primary_container, 0.07);
+  border: 1px solid alpha(@on_tertiary_container, 0.05);
+}
+
+.widget-buttons-grid button:hover {
+  background-color: alpha(@inverse_surface, 0.16);
+}
+
+.empty {
+  margin-top: 24px;
+  opacity: 0.55;
+}
+
+.empty label {
+  font-size: 10px;
+}
+
+.notification.low progressbar {
+  min-height: 4px;
+  border-radius: 10px;
+}
+
+.notification.low progressbar trough {
+  min-height: 4px;
+  padding: 0;
+}
+
+.notification.low progressbar progress {
+  min-height: 4px;
+}
+/* backlight */
+.widget-backlight {
+  margin: 6px 2px 10px 2px;
+}
+
+.widget-backlight scale {
+  min-height: 1px;
+}
+
+.widget-backlight trough {
+  min-height: 4px;
+  border-radius: 999px;
+  background-color: alpha(on_primary_container, 0.48);
+}
+
+.widget-backlight highlight {
+  min-height: 4px;
+  border-radius: 999px;
+  background-color: @on_primary_container;
+}
+
+.widget-backlight slider {
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 999px;
+}
+scrollbar,
+scrollbar slider {
+  all: unset;
+  opacity: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
