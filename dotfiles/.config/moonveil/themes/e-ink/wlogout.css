@@ -1,0 +1,21 @@
+/* E-Ink - Color Palette */
+
+@define-color bg0 #f4f1ea;
+@define-color bg1 #ebe7de;
+@define-color bg2 #e1ddd3;
+@define-color bg3 #d6d1c7;
+@define-color bg4 #c9c3b8;
+
+@define-color fg  #2b2b2b;
+
+@define-color red    #4a4a4a;
+@define-color orange #555555;
+@define-color yellow #666666;
+@define-color green  #5c5c5c;
+@define-color aqua   #707070;
+@define-color blue   #606060;
+@define-color purple #6b6b6b;
+
+@define-color grey0 #8a857d;
+@define-color grey1 #a39e95;
+@define-color grey2 #bdb8ae;

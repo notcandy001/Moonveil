@@ -1,0 +1,22 @@
+/* Nebula Mist - Rofi Color Palette */
+* {
+    bg0: #0f1117;
+    bg1: #1a1f2e;
+    bg2: #21283a;
+    bg3: #2a3145;
+    bg4: #343c52;
+
+    fg:  #e0e6f0;
+
+    red:    #f38ba8;
+    orange: #fab387;
+    yellow: #f9e2af;
+    green:  #a6e3a1;
+    aqua:   #94e2d5;
+    blue:   #89b4fa;
+    purple: #cba6f7;
+
+    grey0: #3b4252;
+    grey1: #6c7086;
+    grey2: #a6adc8;
+}

@@ -1,0 +1,23 @@
+/* Nebula Mist - waybar Color Palette */
+
+@define-color bg0 #0f1117;
+@define-color bg1 #1a1f2e;   /* infused with blue/purple */
+@define-color bg2 #21283a;   /* stronger blue tone */
+@define-color bg3 #2a3145;   /* mix of blue + purple */
+@define-color bg4 #343c52;   /* soft indigo glow */
+@define-color background #0e1416;
+@define-color on_surface #a6adc8;
+
+@define-color fg  #e0e6f0;
+
+@define-color red    #f38ba8;
+@define-color orange #fab387;
+@define-color yellow #f9e2af;
+@define-color green  #a6e3a1;
+@define-color aqua   #94e2d5;
+@define-color blue   #89b4fa;
+@define-color purple #cba6f7;
+
+@define-color grey0 #3b4252;
+@define-color grey1 #6c7086;
+@define-color grey2 #a6adc8;
