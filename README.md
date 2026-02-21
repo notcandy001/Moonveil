@@ -94,12 +94,6 @@ Screenshots
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-37-17.png">
-    </td>
-    <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-56-24.png">
-    </td>
-    <td>
       <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-46.png">
     </td>   
   </tr>
