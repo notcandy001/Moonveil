@@ -5,89 +5,26 @@ set -u
 set -o pipefail
 
 # --------------------------------------------------
-# Repositories
+# Start Banner
 # --------------------------------------------------
 
-MOONVEIL_REPO="https://github.com/notcandy001/moonveil.git"
-MOONSHELL_REPO="https://github.com/notcandy001/moonshell.git"
+clear
+cat << "EOF"
 
-MOONVEIL_DIR="$HOME/moonveil"
-MOONSHELL_DIR="$HOME/.config/moonshell"
+   __  ___                        _ __
+  /  |/  /___  ____  ____  _   __(_) /__
+ / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+/_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
 
-# --------------------------------------------------
-# Packages
-# --------------------------------------------------
+Moonveil Hyprland Starter
 
-PACKAGES=(
+EOF
 
-  # --- Core ---
-  waybar
-  rofi
-  hyprlock
-  wlogout
-  swaync
-
-  # --- System ---
-  gnome-bluetooth-3.0
-  vte3
-  imagemagick
-  power-profiles-daemon
-  upower
-  networkmanager
-  network-manager-applet
-  nm-connection-editor
-
-  # --- Utilities ---
-  grim
-  slurp
-  nautilus
-  pavucontrol
-  wl-clipboard
-  libnotify
-  swww
-  hyprpicker
-  hyprshot
-
-  # --- Shell ---
-  zsh
-  oh-my-zsh-git
-  zsh-theme-powerlevel10k
-  eza
-
-  # --- Python ---
-  python
-  python-gobject
-  python-psutil
-  python-watchdog
-  python-pillow
-  python-toml
-  python-ijson
-  python-numpy
-  python-requests
-  python-setproctitle
-
-  # --- Fabric ---
-  python-fabric-git
-  fabric-cli
-
-  # --- Theming ---
-  matugen-bin
-  adw-gtk-theme
-  lxappearance
-  bibata-cursor-theme
-
-  # --- Fonts ---
-  ttf-jetbrains-mono-nerd
-  noto-fonts
-  noto-fonts-cjk
-  noto-fonts-emoji
-  otf-geist-mono
-  ttf-geist-mono-nerd
-  otf-codenewroman-nerd
-)
+echo
 
 # --------------------------------------------------
-# Safety
+# Safety Check
 # --------------------------------------------------
 
 if [ "$(id -u)" -eq 0 ]; then
@@ -96,27 +33,80 @@ if [ "$(id -u)" -eq 0 ]; then
 fi
 
 # --------------------------------------------------
-# AUR helper
+# Ask User Which AUR Helper
 # --------------------------------------------------
 
-aur_helper="yay"
+echo "Select AUR helper:"
+echo "1) yay"
+echo "2) paru"
+echo
+read -rp "Enter choice [1-2]: " aur_choice
 
-if command -v paru &>/dev/null; then
-  aur_helper="paru"
-elif ! command -v yay &>/dev/null; then
-  echo ":: Installing yay-bin"
+case "$aur_choice" in
+  1)
+    aur_helper="yay"
+    aur_repo="https://aur.archlinux.org/yay-bin.git"
+    ;;
+  2)
+    aur_helper="paru"
+    aur_repo="https://aur.archlinux.org/paru-bin.git"
+    ;;
+  *)
+    echo "Invalid choice. Defaulting to yay."
+    aur_helper="yay"
+    aur_repo="https://aur.archlinux.org/yay-bin.git"
+    ;;
+esac
+
+# --------------------------------------------------
+# Install Selected AUR Helper If Missing
+# --------------------------------------------------
+
+if ! command -v "$aur_helper" &>/dev/null; then
+  echo ":: Installing $aur_helper"
   tmpdir=$(mktemp -d)
-  git clone https://aur.archlinux.org/yay-bin.git "$tmpdir/yay-bin"
-  (cd "$tmpdir/yay-bin" && makepkg -si --noconfirm)
+  git clone "$aur_repo" "$tmpdir/$aur_helper"
+  (cd "$tmpdir/$aur_helper" && makepkg -si --noconfirm)
   rm -rf "$tmpdir"
 fi
 
 # --------------------------------------------------
-# Install packages
+# Variables
 # --------------------------------------------------
 
+MOONVEIL_REPO="https://github.com/notcandy001/moonveil.git"
+MOONSHELL_REPO="https://github.com/notcandy001/moonshell.git"
+WALL_REPO="https://github.com/notcandy001/my-wal.git"
+
+MOONVEIL_DIR="$HOME/moonveil"
+MOONSHELL_DIR="$HOME/.config/moonshell"
+WALL_DIR="$HOME/wallpaper"
+
+# --------------------------------------------------
+# Packages
+# --------------------------------------------------
+
+PACKAGES=(
+  waybar rofi hyprlock wlogout swaync
+  gnome-bluetooth-3.0 vte3 imagemagick
+  power-profiles-daemon upower
+  networkmanager network-manager-applet nm-connection-editor
+  grim slurp nautilus pavucontrol wl-clipboard
+  libnotify swww hyprpicker hyprshot
+  zsh oh-my-zsh-git zsh-theme-powerlevel10k eza
+  python python-gobject python-psutil python-watchdog
+  python-pillow python-toml python-ijson python-numpy
+  python-requests python-setproctitle
+  python-fabric-git fabric-cli
+  matugen-bin adw-gtk-theme lxappearance bibata-cursor-theme
+  ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk
+  noto-fonts-emoji otf-geist-mono ttf-geist-mono-nerd
+  otf-codenewroman-nerd
+  stow
+)
+
 echo ":: Installing packages"
-$aur_helper -Syy --needed --noconfirm "${PACKAGES[@]}" || true
+"$aur_helper" -Syy --needed --noconfirm "${PACKAGES[@]}"
 
 # --------------------------------------------------
 # Clone / Update Moonveil
@@ -143,68 +133,55 @@ else
 fi
 
 # --------------------------------------------------
-# Symlink Moonveil .config/*
+# Clone / Update Wallpapers
 # --------------------------------------------------
 
-echo ":: Linking Moonveil config directories"
-
-SRC_CONFIG="$MOONVEIL_DIR/dotfiles/.config"
-mkdir -p "$HOME/.config"
-
-if [ -d "$SRC_CONFIG" ]; then
-  for dir in "$SRC_CONFIG"/*; do
-    [ -d "$dir" ] || continue
-    name="$(basename "$dir")"
-
-    # do not overwrite moonshell
-    [ "$name" = "moonshell" ] && continue
-
-    ln -sfn "$dir" "$HOME/.config/$name"
-  done
+if [ -d "$WALL_DIR/.git" ]; then
+  echo ":: Updating Wallpapers"
+  git -C "$WALL_DIR" pull
+else
+  echo ":: Cloning Wallpapers"
+  git clone --depth=1 "$WALL_REPO" "$WALL_DIR"
 fi
 
 # --------------------------------------------------
-# Symlink bin/*
+# Backup Existing Config
 # --------------------------------------------------
 
-echo ":: Linking Moonveil bin scripts"
+BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BACKUP_DIR"
 
-SRC_BIN="$MOONVEIL_DIR/dotfiles/bin"
-mkdir -p "$HOME/.local/bin"
+echo ":: Backing up existing configs"
 
-if [ -d "$SRC_BIN" ]; then
-  for file in "$SRC_BIN"/*; do
-    [ -f "$file" ] || continue
-    chmod +x "$file"
-    ln -sfn "$file" "$HOME/.local/bin/$(basename "$file")"
-  done
-fi
+for item in waybar hypr rofi; do
+  if [ -e "$HOME/.config/$item" ]; then
+    mv "$HOME/.config/$item" "$BACKUP_DIR/"
+  fi
+done
 
 # --------------------------------------------------
-# Symlink Neovim
+# Deploy Configs (GNU Stow)
 # --------------------------------------------------
 
-SRC_NVIM="$MOONVEIL_DIR/dotfiles/share/nvim"
-mkdir -p "$HOME/.local/share"
+echo ":: Deploying configs with GNU Stow"
 
-if [ -d "$SRC_NVIM" ]; then
-  ln -sfn "$SRC_NVIM" "$HOME/.local/share/nvim"
-fi
-
-# --------------------------------------------------
-# Zsh / P10k
-# --------------------------------------------------
-
-if [ -f "$MOONVEIL_DIR/shell/zshrc" ]; then
-  ln -sfn "$MOONVEIL_DIR/shell/zshrc" "$HOME/.zshrc"
-fi
-
-if [ -f "$MOONVEIL_DIR/shell/p10k.zsh" ]; then
-  ln -sfn "$MOONVEIL_DIR/shell/p10k.zsh" "$HOME/.p10k.zsh"
-fi
+cd "$MOONVEIL_DIR/dotfiles"
+stow --target="$HOME" config
+stow --target="$HOME" bin
 
 # --------------------------------------------------
-# Network
+# Shell Setup (Rename While Copying)
+# --------------------------------------------------
+
+echo ":: Setting up Zsh configuration"
+
+SHELL_DIR="$MOONVEIL_DIR/shell"
+
+[ -f "$SHELL_DIR/zshrc" ] && cp "$SHELL_DIR/zshrc" "$HOME/.zshrc"
+[ -f "$SHELL_DIR/p10k" ] && cp "$SHELL_DIR/p10k" "$HOME/.p10k.zsh"
+
+# --------------------------------------------------
+# Network Setup
 # --------------------------------------------------
 
 if systemctl is-enabled --quiet iwd 2>/dev/null; then
@@ -214,14 +191,48 @@ fi
 sudo systemctl enable NetworkManager --now
 
 # --------------------------------------------------
-# Done
+# Wallpaper Selection
 # --------------------------------------------------
 
-echo
-echo "✅ Moonveil installed at ~/moonveil"
-echo "✅ Moonshell installed at ~/.config/moonshell"
-echo "✅ Configs linked from dotfiles/.config"
-echo "✅ Scripts linked to ~/.local/bin (including moonveil-control-center)"
-echo "ℹ️ Nothing auto-started"
-echo "👉 Start bars manually using Mod ctrl + w  (Waybar / Moonshell)"
-echo "👉 For wallpapers use Mod Shift + w "
+echo ":: Launching wallpaper selector..."
+
+if command -v rofi-wall &>/dev/null; then
+  rofi-wall
+else
+  echo "⚠ rofi-wall not found."
+fi
+
+# 🔥 EDIT THIS PATH IF YOUR CACHE LOCATION IS DIFFERENT
+CURRENT_WALL="$HOME/.cache/current_wallpaper"
+TARGET_LINK="$HOME/current_wallpaper"
+
+if [ -f "$CURRENT_WALL" ]; then
+  ln -sfn "$CURRENT_WALL" "$TARGET_LINK"
+fi
+
+# --------------------------------------------------
+# Final Completion Screen
+# --------------------------------------------------
+
+sleep 1
+clear
+
+cat << "EOF"
+
+   __  ___                        _ __
+  /  |/  /___  ____  ____  _   __(_) /__
+ / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+/_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
+
+        Moonveil Installation Complete
+
+Moonveil directory : ~/moonveil
+Moonshell directory: ~/.config/moonshell
+Wallpapers         : ~/wallpaper
+Current wallpaper  : ~/current_wallpaper
+
+Start bars         : Mod + Ctrl + W
+Wallpaper menu     : Mod + Shift + W
+
+EOF
