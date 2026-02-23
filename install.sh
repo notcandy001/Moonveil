@@ -78,6 +78,12 @@ MOONVEIL_DIR="$HOME/moonveil"
 MOONSHELL_DIR="$HOME/.config/moonshell"
 WALL_DIR="$HOME/wallpaper"
 
+#-------Updating system---------
+
+echo ":: Updating system first"
+sudo pacman -Syu --noconfirm
+
+
 # --------------------------------------------------
 # Packages
 # --------------------------------------------------
