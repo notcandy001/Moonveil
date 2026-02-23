@@ -83,22 +83,72 @@ WALL_DIR="$HOME/wallpaper"
 # --------------------------------------------------
 
 PACKAGES=(
-  waybar rofi hyprlock wlogout swaync
-  gnome-bluetooth-3.0 vte3 imagemagick
-  power-profiles-daemon upower
-  networkmanager network-manager-applet nm-connection-editor
-  grim slurp nautilus pavucontrol wl-clipboard
-  libnotify swww hyprpicker hyprshot
-  zsh oh-my-zsh-git zsh-theme-powerlevel10k eza
-  python python-gobject python-psutil python-watchdog
-  python-pillow python-toml python-ijson python-numpy
-  python-requests python-setproctitle
-  python-fabric-git fabric-cli
-  matugen-bin adw-gtk-theme lxappearance bibata-cursor-theme
-  ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk
-  noto-fonts-emoji otf-geist-mono ttf-geist-mono-nerd
-  otf-codenewroman-nerd
+
+# --- Core ---
+  waybar
+  rofi
+  hyprlock
+  wlogout
+  swaync
   stow
+
+  # --- System ---
+  gnome-bluetooth-3.0
+  vte3
+  imagemagick
+  power-profiles-daemon
+  upower
+  networkmanager
+  network-manager-applet
+  nm-connection-editor
+
+  # --- Utilities ---
+  grim
+  slurp
+  nautilus
+  pavucontrol
+  wl-clipboard
+  libnotify
+  swww
+  hyprpicker
+  hyprshot
+
+  # --- Shell ---
+  zsh
+  oh-my-zsh-git
+  zsh-theme-powerlevel10k
+  eza
+
+  # --- Python ---
+  python
+  python-gobject
+  python-psutil
+  python-watchdog
+  python-pillow
+  python-toml
+  python-ijson
+  python-numpy
+  python-requests
+  python-setproctitle
+
+  # --- Fabric ---
+  python-fabric-git
+  fabric-cli
+
+  # --- Theming ---
+  matugen-bin
+  adw-gtk-theme
+  lxappearance
+  bibata-cursor-theme
+
+  # --- Fonts ---
+  ttf-jetbrains-mono-nerd
+  noto-fonts
+  noto-fonts-cjk
+  noto-fonts-emoji
+  otf-geist-mono
+  ttf-geist-mono-nerd
+  otf-codenewroman-nerd
 )
 
 echo ":: Installing packages"
