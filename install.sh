@@ -24,7 +24,7 @@ EOF
 echo
 
 # --------------------------------------------------
-# Safety Check
+# Safety
 # --------------------------------------------------
 
 if [ "$(id -u)" -eq 0 ]; then
@@ -33,7 +33,7 @@ if [ "$(id -u)" -eq 0 ]; then
 fi
 
 # --------------------------------------------------
-# Ask User Which AUR Helper
+# AUR Selection
 # --------------------------------------------------
 
 echo "Select AUR helper:"
@@ -57,10 +57,6 @@ case "$aur_choice" in
     aur_repo="https://aur.archlinux.org/yay-bin.git"
     ;;
 esac
-
-# --------------------------------------------------
-# Install Selected AUR Helper If Missing
-# --------------------------------------------------
 
 if ! command -v "$aur_helper" &>/dev/null; then
   echo ":: Installing $aur_helper"
@@ -109,79 +105,57 @@ echo ":: Installing packages"
 "$aur_helper" -Syy --needed --noconfirm "${PACKAGES[@]}"
 
 # --------------------------------------------------
-# Clone / Update Moonveil
+# Clone / Update Repos
 # --------------------------------------------------
 
-if [ -d "$MOONVEIL_DIR/.git" ]; then
-  echo ":: Updating Moonveil"
-  git -C "$MOONVEIL_DIR" pull
-else
-  echo ":: Cloning Moonveil"
+[ -d "$MOONVEIL_DIR/.git" ] && \
+  git -C "$MOONVEIL_DIR" pull || \
   git clone --depth=1 "$MOONVEIL_REPO" "$MOONVEIL_DIR"
-fi
 
-# --------------------------------------------------
-# Clone / Update Moonshell
-# --------------------------------------------------
-
-if [ -d "$MOONSHELL_DIR/.git" ]; then
-  echo ":: Updating Moonshell"
-  git -C "$MOONSHELL_DIR" pull
-else
-  echo ":: Cloning Moonshell"
+[ -d "$MOONSHELL_DIR/.git" ] && \
+  git -C "$MOONSHELL_DIR" pull || \
   git clone --depth=1 "$MOONSHELL_REPO" "$MOONSHELL_DIR"
-fi
 
-# --------------------------------------------------
-# Clone / Update Wallpapers
-# --------------------------------------------------
-
-if [ -d "$WALL_DIR/.git" ]; then
-  echo ":: Updating Wallpapers"
-  git -C "$WALL_DIR" pull
-else
-  echo ":: Cloning Wallpapers"
+[ -d "$WALL_DIR/.git" ] && \
+  git -C "$WALL_DIR" pull || \
   git clone --depth=1 "$WALL_REPO" "$WALL_DIR"
-fi
 
 # --------------------------------------------------
-# Backup Existing Config
+# Backup Existing Dotfiles
 # --------------------------------------------------
 
 BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
-echo ":: Backing up existing configs"
+echo ":: Backing up existing dotfiles"
 
-for item in waybar hypr rofi; do
-  if [ -e "$HOME/.config/$item" ]; then
-    mv "$HOME/.config/$item" "$BACKUP_DIR/"
-  fi
+for path in "$HOME/.config" "$HOME/.local"; do
+  [ -d "$path" ] && cp -r "$path" "$BACKUP_DIR/" || true
 done
 
 # --------------------------------------------------
-# Deploy Configs (GNU Stow)
+# Deploy Dotfiles Using Stow (Professional Way)
 # --------------------------------------------------
 
-echo ":: Deploying configs with GNU Stow"
+echo ":: Deploying dotfiles using GNU Stow"
 
 cd "$MOONVEIL_DIR/dotfiles"
-stow --target="$HOME" config
-stow --target="$HOME" bin
+stow --target="$HOME" .config
+stow --target="$HOME" .local
 
 # --------------------------------------------------
-# Shell Setup (Rename While Copying)
+# Shell Setup (Rename Properly)
 # --------------------------------------------------
 
 echo ":: Setting up Zsh configuration"
 
-SHELL_DIR="$MOONVEIL_DIR/shell"
+SHELL_DIR="$MOONVEIL_DIR/dotfiles/shell"
 
 [ -f "$SHELL_DIR/zshrc" ] && cp "$SHELL_DIR/zshrc" "$HOME/.zshrc"
 [ -f "$SHELL_DIR/p10k" ] && cp "$SHELL_DIR/p10k" "$HOME/.p10k.zsh"
 
 # --------------------------------------------------
-# Network Setup
+# Network
 # --------------------------------------------------
 
 if systemctl is-enabled --quiet iwd 2>/dev/null; then
@@ -198,20 +172,16 @@ echo ":: Launching wallpaper selector..."
 
 if command -v rofi-wall &>/dev/null; then
   rofi-wall
-else
-  echo "⚠ rofi-wall not found."
 fi
 
-# 🔥 EDIT THIS PATH IF YOUR CACHE LOCATION IS DIFFERENT
+# 🔥 EDIT THIS IF YOUR CACHE LOCATION IS DIFFERENT
 CURRENT_WALL="$HOME/.cache/current_wallpaper"
 TARGET_LINK="$HOME/current_wallpaper"
 
-if [ -f "$CURRENT_WALL" ]; then
-  ln -sfn "$CURRENT_WALL" "$TARGET_LINK"
-fi
+[ -f "$CURRENT_WALL" ] && ln -sfn "$CURRENT_WALL" "$TARGET_LINK"
 
 # --------------------------------------------------
-# Final Completion Screen
+# Final Screen
 # --------------------------------------------------
 
 sleep 1
@@ -230,6 +200,9 @@ cat << "EOF"
 Moonveil directory : ~/moonveil
 Moonshell directory: ~/.config/moonshell
 Wallpapers         : ~/wallpaper
+Neovim config      : ~/.local/share/nvim
+Binaries           : ~/.local/bin
+Zsh config         : ~/.zshrc
 Current wallpaper  : ~/current_wallpaper
 
 Start bars         : Mod + Ctrl + W
