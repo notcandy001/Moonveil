@@ -11,10 +11,10 @@ set -o pipefail
 clear
 cat << "EOF"
 
-   __  ___                        _ __
-  /  |/  /___  ____  ____  _   __(_) /__
- / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
-/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+    __  ___                        _ __
+   /  |/  /___  ____  ____  _   __(_) /__
+  / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+ / /  / / /_/ / /_/ / / / /| |/ / / /  __/
 /_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
 
 Moonveil Hyprland Starter
@@ -176,7 +176,7 @@ fi
 
 # 🔥 EDIT THIS IF YOUR CACHE LOCATION IS DIFFERENT
 CURRENT_WALL="$HOME/.cache/current_wallpaper"
-TARGET_LINK="$HOME/current_wallpaper"
+TARGET_LINK="$HOME/.current.wall"
 
 [ -f "$CURRENT_WALL" ] && ln -sfn "$CURRENT_WALL" "$TARGET_LINK"
 
@@ -189,10 +189,10 @@ clear
 
 cat << "EOF"
 
-   __  ___                        _ __
-  /  |/  /___  ____  ____  _   __(_) /__
- / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
-/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+    __  ___                        _ __
+   /  |/  /___  ____  ____  _   __(_) /__
+  / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+ / /  / / /_/ / /_/ / / / /| |/ / / /  __/
 /_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
 
         Moonveil Installation Complete
