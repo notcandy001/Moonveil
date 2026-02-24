@@ -235,4 +235,12 @@ Install the following packages for the setup to work as intended.
 
 -  **[aadritobasu](https://github.com/aadritobasu)** Huge thanks for Akaris Jsonc I’ve yanked parts of it.
 
+---
+
+## License
+
+Copyright (C) 2026 Rahul
+
+Moonveil is licensed under the GNU General Public License v3.0.
+See the LICENSE file for details.
 
