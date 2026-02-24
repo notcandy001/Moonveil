@@ -239,7 +239,7 @@ Install the following packages for the setup to work as intended.
 
 ## License
 
-Copyright (C) 2026 Rahul
+Copyright © 2026 Rahul
 
 Moonveil is licensed under the GNU General Public License v3.0.
 See the LICENSE file for details.
