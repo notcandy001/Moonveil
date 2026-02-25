@@ -114,11 +114,11 @@ Screenshots
 Installation
 </h2>
 
-### Arch Linux (AUR)
+ ### Arch Linux (AUR)
 
-```bash
+/ ```bash
 curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/master/arch-installer.sh | bash
-```
+/```  
 ## Required Packages
 
 <details>
