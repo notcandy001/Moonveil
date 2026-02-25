@@ -248,12 +248,31 @@ fi
 # Finish
 # --------------------------------------------------
 
-echo
-success "Moonveil Installed Successfully!"
-echo "AUR Helper : $AUR"
-echo "Backup     : $BACKUP_DIR"
-echo "Oh My Posh : ~/oh-my-posh"
-echo "Powerlevel10k installed"
-echo
-echo "Reboot system."
-echo
+# --------------------------------------------------
+# Final Completion Screen
+# --------------------------------------------------
+
+sleep 1
+clear
+
+cat << "EOF"
+
+   __  ___                        _ __
+  /  |/  /___  ____  ____  _   __(_) /__
+ / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+/_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
+
+         Moonveil Installation Complete
+
+Moonveil directory : ~/moonveil
+Moonshell directory: ~/.config/moonshell
+Wallpapers         : ~/wallpaper
+Configs deployed   : ~/.config
+Zsh config         : ~/.zshrc
+P10k config        : ~/.p10k.zsh
+
+Start bars         : Mod + Ctrl + W
+Wallpaper menu     : Mod + Shift + W
+
+EOF
