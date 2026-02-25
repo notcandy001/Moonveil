@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 # ==================================================
-# Moonveil Installer (Final Production Version)
+# Moonveil Installer 
 # Arch Linux Only
 # ==================================================
 
@@ -20,10 +20,10 @@ error() { echo -e "${RED}✘ $1${RESET}"; }
 clear
 echo -e "${PURPLE}${BOLD}"
 cat << "EOF"
-   __  ___                        _ __
-  /  |/  /___  ____  ____  _   __(_) /__
- / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
-/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+    __  ___                        _ __
+   /  |/  /___  ____  ____  _   __(_) /__
+  / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+ / /  / / /_/ / /_/ / / / /| |/ / / /  __/
 /_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
 
         Moonveil Installer
@@ -57,7 +57,7 @@ sudo pacman -Syu --noconfirm
 
 info "Installing core dependencies..."
 sudo pacman -S --needed --noconfirm \
-  base-devel git curl wget unzip go zsh \
+  base-devel git curl wget unzip zsh \
   networkmanager network-manager-applet nm-connection-editor \
   power-profiles-daemon upower \
   fastfetch
@@ -123,6 +123,7 @@ info "Installing Moonveil packages..."
 
 MOONVEIL_DIR="$HOME/moonveil"
 WALL_DIR="$HOME/wallpaper"
+MOONSHELL_DIR="$HOME/.config/moonshell"
 
 info "Cloning Moonveil..."
 [ -d "$MOONVEIL_DIR/.git" ] && git -C "$MOONVEIL_DIR" pull || \
@@ -132,8 +133,13 @@ info "Cloning Wallpapers..."
 [ -d "$WALL_DIR/.git" ] && git -C "$WALL_DIR" pull || \
 git clone --depth=1 https://github.com/notcandy001/my-wal.git "$WALL_DIR"
 
+info "Cloning Moonshell..."
+mkdir -p "$HOME/.config"
+[ -d "$MOONSHELL_DIR/.git" ] && git -C "$MOONSHELL_DIR" pull || \
+git clone --depth=1 https://github.com/notcandy001/moonshell.git "$MOONSHELL_DIR"
+
 # --------------------------------------------------
-# Backup Existing Config
+# Backup
 # --------------------------------------------------
 
 info "Creating backup..."
@@ -182,46 +188,27 @@ if [ -d "$SHELL_DIR" ]; then
 fi
 
 # --------------------------------------------------
-# Install Oh My Posh (Clone + Build in HOME)
-# --------------------------------------------------
-
-info "Installing Oh My Posh..."
-
-OMP_DIR="$HOME/oh-my-posh"
-
-if [ -d "$OMP_DIR/.git" ]; then
-    git -C "$OMP_DIR" pull
-else
-    git clone --depth=1 https://github.com/JanDeDobbeleer/oh-my-posh.git "$OMP_DIR"
-fi
-
-cd "$OMP_DIR"
-go build -o "$OMP_DIR/oh-my-posh"
-
-success "Oh My Posh ready in ~/oh-my-posh"
-
-# --------------------------------------------------
-# Install Oh My Zsh + Powerlevel10k
+# Install Oh My Zsh
 # --------------------------------------------------
 
 info "Installing Oh My Zsh..."
 
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    git clone https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
-fi
-
-info "Installing Powerlevel10k..."
-
-P10K_DIR="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
-
-if [ -d "$P10K_DIR/.git" ]; then
-    git -C "$P10K_DIR" pull
-else
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+    RUNZSH=no CHSH=no sh -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
 # --------------------------------------------------
-# Set ZSH as Default Shell
+# Install Powerlevel10k (Gitee)
+# --------------------------------------------------
+
+info "Installing Powerlevel10k..."
+
+git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git \
+"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" 2>/dev/null || true
+
+# --------------------------------------------------
+# Set ZSH Default Shell
 # --------------------------------------------------
 
 if [ "$SHELL" != "$(which zsh)" ]; then
@@ -229,7 +216,18 @@ if [ "$SHELL" != "$(which zsh)" ]; then
 fi
 
 # --------------------------------------------------
-# Run rofi-wall (If GUI Active)
+# Symlink Current Wallpaper
+# --------------------------------------------------
+
+info "Linking current wallpaper..."
+
+CURRENT_WALL="$HOME/.cache/current_wallpaper"
+TARGET_LINK="$HOME/current_wall"
+
+[ -f "$CURRENT_WALL" ] && ln -sf "$CURRENT_WALL" "$TARGET_LINK"
+
+# --------------------------------------------------
+# Run rofi-wall if GUI active
 # --------------------------------------------------
 
 info "Attempting to launch rofi-wall..."
@@ -240,13 +238,7 @@ if command -v rofi-wall &>/dev/null; then
     else
         info "No graphical session detected. Run 'rofi-wall' after login."
     fi
-else
-    info "rofi-wall not found."
 fi
-
-# --------------------------------------------------
-# Finish
-# --------------------------------------------------
 
 # --------------------------------------------------
 # Final Completion Screen
@@ -255,12 +247,12 @@ fi
 sleep 1
 clear
 
+echo -e "${PURPLE}${BOLD}"
 cat << "EOF"
-
-   __  ___                        _ __
-  /  |/  /___  ____  ____  _   __(_) /__
- / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
-/ /  / / /_/ / /_/ / / / /| |/ / / /  __/
+    __  ___                        _ __
+   /  |/  /___  ____  ____  _   __(_) /__
+  / /|_/ / __ \/ __ \/ __ \| | / / / / _ \
+ / /  / / /_/ / /_/ / / / /| |/ / / /  __/
 /_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
 
          Moonveil Installation Complete
@@ -276,3 +268,4 @@ Start bars         : Mod + Ctrl + W
 Wallpaper menu     : Mod + Shift + W
 
 EOF
+echo -e "${RESET}"
