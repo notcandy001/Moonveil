@@ -2,7 +2,7 @@
 
 set -e
 set -u
-set -euo pipefai
+set -euo pipefail
 
 # --------------------------------------------------
 # Colors
