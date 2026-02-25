@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-set -euo pipefail
-
-# --------------------------------------------------
-# Colors
-# --------------------------------------------------
+# ==================================================
+# Moonveil Installer (Final Production Version)
+# Arch Linux Only
+# ==================================================
 
 RESET="\e[0m"
 BOLD="\e[1m"
@@ -17,10 +17,6 @@ info() { echo -e "${CYAN}➜ $1${RESET}"; }
 success() { echo -e "${GREEN}✔ $1${RESET}"; }
 error() { echo -e "${RED}✘ $1${RESET}"; }
 
-# --------------------------------------------------
-# Banner
-# --------------------------------------------------
-
 clear
 echo -e "${PURPLE}${BOLD}"
 cat << "EOF"
@@ -30,7 +26,7 @@ cat << "EOF"
 / /  / / /_/ / /_/ / / / /| |/ / / /  __/
 /_/  /_/\____/\____/_/ /_/ |___/_/_/\___/
 
-        Moonveil Installer for Arch Linux
+        Moonveil Installer
 EOF
 echo -e "${RESET}"
 
@@ -39,17 +35,38 @@ echo -e "${RESET}"
 # --------------------------------------------------
 
 if [ "$(id -u)" -eq 0 ]; then
-    error "Do not run as root."
+    error "Do NOT run as root."
     exit 1
 fi
 
 if ! command -v pacman &>/dev/null; then
-    error "This installer is for Arch Linux only."
+    error "Arch Linux required."
     exit 1
 fi
 
 # --------------------------------------------------
-# Ask AUR Helper
+# Update System
+# --------------------------------------------------
+
+info "Updating system..."
+sudo pacman -Syu --noconfirm
+
+# --------------------------------------------------
+# Core Dependencies
+# --------------------------------------------------
+
+info "Installing core dependencies..."
+sudo pacman -S --needed --noconfirm \
+  base-devel git curl wget unzip go zsh \
+  networkmanager network-manager-applet nm-connection-editor \
+  power-profiles-daemon upower \
+  fastfetch
+
+sudo systemctl enable NetworkManager
+sudo systemctl enable power-profiles-daemon
+
+# --------------------------------------------------
+# Choose AUR Helper
 # --------------------------------------------------
 
 echo
@@ -60,10 +77,6 @@ echo
 read -rp "Enter choice [1-2]: " aur_choice
 
 case "$aur_choice" in
-  1)
-    AUR="yay"
-    AUR_REPO="https://aur.archlinux.org/yay-bin.git"
-    ;;
   2)
     AUR="paru"
     AUR_REPO="https://aur.archlinux.org/paru-bin.git"
@@ -74,17 +87,6 @@ case "$aur_choice" in
     ;;
 esac
 
-# --------------------------------------------------
-# Install base-devel (CRITICAL FIX)
-# --------------------------------------------------
-
-info "Installing base-devel..."
-sudo pacman -S --needed --noconfirm base-devel
-
-# --------------------------------------------------
-# Install AUR helper if missing
-# --------------------------------------------------
-
 if ! command -v "$AUR" &>/dev/null; then
     info "Installing $AUR..."
     tmpdir=$(mktemp -d)
@@ -94,39 +96,29 @@ if ! command -v "$AUR" &>/dev/null; then
 fi
 
 # --------------------------------------------------
-# Full System Upgrade (prevents dependency hell)
+# Install Moonveil Stack
 # --------------------------------------------------
 
-info "Updating system..."
-sudo pacman -Syu --noconfirm
+info "Installing Moonveil packages..."
+
+"$AUR" -S --needed --noconfirm \
+  hyprland xdg-desktop-portal-hyprland \
+  waybar rofi hyprlock wlogout swaync \
+  grim slurp wl-clipboard hyprpicker hyprshot swww \
+  nautilus pavucontrol libnotify gnome-bluetooth-3.0 vte3 \
+  imagemagick \
+  python python-gobject python-psutil python-watchdog \
+  python-pillow python-toml python-ijson python-numpy \
+  python-requests python-setproctitle \
+  python-fabric-git fabric-cli \
+  matugen-bin adw-gtk-theme lxappearance bibata-cursor-theme \
+  ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk \
+  noto-fonts-emoji otf-geist-mono \
+  ttf-geist-mono-nerd otf-codenewroman-nerd \
+  eza
 
 # --------------------------------------------------
-# Packages
-# --------------------------------------------------
-
-PACKAGES=(
-  waybar rofi hyprlock wlogout swaync
-  gnome-bluetooth-3.0 vte3 imagemagick
-  power-profiles-daemon upower
-  networkmanager network-manager-applet nm-connection-editor
-  grim slurp nautilus pavucontrol wl-clipboard
-  libnotify swww hyprpicker hyprshot
-  zsh oh-my-zsh-git zsh-theme-powerlevel10k eza
-  python python-gobject python-psutil python-watchdog
-  python-pillow python-toml python-ijson python-numpy
-  python-requests python-setproctitle
-  python-fabric-git fabric-cli
-  matugen-bin adw-gtk-theme lxappearance bibata-cursor-theme
-  ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk
-  noto-fonts-emoji otf-geist-mono ttf-geist-mono-nerd
-  otf-codenewroman-nerd stow
-)
-
-info "Installing packages..."
-"$AUR" -S --needed --noconfirm "${PACKAGES[@]}"
-
-# --------------------------------------------------
-# Clone Repos
+# Clone Repositories
 # --------------------------------------------------
 
 MOONVEIL_DIR="$HOME/moonveil"
@@ -141,74 +133,127 @@ info "Cloning Wallpapers..."
 git clone --depth=1 https://github.com/notcandy001/my-wal.git "$WALL_DIR"
 
 # --------------------------------------------------
-# Backup
+# Backup Existing Config
 # --------------------------------------------------
 
-read -rp "Create backup of existing configs? (y/n): " BACKUP
+info "Creating backup..."
+BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BACKUP_DIR"
 
-if [[ "$BACKUP" == "y" ]]; then
-    BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
-    mkdir -p "$BACKUP_DIR"
-    cp -r "$HOME/.config" "$BACKUP_DIR/" 2>/dev/null || true
-    cp -r "$HOME/.local" "$BACKUP_DIR/" 2>/dev/null || true
-    success "Backup saved to $BACKUP_DIR"
-fi
+cp -r "$HOME/.config" "$BACKUP_DIR/" 2>/dev/null || true
+cp -r "$HOME/.local" "$BACKUP_DIR/" 2>/dev/null || true
+cp -r "$HOME/.zshrc" "$BACKUP_DIR/" 2>/dev/null || true
+cp -r "$HOME/.p10k.zsh" "$BACKUP_DIR/" 2>/dev/null || true
+
+success "Backup saved to $BACKUP_DIR"
 
 # --------------------------------------------------
-# Safe Deploy Dotfiles
+# Replace Configs
 # --------------------------------------------------
 
-info "Deploying dotfiles..."
+info "Deploying configs..."
 
-cd "$MOONVEIL_DIR/dotfiles"
+mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.local"
 
-# Remove conflicting real directories before stow
-for item in .config/*; do
-    target="$HOME/$item"
-    if [ -e "$target" ] && [ ! -L "$target" ]; then
-        rm -rf "$target"
-    fi
+CONFIGS=(hypr waybar rofi swaync)
+
+for cfg in "${CONFIGS[@]}"; do
+    rm -rf "$HOME/.config/$cfg"
 done
 
-for item in .local/*; do
-    target="$HOME/$item"
-    if [ -e "$target" ] && [ ! -L "$target" ]; then
-        rm -rf "$target"
-    fi
-done
+cp -r "$MOONVEIL_DIR/dotfiles/.config/"* "$HOME/.config/"
+cp -r "$MOONVEIL_DIR/dotfiles/.local/"* "$HOME/.local/"
 
-stow --target="$HOME" .config
-stow --target="$HOME" .local
+success "Configs deployed."
 
 # --------------------------------------------------
-# Shell Setup
+# Install Shell Files (. prefix)
 # --------------------------------------------------
+
+info "Installing shell configuration..."
 
 SHELL_DIR="$MOONVEIL_DIR/dotfiles/shell"
-[ -f "$SHELL_DIR/zshrc" ] && cp "$SHELL_DIR/zshrc" "$HOME/.zshrc"
-[ -f "$SHELL_DIR/p10k" ] && cp "$SHELL_DIR/p10k" "$HOME/.p10k.zsh"
 
-# --------------------------------------------------
-# Wallpaper
-# --------------------------------------------------
-
-if command -v rofi-wall &>/dev/null; then
-    rofi-wall
+if [ -d "$SHELL_DIR" ]; then
+    [ -f "$SHELL_DIR/zshrc" ] && cp "$SHELL_DIR/zshrc" "$HOME/.zshrc"
+    [ -f "$SHELL_DIR/p10k.zsh" ] && cp "$SHELL_DIR/p10k.zsh" "$HOME/.p10k.zsh"
+    success "Shell configuration installed."
 fi
 
-CURRENT_WALL="$HOME/.cache/current_wallpaper"
-TARGET_LINK="$HOME/current_wallpaper"
-[ -f "$CURRENT_WALL" ] && ln -sfn "$CURRENT_WALL" "$TARGET_LINK"
+# --------------------------------------------------
+# Install Oh My Posh (Clone + Build in HOME)
+# --------------------------------------------------
+
+info "Installing Oh My Posh..."
+
+OMP_DIR="$HOME/oh-my-posh"
+
+if [ -d "$OMP_DIR/.git" ]; then
+    git -C "$OMP_DIR" pull
+else
+    git clone --depth=1 https://github.com/JanDeDobbeleer/oh-my-posh.git "$OMP_DIR"
+fi
+
+cd "$OMP_DIR"
+go build -o "$OMP_DIR/oh-my-posh"
+
+success "Oh My Posh ready in ~/oh-my-posh"
 
 # --------------------------------------------------
-# Done
+# Install Oh My Zsh + Powerlevel10k
+# --------------------------------------------------
+
+info "Installing Oh My Zsh..."
+
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    git clone https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
+fi
+
+info "Installing Powerlevel10k..."
+
+P10K_DIR="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
+
+if [ -d "$P10K_DIR/.git" ]; then
+    git -C "$P10K_DIR" pull
+else
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+fi
+
+# --------------------------------------------------
+# Set ZSH as Default Shell
+# --------------------------------------------------
+
+if [ "$SHELL" != "$(which zsh)" ]; then
+    chsh -s "$(which zsh)"
+fi
+
+# --------------------------------------------------
+# Run rofi-wall (If GUI Active)
+# --------------------------------------------------
+
+info "Attempting to launch rofi-wall..."
+
+if command -v rofi-wall &>/dev/null; then
+    if [ -n "${WAYLAND_DISPLAY:-}" ] || [ -n "${DISPLAY:-}" ]; then
+        rofi-wall || info "rofi-wall exited."
+    else
+        info "No graphical session detected. Run 'rofi-wall' after login."
+    fi
+else
+    info "rofi-wall not found."
+fi
+
+# --------------------------------------------------
+# Finish
 # --------------------------------------------------
 
 echo
-success "Moonveil Installation Complete!"
-echo "Moonveil directory : ~/moonveil"
-echo "Wallpapers         : ~/wallpaper"
-echo "Current wallpaper  : ~/current_wallpaper"
+success "Moonveil Installed Successfully!"
+echo "AUR Helper : $AUR"
+echo "Backup     : $BACKUP_DIR"
+echo "Oh My Posh : ~/oh-my-posh"
+echo "Powerlevel10k installed"
 echo
-echo "Start bars: Mod + Ctrl + W"
+echo "Reboot system."
 echo
