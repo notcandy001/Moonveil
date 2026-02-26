@@ -111,7 +111,7 @@ info "Installing Moonveil packages..."
   python-pillow python-toml python-ijson python-numpy \
   python-requests python-setproctitle \
   python-fabric-git fabric-cli \
-  matugen-bin adw-gtk-theme lxappearance bibata-cursor-theme \
+  matugen adw-gtk-theme lxappearance bibata-cursor-theme \
   ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk \
   noto-fonts-emoji otf-geist-mono \
   ttf-geist-mono-nerd otf-codenewroman-nerd \
