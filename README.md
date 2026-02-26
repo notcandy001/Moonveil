@@ -114,11 +114,19 @@ Screenshots
 Installation
 </h2>
 
- ### Arch Linux (AUR)
+ ### Arch (only)
 
 ```bash
 bash <(curl -sL https://moonveil-web.vercel.app/os/stable) #arch only
-```    
+```
+ ### Debian & ubuntu based (only)
+
+```bash
+bash <(curl -sL https://moonveil-web.vercel.app/os/stable) 
+```
+
+
+
 ## Required Packages
 
 <details>
