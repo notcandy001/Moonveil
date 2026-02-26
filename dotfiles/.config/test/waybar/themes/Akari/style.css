@@ -1,0 +1,124 @@
+/* --- Global Styles --- */
+@import "../../matugen/matugen-waybar.css";
+
+
+
+* {
+  border: none;
+  border-radius: 0px;
+  font-family: "Rubik", "JetBrainsMono Nerd Font Propo",
+               "Noto Sans CJK JP", "Noto Sans CJK KR";
+  font-size: 14px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Center container */
+.modules-center {
+  background: @bg0;
+  padding: 6px 12px;
+  border-radius: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Window title */
+window#waybar {
+  background: transparent;
+}
+
+/* Tooltip */
+tooltip {
+  background: @bg2;
+  border: 1px solid @bg3;
+  border-radius: 12px;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 6px;
+}
+
+/* Workspaces */
+#workspaces {
+  background: transparent;
+  padding: 0;
+  margin: 0 10px 0 10px;
+  border: none;
+  box-shadow: none;
+}
+
+#workspaces button {
+  padding: 0px 6px;
+  margin: 0px 2px;
+  border-radius: 16px;
+  color: @grey0;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+#workspaces button.active {
+  background: linear-gradient(135deg, @blue 0%, @purple 50%, @red 100%);
+  color: @bg0;
+  min-width: 40px;
+  transition: all 0.3s ease-in-out;
+}
+
+#workspaces button:hover {
+  background-color: @bg3;
+  color: @fg;
+}
+
+#workspaces button.urgent {
+  background-color: @red;
+  color: @bg0;
+}
+/*----------Moonveil center-------------*/
+#custom-moonveil  {
+    margin-right: 6px;
+    background-image: url("../../../assets/moonveil.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    padding-right: 15px;
+}
+
+
+/* Modules */
+#custom-media,
+#window,
+#custom-launcher,
+#network,
+#power-profiles-daemon,
+#custom-home-folder {
+  background-color: @bg0;
+  padding: 0 8px;
+  margin: 0 5px;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+ 
+}
+
+#submap {
+  color: @aqua;
+}
+
+#custom-launcher {
+  color: @fg;
+}
+
+#clock {
+  color: @fg;
+  margin: 0;
+}
+
+#custom-media {
+  color: @aqua;
+  margin: 0 0 0 10px;
+}
+
+#custom-weather {
+  color: @fg;
+}
+

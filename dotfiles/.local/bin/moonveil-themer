@@ -1,2 +1,0 @@
-#!/bin/bash
-exec python3 "$HOME/.config/moonveil/moonveil-patcher.py"

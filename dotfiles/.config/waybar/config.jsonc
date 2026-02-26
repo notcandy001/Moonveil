@@ -3,40 +3,35 @@
  *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┃┃┃┃┣ ┃┃┓
  *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┛┗┻ ┻┗┛
  */
-
 /*----------Global Properties-------------*/
 {
     "layer": "top",
     "position": "top",
     "height": 35,
-
     "margin-top": 8,
     "margin-right": 0,
     "margin-bottom": 0,
     "margin-left": 0,
-
-/*----------Modules Left------------------*/
+    /*----------Modules Left------------------*/
     "modules-left": [
         "clock",
         "hyprland/workspaces"
     ],
-
-/*----------Modules Right-----------------*/
+    /*----------Modules Right-----------------*/
     "modules-right": [
+        "custom/moonveil",
         "pulseaudio",
         "network",
         "battery",
         "custom/notification"
     ],
-
-/*---------------Clock-------------------*/
+    /*---------------Clock-------------------*/
     "clock": {
         "interval": 60,
         "format": "{:%H:%M}",
         "max-length": 25
     },
-
-/*----------Hyprland Workspace-----------*/
+    /*----------Hyprland Workspace-----------*/
     "hyprland/workspaces": {
         "format": "{name}",
         "format-icons": {
@@ -51,8 +46,7 @@
             "HDMI-A-1": 3
         }
     },
-
-/*---------------Pulseaudio--------------*/
+    /*---------------Pulseaudio--------------*/
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-bluetooth": "{volume}% {icon}",
@@ -76,8 +70,7 @@
             "Easy Effects Sink"
         ]
     },
-
-/*---------------Network-----------------*/
+    /*---------------Network-----------------*/
     "network": {
         "format": "{ifname}",
         "format-wifi": "Nonet ",
@@ -90,8 +83,7 @@
         "max-length": 50,
         "on-click": "kitty nmtui"
     },
-
-/*---------------Battery-----------------*/
+    /*---------------Battery-----------------*/
     "battery": {
         "interval": 15,
         "states": {
@@ -108,8 +100,7 @@
         ],
         "max-length": 25
     },
-
-/*-----------Notification Center---------*/
+    /*-----------Notification Center---------*/
     "custom/notification": {
         "tooltip": true,
         "format": "<span size='16pt'>{icon}</span>",
@@ -129,5 +120,11 @@
         "on-click": "swaync-client -t -sw",
         "on-click-right": "swaync-client -d -sw",
         "escape": true
-    }
+    }, 
+/*-----------Moonveil Center---------*/    
+   "custom/moonveil": {
+  "format": " ",
+  "tooltip": "Moonveil Control Center",
+  "on-click": "bash ~/.config/control-center/launch"
+}
 }

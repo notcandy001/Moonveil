@@ -15,7 +15,7 @@
 
   "modules-center": [
     "clock",
-    "mpris",
+    /*"mpris" , */
     "hyprland/workspaces",
     "pulseaudio",
     "network",

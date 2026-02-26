@@ -1,0 +1,72 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "top",
+
+  "control-center-margin-top": 8,
+  "control-center-margin-right": 8,
+  "control-center-margin-bottom": 8,
+  "control-center-margin-left": 8,
+  "control-center-width": 320,
+  "control-center-height": 650,
+
+  "notification-window-width": 340,
+  "notification-margin": 4,
+  "notification-icon-size": 42,
+
+  "timeout": 5,
+  "timeout-low": 3,
+  "timeout-critical": 0,
+
+  "fit-to-screen": false,
+  "hide-on-clear": true,
+  "hide-on-action": true,
+
+  "widgets": [
+    "title",
+    "volume",
+    "backlight",
+    "buttons-grid",
+    "dnd"
+     
+  ],
+
+  "widget-config": {
+    "title": {
+      "text": "Notification Center",
+      "clear-all-button": true,
+      "button-text": "󰆴 Clear All"
+    },
+
+    "volume": {
+      "label": "󰕾"
+    },
+     "backlight": {
+      "label": "󰃟 ",
+      "device": "intel_backlight"
+     },
+    "buttons-grid": {
+      "columns": 4,
+      "actions": [
+        {
+          "label": "",
+          "command": "hyprlock"
+        },
+        {
+          "label": "󰗽",
+          "command": "hyprctl dispatch exit"
+        },
+        {
+          "label": "󰐥",
+          "command": "systemctl poweroff"
+        },
+        {
+          "label": "󰜉",
+          "command": "systemctl reboot"
+        }
+      ]
+    }
+  }
+}

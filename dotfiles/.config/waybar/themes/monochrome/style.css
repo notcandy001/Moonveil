@@ -5,7 +5,7 @@
  */
 
 /*----------Color Definitions------------*/
-@import "../../colors/monochrome.css";
+@import "../../theme.css";
 
 /*----------Global Reset-----------------*/
 * {

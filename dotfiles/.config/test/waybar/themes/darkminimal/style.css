@@ -1,0 +1,190 @@
+/***
+ *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┳┓┏┓┳┓┓┏┓  ┏┓┏┓┏┓
+ *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃┃┣┫┣┫┃┫ ━━┃ ┗┓┗┓
+ *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┻┛┛┗┛┗┛┗┛  ┗┛┗┛┗┛
+ */
+
+/*----------Import Matugen Colors--------*/
+@import "../../matugen/matugen-waybar.css";
+
+/*----------Global Defaults--------------*/
+* {
+    font-family: GeistMono Nerd Font Propo;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+/*----------Waybar Window (Floating)-----*/
+window#waybar {
+    background-color: transparent;
+    color: @on_surface;
+
+    margin: 16px 18px;      /* Floating gap */
+    padding: 4px;          /* Inner gap */
+    border-radius: 14px;   /* Rounded bar */
+
+    border: 1px solid transparent;
+}
+
+window#waybar.hidden {
+    opacity: 0.1;
+}
+
+#window {
+    color: @on_surface;
+}
+
+/*----------Main Modules-----------------*/
+#clock,
+#cpu,
+#memory,
+#tray,
+#workspaces,
+#battery,
+#idle_inhibitor,
+#custom-power-menu,
+#custom-launcher,
+#custom-weather {
+    color: @on_surface;
+    background-color: @surface;
+
+    padding: 0px 7px;
+    margin: 2px 3px;
+
+    border-radius: 10px;
+}
+
+/*----------Special Colors---------------*/
+#custom-launcher {
+    color: @primary;
+    padding: 0 14px;
+}
+
+#cpu {
+    color: @tertiary;
+}
+
+#memory {
+    color: @secondary;
+}
+
+#battery {
+    color: @primary;
+}
+
+#battery.critical,
+#battery.warning,
+#battery.full,
+#battery.plugged {
+    color: @on_surface;
+}
+
+/*----------Workspaces-------------------*/
+#workspaces {
+    background-color: @surface;
+    padding: 0 4px;
+}
+
+#workspaces button {
+    color: @on_surface;
+    padding: 0 6px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+    color: @primary;
+    background-color: alpha(@primary, 0.15);
+}
+
+/*----------Tray-------------------------*/
+#tray {
+    background-color: @surface;
+    padding: 0 6px;
+    border-radius: 10px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: @error_container;
+}
+
+/*----------Right Module Group-----------*/
+#bluetooth,
+#custom-pacman,
+#custom-colorpicker,
+#backlight,
+#pulseaudio,
+#custom-notification,
+#network {
+    background-color: @surface;
+    padding: 0 7px;
+    margin: 2px 0;
+}
+
+/*----------Bluetooth--------------------*/
+#custom-notification {
+    color: @primary;
+    border-radius: 10px 0 0 10px;
+}
+
+/*----------Network----------------------*/
+#network {
+    color: @secondary;
+}
+
+#network.disconnected {
+    color: @error;
+}
+
+/*----------Pulseaudio-------------------*/
+#pulseaudio {
+    color: @tertiary;
+}
+
+#pulseaudio.muted {
+    color: @error;
+}
+
+/*----------Pacman / Colorpicker---------*/
+#custom-pacman,
+#custom-colorpicker {
+    color: @primary;
+}
+
+/*----------Backlight--------------------*/
+#backlight {
+    border-radius: 0 10px 10px 0;
+}
+
+/*----------SwayNC-----------------------*/
+#custom-swaync {
+    border-radius: 10px;
+    margin: 2px 3px;
+}
+
+/*----------Clock------------------------*/
+#clock {
+    font-weight: bold;
+}
+
+/*----------Tooltip----------------------*/
+tooltip {
+    border-radius: 10px;
+    background-color: @surface;
+    color: @on_surface;
+    border: 1px solid alpha(@outline, 0.4);
+}
+
+tooltip label {
+    padding: 4px;
+}
+
+/*----------Focus------------------------*/
+label:focus {
+    background-color: @background;
+}

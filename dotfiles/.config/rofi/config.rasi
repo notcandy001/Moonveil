@@ -8,4 +8,8 @@ configuration {
 
 //@theme "/home/user/.local/share/rofi/themes/rounded-template.rasi"
 
+//@theme "/home/user/.config/rofi/themes/rounded-template.rasi"
+
+//@theme "theme.rasi"
+
 @theme "/home/user/.config/rofi/themes/rounded-template.rasi"

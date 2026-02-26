@@ -5,7 +5,7 @@
  */
 
 /*----------Import Matugen Colors--------*/
-@import "../../matugen/matugen-waybar.css";
+@import "../../theme.css";
 
 /*----------Global Defaults--------------*/
 * {
@@ -109,7 +109,7 @@ tooltip-label {
 #workspaces button {
     all: unset;
     padding: 0px 5px;
-    color: alpha(@primary, .4);
+    color: alpha(@blue, .4);
     transition: all .2s ease;
 }
 
@@ -140,7 +140,7 @@ tooltip-label {
 }
 
 #workspaces button.empty.active {
-    color: @on_surface;
+    color: @secondary_container;
     border: none;
     text-shadow: 0px 0px 2px rgba(0, 0, 0, .5);
 }

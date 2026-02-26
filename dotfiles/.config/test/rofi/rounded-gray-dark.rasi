@@ -1,0 +1,18 @@
+@theme "~/.config/rofi/colors.rasi"
+* {
+    bg0:    @surface;   
+    bg1:    @surface-dim;
+    bg2:    #3D3D3D80;
+    bg3:    @primary-fixed-dim;
+    fg0:    @on-surface;
+    fg1:    #FFFFFF;
+    fg2:    @primary;
+    fg3:    #3D3D3D;
+    
+    accent: #3D3D3D80;
+    background-color: @bg0;
+    text-color:       @fg0;
+}
+
+
+

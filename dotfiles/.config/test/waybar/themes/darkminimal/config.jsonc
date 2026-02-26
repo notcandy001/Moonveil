@@ -1,0 +1,198 @@
+/***
+ *    ┓ ┏┏┓┓┏┳┓┏┓┳┓  ┏┓┏┓┳┓┏┓┳┏┓
+ *    ┃┃┃┣┫┗┫┣┫┣┫┣┫━━┃ ┃┃┃┃┣ ┃┃┓
+ *    ┗┻┛┛┗┗┛┻┛┛┗┛┗  ┗┛┗┛┛┗┻ ┻┗┛
+ */
+
+/*----------Global Properties-------------*/
+{
+    "layer": "top",
+    "position": "top",
+    "exclusive": true,
+    "height": 25,
+
+/*-------------Floating Margin------------*/
+    "margin-top": 3,
+
+/*----------Modules Left------------------*/
+    "modules-left": [
+        "custom/launcher",
+        "cpu",
+        "memory",
+        "custom/weather",
+        "battery",
+        "idle_inhibitor"
+    ],
+
+/*----------Modules Center----------------*/
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
+
+/*----------Modules Right-----------------*/
+    "modules-right": [
+        "custom/notification",
+        "network",
+        "custom/pacman",
+        "custom/colorpicker",
+        "pulseaudio",
+        "backlight",
+        "clock",
+        "custom/power-menu"
+    ],
+
+/*----------Hyprland Workspaces-----------*/
+    "hyprland/workspaces": {
+        "all-outputs": true,
+        "active-only": false,
+        "on-click": "activate",
+        "format": "{icon}",
+        "on-scroll-up": "hyprctl dispatch workspace e+1",
+        "on-scroll-down": "hyprctl dispatch workspace e-1",
+        "format-icons": {
+            "urgent": "",
+            "default": "",
+            "active": "󰮯"
+        },
+         "persistent-workspaces": {
+            "*": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        }
+    },
+
+/*---------------Tray--------------------*/
+    "tray": {
+        "spacing": 10
+    },
+
+/*---------------Clock-------------------*/
+    "clock": {
+        "format": "󰥔 {:%I:%M:%S %p} ",
+        "interval": 1,
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "format": {
+                "today": "<span color='#fAfBfC'><b>{}</b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "shift_down",
+            "on-click": "shift_up"
+        }
+    },
+
+/*---------------Bluetooth---------------*/
+    "bluetooth": {
+        "format": "",
+        "on-click": "blueman-manager"
+    },
+
+/*---------------CPU---------------------*/
+    "cpu": {
+        "interval": 10,
+        "format": "  {}%",
+        "max-length": 10
+    },
+
+/*---------------Memory------------------*/
+    "memory": {
+        "interval": 30,
+        "format": "  {}%",
+        "format-alt": " {used:0.1f}GB",
+        "max-length": 10
+    },
+
+/*---------------Backlight---------------*/
+    "backlight": {
+        "device": "eDP-1",
+        "format": "{icon}",
+        "tooltip-format": "{percent}",
+        "format-icons": [
+            "󱩎","󱩏","󱩐","󱩑","󱩒",
+            "󱩓","󱩔","󱩕","󱩖","󰛨"
+        ],
+        "on-scroll-up": "~/.config/hypr/scripts/backlight.sh --inc",
+        "on-scroll-down": "~/.config/hypr/scripts/backlight.sh --dec"
+    },
+
+/*---------------Network-----------------*/
+    "network": {
+        "format-wifi": "{icon}",
+        "format-ethernet": "󰈁 ",
+        "format-disconnected": "󰖪",
+        "tooltip-format": "{essid}",
+        "on-click": "kitty --title KittyNmtui sh -c 'sleep 0.1; nmtui'",
+        "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"]
+    },
+
+/*---------------Pulseaudio--------------*/
+    "pulseaudio": {
+        "format": "{icon}",
+        "format-muted": "󰝟",
+        "format-icons": {
+            "default": ["","","󰕾"]
+        },
+        "on-click": "pavucontrol",
+        "scroll-step": 5,
+        "on-scroll-up": "~/.config/hypr/scripts/volume.sh --inc",
+        "on-scroll-down": "~/.config/hypr/scripts/volume.sh --dec"
+    },
+
+/*---------------Battery-----------------*/
+    "battery": {
+        "interval": 60,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": "  {capacity}%",
+        "format-icons": ["","","","",""]
+    },
+
+/*---------------Weather-----------------*/
+    "custom/weather": {
+        "format": "{}",
+        "interval": 3600,
+        "return-type": "json",
+        "exec": "$HOME/.config/waybar/scripts/Weather.py",
+        "tooltip": true
+    },
+
+/*-----------Idle Inhibitor---------------*/
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "󰈈",
+            "deactivated": "󰈉"
+        }
+    },
+
+/*-----------Notification Center---------*/
+    "custom/notification": {
+        "tooltip": false,
+        "format": "",
+        "on-click": "swaync-client -t -sw",
+        "escape": true
+    },
+
+
+/*---------------Power Menu---------------*/
+    "custom/power-menu": {
+        "format": "",
+        "on-click": "~/.config/hypr/scripts/wlogout.sh"
+    },
+
+/*---------------Launcher----------------*/
+    "custom/launcher": {
+        "format": "󰣇",
+        "tooltip": false,
+        "on-click": "~/.config/rofi/scripts/sidelauncher"
+    }
+}
