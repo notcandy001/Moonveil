@@ -117,7 +117,7 @@ Installation
  ### Arch Linux (AUR)
 
 ```bash
-bash <(curl -s https://moonveil.vercel.app/os/stable) #arch only
+bash <(curl -s https://moonveil-web.vercel.app/os/stable) #arch only
 ```    
 ## Required Packages
 
