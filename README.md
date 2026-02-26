@@ -71,37 +71,31 @@ Screenshots
 <table align="center">
   <tr>
     <td colspan="3">
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/a1da69d9-c50b-4222-94f5-a333432aac2c.jpeg">
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/a1da69d9-c50b-4222-94f5-a333432aac2c.jpeg" style="border:0;">
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-32-56.png">
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-32-56.png" style="border:0;">
     </td>
     <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-54-15.png">
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-54-15.png" style="border:0;">
     </td>
-   <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-54-43.png">
+    <td>
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-54-43.png" style="border:0;">
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-46.png">
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-43.png" style="border:0;">
+    </td>
+    <td>
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-51.png" style="border:0;">
+    </td>
+    <td>
+      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-54.png" style="border:0;">
     </td>   
   </tr>
-  <tr>
-    <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-43.png">
-    </td>
-    <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-51.png">
-    </td>
-    <td>
-      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2026-01-29_18-58-54.png">
-    </td>   
-  </tr>
-  
 </table>
 
 ---
