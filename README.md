@@ -117,12 +117,12 @@ Installation
  ### Arch (only)
 
 ```bash
-bash <(curl -sL https://moonveil-web.vercel.app/os/stable) #arch only
+bash <(curl -sL https://moonveil-web.vercel.app/dots/stable/arch) #arch only
 ```
- ### Debian & ubuntu based (only)
+ ### Debian & ubuntu based OS (only)
 
 ```bash
-bash <(curl -sL https://moonveil-web.vercel.app/os/stable) 
+bash <(curl -sL https://moonveil-web.vercel.app/dots/stable/debian) 
 ```
 
 
