@@ -117,7 +117,7 @@ Installation
  ### Arch Linux (AUR)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/notcandy001/Moonveil/master/arch-installer.sh | bash
+bash <(curl -s https://moonveil.vercel.app/os/stable) #arch only
 ```    
 ## Required Packages
 
