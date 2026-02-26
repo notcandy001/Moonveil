@@ -114,7 +114,7 @@ info "Installing Moonveil packages..."
   matugen adw-gtk-theme lxappearance bibata-cursor-theme \
   ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk \
   noto-fonts-emoji otf-geist-mono \
-  ttf-geist-mono-nerd otf-codenewroman-nerd \
+  ttf-geist-mono-nerd otf-geist-mono-nerd otf-codenewroman-nerd \
   eza
 
 # --------------------------------------------------
