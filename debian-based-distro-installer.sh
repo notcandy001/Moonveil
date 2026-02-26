@@ -1,10 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-set -euo pipefail
-
-# --------------------------------------------------
-# Colors
-# --------------------------------------------------
+# ==================================================
+# Moonveil Installer (Ubuntu / Debian Edition)
+# ==================================================
 
 RESET="\e[0m"
 BOLD="\e[1m"
@@ -21,28 +20,26 @@ print_error() { echo -e "${RED}✘ $1${RESET}"; }
 print_info() { echo -e "${CYAN}➜ $1${RESET}"; }
 
 # --------------------------------------------------
-# Detect Distro (Early for Banner)
+# Detect Distro
 # --------------------------------------------------
 
-if grep -qi "ubuntu" /etc/os-release; then
-    DISTRO_NAME="Ubuntu"
-    DISTRO_ID="ubuntu"
-elif grep -qi "zorin" /etc/os-release; then
-    DISTRO_NAME="Zorin"
-    DISTRO_ID="zorin"
-elif grep -qi "linuxmint" /etc/os-release; then
-    DISTRO_NAME="Linux Mint"
-    DISTRO_ID="linuxmint"
-elif grep -qi "debian" /etc/os-release; then
-    DISTRO_NAME="Debian"
-    DISTRO_ID="debian"
-else
-    echo -e "${RED}Unsupported distribution.${RESET}"
-    exit 1
-fi
+source /etc/os-release
+
+case "$ID" in
+    ubuntu|zorin|linuxmint)
+        DISTRO_NAME="$NAME"
+        ;;
+    debian)
+        DISTRO_NAME="Debian"
+        ;;
+    *)
+        print_error "Unsupported distribution."
+        exit 1
+        ;;
+esac
 
 # --------------------------------------------------
-# Moonveil Banner
+# Banner
 # --------------------------------------------------
 
 show_banner() {
@@ -61,60 +58,22 @@ EOF
 }
 
 # --------------------------------------------------
-# Toggle UI
+# Prompts
 # --------------------------------------------------
 
-prompt_yes_no() {
-    local prompt="$1"
-    local selected=0
+show_banner
+read -rp "Proceed with installation? (y/n): " proceed
+[[ "$proceed" != "y" ]] && exit 0
 
-    while true; do
-        show_banner
-        echo
-        echo -e "${PURPLE}${BOLD}$prompt${RESET}"
-        echo
-        if [ $selected -eq 0 ]; then
-            echo -e "   ${PINK}[ Yes ]${RESET}    ${GRAY}No${RESET}"
-        else
-            echo -e "   ${GRAY}Yes${RESET}    ${PINK}[ No ]${RESET}"
-        fi
-        echo
-        echo -e "${GRAY}← → toggle • Enter submit${RESET}"
-
-        read -rsn1 key
-        if [[ $key == $'\x1b' ]]; then
-            read -rsn2 key
-            [[ $key == "[C" ]] && selected=1
-            [[ $key == "[D" ]] && selected=0
-        elif [[ $key == "" ]]; then
-            break
-        fi
-    done
-
-    return $selected
-}
-
-# --------------------------------------------------
-# Start Prompts
-# --------------------------------------------------
-
-prompt_yes_no "Do you want to proceed with the installation?"
-if [ $? -eq 1 ]; then
-    show_banner
-    print_error "Installation cancelled."
-    exit 0
-fi
-
-prompt_yes_no "Do you want to create a backup before installation?"
-BACKUP_CHOICE=$?
+read -rp "Create backup before install? (y/n): " backup_choice
 
 # --------------------------------------------------
 # Hyprland Install
 # --------------------------------------------------
 
 if ! command -v Hyprland &>/dev/null; then
-    if [[ "$DISTRO_ID" == "ubuntu" || "$DISTRO_ID" == "zorin" || "$DISTRO_ID" == "linuxmint" ]]; then
-        print_info "Installing Hyprland via official PPA..."
+    if [[ "$ID" != "debian" ]]; then
+        print_info "Installing Hyprland via PPA..."
         sudo apt update
         sudo apt install -y software-properties-common
         sudo add-apt-repository -y ppa:hyprland-dev/hyprland
@@ -131,10 +90,10 @@ fi
 # --------------------------------------------------
 
 print_info "Updating system..."
-sudo apt update
-sudo apt upgrade -y
+sudo apt update && sudo apt upgrade -y
 
 print_info "Installing required packages..."
+
 sudo apt install -y \
     waybar rofi network-manager network-manager-gnome \
     pavucontrol wl-clipboard grim slurp \
@@ -143,10 +102,10 @@ sudo apt install -y \
     python3-pil python3-requests \
     imagemagick lxappearance \
     fonts-noto fonts-noto-cjk fonts-noto-color-emoji \
-    curl git stow unzip
+    curl git unzip
 
 # --------------------------------------------------
-# Install Nerd Fonts
+# Nerd Fonts
 # --------------------------------------------------
 
 print_info "Installing Nerd Fonts..."
@@ -176,11 +135,12 @@ fc-cache -fv >/dev/null
 print_success "Fonts installed"
 
 # --------------------------------------------------
-# Clone Moonveil & Wallpapers
+# Clone Repositories
 # --------------------------------------------------
 
 MOONVEIL_DIR="$HOME/moonveil"
 WALL_DIR="$HOME/wallpaper"
+MOONSHELL_DIR="$HOME/.config/moonshell"
 
 print_info "Cloning Moonveil..."
 [ -d "$MOONVEIL_DIR/.git" ] && git -C "$MOONVEIL_DIR" pull || \
@@ -190,11 +150,16 @@ print_info "Cloning Wallpapers..."
 [ -d "$WALL_DIR/.git" ] && git -C "$WALL_DIR" pull || \
 git clone --depth=1 https://github.com/notcandy001/my-wal.git "$WALL_DIR"
 
+print_info "Cloning Moonshell..."
+mkdir -p "$HOME/.config"
+[ -d "$MOONSHELL_DIR/.git" ] && git -C "$MOONSHELL_DIR" pull || \
+git clone --depth=1 https://github.com/notcandy001/moonshell.git "$MOONSHELL_DIR"
+
 # --------------------------------------------------
-# Backup (Optional)
+# Backup
 # --------------------------------------------------
 
-if [ $BACKUP_CHOICE -eq 0 ]; then
+if [[ "$backup_choice" == "y" ]]; then
     BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
     mkdir -p "$BACKUP_DIR"
     cp -r "$HOME/.config" "$BACKUP_DIR/" 2>/dev/null || true
@@ -207,28 +172,63 @@ fi
 # --------------------------------------------------
 
 print_info "Deploying dotfiles..."
-cd "$MOONVEIL_DIR/dotfiles"
-stow --target="$HOME" .config
-stow --target="$HOME" .local
 
-# Shell
-SHELL_DIR="$MOONVEIL_DIR/dotfiles/shell"
-[ -f "$SHELL_DIR/zshrc" ] && cp "$SHELL_DIR/zshrc" "$HOME/.zshrc"
-[ -f "$SHELL_DIR/p10k" ] && cp "$SHELL_DIR/p10k" "$HOME/.p10k.zsh"
+mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.local"
+
+cp -r "$MOONVEIL_DIR/dotfiles/.config/"* "$HOME/.config/"
+cp -r "$MOONVEIL_DIR/dotfiles/.local/"* "$HOME/.local/"
 
 # --------------------------------------------------
-# Wallpaper
+# Oh My Zsh + Powerlevel10k
 # --------------------------------------------------
 
-if command -v rofi-wall &>/dev/null; then
-    rofi-wall
+print_info "Installing Oh My Zsh..."
+
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    RUNZSH=no CHSH=no sh -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
+print_info "Installing Powerlevel10k..."
+
+git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git \
+"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" 2>/dev/null || true
+
+SHELL_DIR="$MOONVEIL_DIR/dotfiles/shell"
+[ -f "$SHELL_DIR/zshrc" ] && cp "$SHELL_DIR/zshrc" "$HOME/.zshrc"
+[ -f "$SHELL_DIR/p10k.zsh" ] && cp "$SHELL_DIR/p10k.zsh" "$HOME/.p10k.zsh"
+
+if [ "$SHELL" != "$(which zsh)" ]; then
+    chsh -s "$(which zsh)"
+fi
+
+# --------------------------------------------------
+# Wallpaper Symlink
+# --------------------------------------------------
+
 CURRENT_WALL="$HOME/.cache/current_wallpaper"
-TARGET_LINK="$HOME/current_wallpaper"
+TARGET_LINK="$HOME/current_wall"
+
 [ -f "$CURRENT_WALL" ] && ln -sfn "$CURRENT_WALL" "$TARGET_LINK"
 
-# -------------------------------------------------
+# --------------------------------------------------
+# Auto Launch rofi-wall (if graphical session active)
+# --------------------------------------------------
+
+print_info "Attempting to launch rofi-wall..."
+
+if command -v rofi-wall &>/dev/null; then
+    if [ -n "${WAYLAND_DISPLAY:-}" ] || [ -n "${DISPLAY:-}" ]; then
+        rofi-wall || print_info "rofi-wall exited."
+    else
+        print_info "No graphical session detected. Run 'rofi-wall' after login."
+    fi
+else
+    print_info "rofi-wall not found. Skipping."
+fi
+
+# --------------------------------------------------
 # Final Screen
 # --------------------------------------------------
 
@@ -246,12 +246,12 @@ cat << "EOF"
         Moonveil Installation Complete
 
 Moonveil directory : ~/moonveil
+Moonshell directory: ~/.config/moonshell
 Wallpapers         : ~/wallpaper
-Neovim config      : ~/.local/share/nvim
 Fonts installed    : ~/.local/share/fonts
 Zsh config         : ~/.zshrc
-Current wallpaper  : ~/current_wallpaper
+Current wallpaper  : ~/current_wall
 
 Log out and select Hyprland from your display manager.
 
-EFO
+EOF
