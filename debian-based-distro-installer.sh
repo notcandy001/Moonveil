@@ -2,7 +2,8 @@
 set -Eeuo pipefail
 
 # ==================================================
-# Moonveil Installer (Ubuntu / Debian Edition)
+# Moonveil Installer (Ubuntu / Debian based )
+# Distro only
 # ==================================================
 
 RESET="\e[0m"
