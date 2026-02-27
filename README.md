@@ -82,17 +82,17 @@ Screenshots
 
   
 
-  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2.png" width="32%" />
-  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/3.png" width="32%" />
-  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/4.png" width="32%" />
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/2.png" width="35%" />
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/3.png" width="35%" />
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/4.png" width="35%" />
 
-  <br /><br />
+  
 
-  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/5.png" width="32%" />
-  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/6.png" width="32%" />
-  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/7.png" width="32%" />
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/5.png" width="35%" />
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/6.png" width="35%" />
+  <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/7.png" width="35%" />
    
-  <br /><br />
+  
 
   <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/8.png" width="32%" />
 
