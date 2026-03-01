@@ -5,36 +5,24 @@
 </p>
 
 <p align="center">
-  <sub><sup><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp" alt="Sparkles" width="25" height="25"/></sup></sub>
-  <a href="https://github.com/hyprwm/Hyprland">
-    <img src="https://img.shields.io/badge/A%20quiet%20rice%20for-Hyprland-0092CD?style=for-the-badge&logo=linux&color=0092CD&logoColor=D9E0EE&labelColor=000000"
-         alt="A quiet rice for Hyprland">
-  </a>
-  
-  <a href="https://github.com/InioX/matugen">
-    <img src="https://img.shields.io/badge/Powered%20by-Matugen-FAFAFA?style=for-the-badge&logo=python&color=FAFAFA&logoColor=D9E0EE&labelColor=000000" alt="Powered by Matugen"> 
-  </a>
-<a href="https://github.com/Fabric-Development/fabric/">
-    <img src="https://img.shields.io/badge/And%20-Fabric-FAFAFA?style=for-the-badge&logo=python&color=FAFAFA&logoColor=D9E0EE&labelColor=000000" alt="Powered by Fabric">    
-  <sub><sup><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp" alt="Sparkles" width="25" height="25"/></sup></sub>
-  </a>
-  </p>
+ <img src="https://img.shields.io/github/last-commit/notcandy001/moonveil?style=for-the-badge&color=8D748C&logoColor=D9E0EE&labelColor=252733" />
 
-  <p align="center">
-  <a href="https://github.com/notcandy001/moonveil/stargazers">
-    <img src="https://img.shields.io/github/stars/notcandy001/moonveil?style=for-the-badge&logo=github&color=E3B341&logoColor=D9E0EE&labelColor=000000" alt="GitHub stars">
-  </a>
-    <a href="https://github.com/notcandy001/moonveil">
-    <img src="https://img.shields.io/badge/Maintained-Yes-blue?style=for-the-badge&logo=linux&logoColor=D9E0EE&labelColor=292324&color=3362E1" 
-      alt="Maintained">
-    </a>
-  <a href="https://discord.gg/5EyaJDtE">
-    <img src="https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=D9E0EE&labelColor=000000"
-         alt="Discord">
-  </a>
+<img src="https://img.shields.io/github/stars/notcandy001/moonveil?style=for-the-badge&label=STARS&color=AB6C6A&logo=github&logoColor=D9E0EE&labelColor=252733" />
+
+<a href="https://github.com/notcandy001/moonveil">
+  <img src="https://img.shields.io/github/repo-size/notcandy001/moonveil?style=for-the-badge&label=SIZE&color=DDBB88&logo=codesandbox&logoColor=D9E0EE&labelColor=252733" />
+</a>
+
+<a href="https://github.com/notcandy001/moonveil/blob/main/LICENSE">
+  <img src="https://img.shields.io/github/license/notcandy001/moonveil?style=for-the-badge&color=A1C999&logo=opensourceinitiative&logoColor=D9E0EE&labelColor=252733" />
+</a>
+
+<a href="https://github.com/notcandy001/moonveil/issues">
+  <img src="https://img.shields.io/github/issues/notcandy001/moonveil?style=for-the-badge&color=5E81AC&logo=github&logoColor=D9E0EE&labelColor=252733" />
+</a>
+
 </p>
 
----
 
 <h3 align="center">
   🌙 A quiet, moonlit Hyprland environment
