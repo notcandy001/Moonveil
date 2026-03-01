@@ -2,11 +2,12 @@
   <a href="https://github.com/notcandy001/Moonveil">
      <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/cover.png" alt="Moonveil cover">
   </a>
-</p>
-
-<h3 align="center">
+  
+  <h3 align="center">
   🌙 A quiet, moonlit Hyprland environment
 </h3>
+
+</p>
 
 
 <p align="center">
