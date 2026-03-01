@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/notcandy001/Moonveil">
-     <img src="https://github.com/notcandy001/moonshell/blob/main/assets/cover.png" alt="Moonveil cover">
+     <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/cover.png" alt="Moonveil cover">
   </a>
 </p>
 
