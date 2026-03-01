@@ -13,6 +13,7 @@
 <a href="https://github.com/notcandy001/moonveil">
   <img src="https://img.shields.io/github/repo-size/notcandy001/moonveil?style=for-the-badge&label=SIZE&color=DDBB88&logo=codesandbox&logoColor=D9E0EE&labelColor=252733" />
 </a>
+<br>
 
 <a href="https://github.com/notcandy001/moonveil/blob/main/LICENSE">
   <img src="https://img.shields.io/github/license/notcandy001/moonveil?style=for-the-badge&color=A1C999&logo=opensourceinitiative&logoColor=D9E0EE&labelColor=252733" />
@@ -21,6 +22,7 @@
 <a href="https://github.com/notcandy001/moonveil/issues">
   <img src="https://img.shields.io/github/issues/notcandy001/moonveil?style=for-the-badge&color=5E81AC&logo=github&logoColor=D9E0EE&labelColor=252733" />
 </a>
+</br>
 
 </p>
 
