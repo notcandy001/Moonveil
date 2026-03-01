@@ -52,16 +52,6 @@
 ---
 
 <h2>
-<sub>
-<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png"
-     width="25" height="25"/>
-</sub>
-Screenshots
-</h2>
-
----
-
-<h2>
   <sub>
     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png" width="32" height="32" />
   </sub>
