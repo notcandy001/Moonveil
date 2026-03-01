@@ -22,7 +22,7 @@
 </a>
 
 </p>
----
+
 
 <h3 align="center">
   🌙 A quiet, moonlit Hyprland environment
