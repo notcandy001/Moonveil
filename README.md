@@ -4,6 +4,10 @@
   </a>
 </p>
 
+<h3 align="center">
+  🌙 A quiet, moonlit Hyprland environment
+</h3>
+
 
 <p align="center">
  <img src="https://img.shields.io/github/last-commit/notcandy001/moonveil?&style=for-the-badge&color=8D748C&logoColor=D9E0EE&labelColor=252733" />
@@ -25,11 +29,6 @@
 </br>
 
 </p>
-
-
-<h3 align="center">
-  🌙 A quiet, moonlit Hyprland environment
-</h3>
 
 <h4 align="center">
   <a href="https://github.com/notcandy001/my-wal">Wallpaper collection</a>
