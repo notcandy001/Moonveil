@@ -133,10 +133,7 @@ info "Cloning Wallpapers..."
 [ -d "$WALL_DIR/.git" ] && git -C "$WALL_DIR" pull || \
 git clone --depth=1 https://github.com/notcandy001/my-wal.git "$WALL_DIR"
 
-info "Cloning Moonshell..."
-mkdir -p "$HOME/.config"
-[ -d "$MOONSHELL_DIR/.git" ] && git -C "$MOONSHELL_DIR" pull || \
-git clone --depth=1 https://github.com/notcandy001/moonshell.git "$MOONSHELL_DIR"
+
 
 # --------------------------------------------------
 # Backup
