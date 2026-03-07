@@ -141,7 +141,7 @@ print_success "Fonts installed"
 
 MOONVEIL_DIR="$HOME/moonveil"
 WALL_DIR="$HOME/wallpaper"
-MOONSHELL_DIR="$HOME/.config/moonshell"
+
 
 print_info "Cloning Moonveil..."
 [ -d "$MOONVEIL_DIR/.git" ] && git -C "$MOONVEIL_DIR" pull || \
@@ -151,10 +151,7 @@ print_info "Cloning Wallpapers..."
 [ -d "$WALL_DIR/.git" ] && git -C "$WALL_DIR" pull || \
 git clone --depth=1 https://github.com/notcandy001/my-wal.git "$WALL_DIR"
 
-print_info "Cloning Moonshell..."
-mkdir -p "$HOME/.config"
-[ -d "$MOONSHELL_DIR/.git" ] && git -C "$MOONSHELL_DIR" pull || \
-git clone --depth=1 https://github.com/notcandy001/moonshell.git "$MOONSHELL_DIR"
+
 
 # --------------------------------------------------
 # Backup
