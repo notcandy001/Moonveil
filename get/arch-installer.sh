@@ -1,169 +1,296 @@
-#!/usr/bin/env bash
+!/usr/bin/env bash
+# ==============================================================================
+#
+#  ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗███████╗██╗██╗
+#  ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
+#  ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
+#  ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
+#  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
+#  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
+#
+#  Moonveil — Entry Point & Distro Router
+#  https://github.com/notcandy001/moonveil
+#
+#  This script detects your Linux distribution and hands off to the
+#  correct installer. Do not run the sub-installers directly.
+#
+#  One-liner install:
+#    bash <(curl -fsSL https://raw.githubusercontent.com/notcandy001/moonveil/main/install.sh)
+#
+# ==============================================================================
+
 set -Eeuo pipefail
 
-#---------------- Colors ----------------#
+# ── Version ───────────────────────────────────────────────────────────────────
+readonly MV_VERSION="1.0.0"
+readonly MV_REPO="https://github.com/notcandy001/moonveil"
+readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/moonveil/main"
 
-RESET="\e[0m"
-BOLD="\e[1m"
-PURPLE="\e[38;5;141m"
-CYAN="\e[38;5;51m"
-GREEN="\e[38;5;82m"
-RED="\e[38;5;196m"
-YELLOW="\e[38;5;226m"
-DIM="\e[2m"
+# ── Runtime dir (where sub-scripts live) ──────────────────────────────────────
+# When run via curl|bash, we download the sub-scripts on the fly.
+# When run from a local clone, we resolve relative to this file.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-info()    { echo -e "  ${CYAN}${BOLD}➜${RESET}  $1"; }
-success() { echo -e "  ${GREEN}${BOLD}✔${RESET}  $1"; }
-error()   { echo -e "  ${RED}${BOLD}✘${RESET}  $1"; }
-warn()    { echo -e "  ${YELLOW}${BOLD}!${RESET}  $1"; }
+# ── Log ───────────────────────────────────────────────────────────────────────
+readonly LOG_FILE="/tmp/moonveil-$(date +%Y%m%d-%H%M%S).log"
+exec > >(tee -a "$LOG_FILE") 2>&1
 
-H=20
-W=70
-TMP_LOG="/tmp/moonveil-install.log"
-: > "$TMP_LOG"
+# ── Colors ────────────────────────────────────────────────────────────────────
+R="\e[0m"; B="\e[1m"; D="\e[2m"
+PURPLE="\e[38;5;141m"; LPURPLE="\e[38;5;183m"
+CYAN="\e[38;5;51m";    GREEN="\e[38;5;82m"
+RED="\e[38;5;196m";    YELLOW="\e[38;5;226m"
+WHITE="\e[38;5;255m";  GRAY="\e[38;5;240m"
+BLUE="\e[38;5;75m"
 
-#---------------- Banner ----------------#
-
-clear
-echo -e "${PURPLE}${BOLD}"
-cat << "EOF"
-
-███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗███████╗██╗██╗
-████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
-██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
-██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
-██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
-╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
-
-      A quiet, moonlit Hyprland environment.
-
-EOF
-echo -e "${RESET}"
-echo -e "${DIM}  https://github.com/notcandy001/moonveil${RESET}\n"
-sleep 1
-
-#---------------- Safety ----------------#
-
-if [ "$(id -u)" -eq 0 ]; then
-  whiptail --msgbox "Do NOT run as root." $H $W
-  exit 1
-fi
-
-if ! command -v pacman &>/dev/null; then
-  whiptail --msgbox "Arch Linux required." $H $W
-  exit 1
-fi
-
-if ! command -v whiptail &>/dev/null; then
-  sudo pacman -S --needed --noconfirm libnewt
-fi
-
-sudo -v || {
-  whiptail --msgbox "Sudo failed." $H $W
+# ── Helpers ───────────────────────────────────────────────────────────────────
+tag()     { echo -e "  ${GRAY}[${1}]${R}  ${2}"; }
+info()    { tag "${CYAN}${B} INFO ${R}" "$*"; }
+success() { tag "${GREEN}${B}  OK  ${R}" "${GREEN}$*${R}"; }
+warn()    { tag "${YELLOW}${B} WARN ${R}" "${YELLOW}$*${R}"; }
+error()   {
+  echo ""
+  tag "${RED}${B}ERROR${R}" "${RED}${B}$*${R}"
+  echo -e "  ${GRAY}  └─ Log: ${LOG_FILE}${R}"
+  echo ""
   exit 1
 }
+divider() { echo -e "  ${GRAY}──────────────────────────────────────────────────────────${R}"; }
 
-#---------------- Welcome ----------------#
+# ── Cleanup on interrupt ──────────────────────────────────────────────────────
+_cleanup() {
+  echo ""
+  echo -e "  ${YELLOW}${B}  Interrupted.${R}  ${GRAY}Log: ${LOG_FILE}${R}"
+  echo ""
+  exit 130
+}
+trap _cleanup INT TERM
 
-whiptail --yesno "Install Moonveil?" $H $W || exit 0
+# ══════════════════════════════════════════════════════════════════════════════
+#  BANNER
+# ══════════════════════════════════════════════════════════════════════════════
 
-#---------------- AUR ----------------#
-
-AUR="yay"
-AUR_REPO="https://aur.archlinux.org/yay-bin.git"
-
-#---------------- Update ----------------#
-
-sudo pacman -Syu --noconfirm
-
-#---------------- Core ----------------#
-
-sudo pacman -S --needed --noconfirm \
-base-devel git curl wget unzip zsh \
-networkmanager network-manager-applet nm-connection-editor \
-power-profiles-daemon upower fastfetch
-
-sudo systemctl enable -now NetworkManager 2>/dev/null || true
-
-#---------------- AUR Install ----------------#
-
-if ! command -v yay &>/dev/null; then
-  tmp=$(mktemp -d)
-  git clone "$AUR_REPO" "$tmp/yay"
-  cd "$tmp/yay"
-  makepkg -si --noconfirm
-  cd -
-  rm -rf "$tmp"
-fi
-
-#---------------- PACKAGE INSTALL (FIXED) ----------------#
-
-(
-yay -S --needed --noconfirm \
-hyprland xdg-desktop-portal-hyprland \
-quickshell-git \
-grim slurp wl-clipboard hyprpicker \
-nautilus pavucontrol \
-libnotify gnome-bluetooth-3.0 vte3 \
-imagemagick cava kitty \
-matugen adw-gtk-theme lxappearance bibata-cursor-theme \
-ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk \
-noto-fonts-emoji otf-geist-mono \
-ttf-geist-mono-nerd otf-geist-mono-nerd otf-codenewroman-nerd \
-ttf-libre-barcode eza
-) 2>&1 | tee "$TMP_LOG" | \
-whiptail --title "Installing Packages" --textbox /dev/stdin 20 $W
-
-success "Packages installed"
-
-#---------------- Clone ----------------#
-
-git clone https://github.com/notcandy001/moonveil.git "$HOME/moonveil" || true
-
-#---------------- Dotfiles ----------------#
-
-cp -r "$HOME/moonveil/dots/.config/"* "$HOME/.config/" 2>/dev/null || true
-cp -r "$HOME/moonveil/dots/.local/"* "$HOME/.local/" 2>/dev/null || 
-
-#---------------- DONE ----------------#
-
-whiptail --title "🌙 Installation Complete!" --msgbox \
-"Moonveil has been installed successfully!
-
-📁 Locations:
-Moonveil     →  ~/moonveil
-Dotfiles     →  ~/.config & ~/.local
-Backup       →  ~/.moonveil-backup-*
-Wallpapers   →  ~/wallpaper
-
-🖥 Environment:
-Shell        →  CrescentShell (QuickShell)
-
-⌨ Keybinds:
-Super + A    →  Control Center
-Super + N    →  Notifications
-Super + R    →  App Launcher
-Super + Tab  →  Overview
-Super + L    →  Lock Screen
-Super + I    →  Settings
-
-⚠ Important:
-Log out and log back in to apply all changes." 20 70
-
-clear
-echo -e "${PURPLE}${BOLD}"
-cat << "EOF"
-
-███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗███████╗██╗██╗
-████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
-██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
-██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
-██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
-╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
-
-        Installation Complete! 🌙
-
-        Welcome to Moonveil
-
+_banner() {
+  clear
+  echo ""
+  echo -e "${PURPLE}${B}"
+  cat << "EOF"
+  ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗███████╗██╗██╗
+  ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
+  ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
+  ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
+  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
+  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
 EOF
-echo -e "${RESET}"
+  echo -e "${R}"
+  echo -e "  ${LPURPLE}  A quiet, moonlit Hyprland environment${R}"
+  echo -e "  ${GRAY}  ${BLUE}${MV_REPO}${R}  ${GRAY}·  v${MV_VERSION}${R}"
+  echo ""
+  divider
+  echo ""
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  SYSTEM CHECKS
+# ══════════════════════════════════════════════════════════════════════════════
+
+_check_root() {
+  if [[ "$(id -u)" -eq 0 ]]; then
+    error "Do not run as root. Use your normal user account."
+  fi
+  success "Running as user: $(whoami)"
+}
+
+_check_internet() {
+  info "Checking internet connection..."
+  if ! ping -c1 -W3 github.com &>/dev/null; then
+    error "No internet connection. Please connect and retry."
+  fi
+  success "Internet OK"
+}
+
+_check_wayland() {
+  # Moonveil is Wayland/Hyprland only — warn on Xorg-only machines
+  if [[ -z "${WAYLAND_DISPLAY:-}" && -z "${XDG_SESSION_TYPE:-}" ]]; then
+    warn "Could not detect Wayland session. Moonveil requires Wayland/Hyprland."
+    warn "If you are in a TTY this is expected — continuing."
+  else
+    success "Session type: ${XDG_SESSION_TYPE:-wayland}"
+  fi
+}
+
+_check_disk() {
+  local free_kb free_gb
+  free_kb=$(df --output=avail "$HOME" | tail -1)
+  free_gb=$(( free_kb / 1024 / 1024 ))
+  if [[ "$free_gb" -lt 5 ]]; then
+    warn "Low disk space: ~${free_gb} GB free — 5 GB+ recommended"
+  else
+    success "Disk space: ~${free_gb} GB free"
+  fi
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  DISTRO DETECTION
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Returns a normalised distro ID: arch | debian | fedora | unsupported
+_detect_distro() {
+  local id=""
+  local id_like=""
+
+  if [[ -f /etc/os-release ]]; then
+    # shellcheck source=/dev/null
+    source /etc/os-release
+    id="${ID:-}"
+    id_like="${ID_LIKE:-}"
+  elif command -v lsb_release &>/dev/null; then
+    id=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
+  fi
+
+  # Normalise
+  case "$id" in
+    arch|artix|cachyos|endeavouros|garuda|manjaro)
+      echo "arch" ;;
+    debian|ubuntu|linuxmint|pop|elementary|zorin|kali|parrot|raspbian)
+      echo "debian" ;;
+    fedora|rhel|centos|almalinux|rocky|nobara)
+      echo "fedora" ;;
+    *)
+      # Fallback via ID_LIKE
+      case "$id_like" in
+        *arch*)   echo "arch"   ;;
+        *debian*|*ubuntu*) echo "debian" ;;
+        *fedora*|*rhel*)   echo "fedora" ;;
+        *)        echo "unsupported" ;;
+      esac
+      ;;
+  esac
+}
+
+_print_distro_info() {
+  local family="$1"
+  local distro_name="${PRETTY_NAME:-${NAME:-Unknown}}"
+
+  echo -e "  ${WHITE}${B}System Information${R}"
+  echo ""
+  echo -e "  ${GRAY}  Distro     ${R}  ${WHITE}${distro_name}${R}"
+  echo -e "  ${GRAY}  Family     ${R}  ${WHITE}${family}${R}"
+  echo -e "  ${GRAY}  Kernel     ${R}  ${WHITE}$(uname -r)${R}"
+  echo -e "  ${GRAY}  Arch       ${R}  ${WHITE}$(uname -m)${R}"
+  echo -e "  ${GRAY}  User       ${R}  ${WHITE}$(whoami)${R}"
+  echo -e "  ${GRAY}  Log        ${R}  ${WHITE}${LOG_FILE}${R}"
+  echo ""
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  SUB-SCRIPT LOADER
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Try local first, else download from GitHub
+_load_script() {
+  local rel_path="$1"   # e.g. "installers/arch.sh"
+  local local_path="${SCRIPT_DIR}/${rel_path}"
+
+  if [[ -f "$local_path" ]]; then
+    echo "$local_path"
+    return 0
+  fi
+
+  # Download to a temp file
+  local tmp
+  tmp=$(mktemp /tmp/moonveil-XXXXXX.sh)
+  local url="${MV_RAW}/${rel_path}"
+
+  info "Downloading ${rel_path}..."
+  if curl -fsSL "$url" -o "$tmp" 2>/dev/null; then
+    chmod +x "$tmp"
+    echo "$tmp"
+    return 0
+  fi
+
+  error "Could not load ${rel_path} (local not found, download failed)."
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  MAIN
+# ══════════════════════════════════════════════════════════════════════════════
+
+main() {
+  _banner
+
+  # ── System checks ───────────────────────────────────────────────────────────
+  echo -e "  ${PURPLE}${B}━━  System Checks${R}"
+  echo ""
+  _check_root
+  _check_internet
+  _check_wayland
+  _check_disk
+  echo ""
+
+  # ── Detect distro ───────────────────────────────────────────────────────────
+  echo -e "  ${PURPLE}${B}━━  Detecting Distribution${R}"
+  echo ""
+
+  local family
+  family=$(_detect_distro)
+
+  # Source os-release for pretty name in output
+  [[ -f /etc/os-release ]] && source /etc/os-release || true
+  _print_distro_info "$family"
+
+  # ── Route to correct installer ──────────────────────────────────────────────
+  case "$family" in
+
+    arch)
+      success "Detected: Arch-based  →  launching Arch installer"
+      echo ""
+      local arch_script
+      arch_script=$(_load_script "installers/arch.sh")
+      exec bash "$arch_script" \
+        --log    "$LOG_FILE" \
+        --script-dir "$SCRIPT_DIR" \
+        --version    "$MV_VERSION"
+      ;;
+
+    debian)
+      success "Detected: Debian-based  →  launching Debian installer"
+      echo ""
+      local deb_script
+      deb_script=$(_load_script "installers/debian.sh")
+      exec bash "$deb_script" \
+        --log    "$LOG_FILE" \
+        --script-dir "$SCRIPT_DIR" \
+        --version    "$MV_VERSION"
+      ;;
+
+    fedora)
+      success "Detected: Fedora-based  →  launching Fedora installer"
+      echo ""
+      local fed_script
+      fed_script=$(_load_script "installers/fedora.sh")
+      exec bash "$fed_script" \
+        --log    "$LOG_FILE" \
+        --script-dir "$SCRIPT_DIR" \
+        --version    "$MV_VERSION"
+      ;;
+
+    unsupported)
+      echo ""
+      divider
+      echo ""
+      echo -e "  ${RED}${B}  ✘  Unsupported distribution${R}"
+      echo ""
+      echo -e "  ${GRAY}  Moonveil currently supports:${R}"
+      echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Arch Linux, Manjaro, EndeavourOS, CachyOS, Garuda${R}"
+      echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Debian, Ubuntu, Pop!_OS, Linux Mint, Zorin${R}"
+      echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Fedora, Nobara${R}"
+      echo ""
+      echo -e "  ${GRAY}  To request support:  ${BLUE}${MV_REPO}/issues${R}"
+      echo ""
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
