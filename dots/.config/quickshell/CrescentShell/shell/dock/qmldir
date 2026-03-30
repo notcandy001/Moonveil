@@ -1,0 +1,6 @@
+module qs.shell.dock
+Dock 1.0 Dock.qml
+DockAppButton 1.0 DockAppButton.qml
+DockApps 1.0 DockApps.qml
+DockButton 1.0 DockButton.qml
+DockSeparator 1.0 DockSeparator.qml

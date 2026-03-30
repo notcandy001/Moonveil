@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 
-import qs.modules.common
+import qs.core
 
 LazyLoader {
     property bool extraCondition: true
