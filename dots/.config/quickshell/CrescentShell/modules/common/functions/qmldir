@@ -1,0 +1,10 @@
+module qs.modules.common.functions
+singleton ColorUtils 1.0 ColorUtils.qml
+singleton DateUtils 1.0 DateUtils.qml
+singleton FileUtils 1.0 FileUtils.qml
+singleton Fuzzy 1.0 Fuzzy.qml
+singleton Levendist 1.0 Levendist.qml
+singleton NotificationUtils 1.0 NotificationUtils.qml
+singleton ObjectUtils 1.0 ObjectUtils.qml
+singleton Session 1.0 Session.qml
+singleton StringUtils 1.0 StringUtils.qml

@@ -1,6 +1,6 @@
-import qs.modules.common
-import qs.modules.common.models
-import qs.modules.common.functions
+import qs.core
+import qs.core.models
+import qs.core.functions
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell

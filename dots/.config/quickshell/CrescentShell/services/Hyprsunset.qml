@@ -1,7 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import qs.modules.common
+import qs.core
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland

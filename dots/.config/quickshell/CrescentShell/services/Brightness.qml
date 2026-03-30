@@ -4,8 +4,8 @@ pragma ComponentBehavior: Bound
 // From https://github.com/caelestia-dots/shell with modifications.
 // License: GPLv3
 
-import qs.modules.common
-import qs.modules.common.functions
+import qs.core
+import qs.core.functions
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
