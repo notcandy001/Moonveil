@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell
-import qs.modules.common
+import qs.modules
 import qs.modules.waffle.looks
 
 WPopupToolTip {

@@ -1,4 +1,0 @@
-module qs.shell.lock
-Lock 1.0 Lock.qml
-LockSurface 1.0 LockSurface.qml
-PasswordChars 1.0 PasswordChars.qml

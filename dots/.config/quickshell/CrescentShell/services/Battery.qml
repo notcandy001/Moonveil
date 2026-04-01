@@ -1,7 +1,7 @@
 pragma Singleton
 
 import qs.services
-import qs.core
+import qs.modules
 import Quickshell
 import Quickshell.Services.UPower
 import QtQuick

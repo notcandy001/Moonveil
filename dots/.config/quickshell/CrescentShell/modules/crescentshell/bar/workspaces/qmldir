@@ -1,0 +1,3 @@
+module qs.modules.crescentshell.bar.workspaces
+WorkspaceButton 1.0 WorkspaceButton.qml
+Workspaces 1.0 Workspaces.qml

@@ -1,10 +1,10 @@
 pragma ComponentBehavior: Bound
 import qs
 import qs.services
-import qs.modules.common
+import qs.modules
 import qs.modules.waffle.looks
-import qs.modules.common.functions
-import qs.modules.common.models
+import qs.modules.functions
+import qs.modules.models
 import qs.modules.waffle.startMenu
 import Quickshell
 import QtQuick.Layouts

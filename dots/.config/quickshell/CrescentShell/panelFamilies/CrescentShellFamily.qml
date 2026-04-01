@@ -1,26 +1,26 @@
 import QtQuick
 import Quickshell
 
-import qs.core
-import qs.shell.bar
-import qs.shell.background
-import qs.shell.cheatsheet
-import qs.shell.dock
-import qs.shell.lock
-import qs.shell.mediaControls
-import qs.shell.notificationPopup
-import qs.shell.osd
-import qs.shell.onScreenKeyboard
-import qs.shell.launcher
-import qs.shell.polkit
-import qs.shell.regionSelector
-import qs.shell.screenCorners
-import qs.shell.session
-import qs.shell.controlCenter
-import qs.shell.notifications
-import qs.shell.overlay
-import qs.shell.verticalBar
-import qs.shell.wallpaperSelector
+import qs.modules
+import qs.modules.crescentshell.bar
+import qs.modules.crescentshell.background
+import qs.modules.crescentshell.cheatsheet
+import qs.modules.crescentshell.dock
+import qs.modules.crescentshell.lock
+import qs.modules.crescentshell.mediaControls
+import qs.modules.crescentshell.notificationPopup
+import qs.modules.crescentshell.onScreenDisplay
+import qs.modules.crescentshell.onScreenKeyboard
+import qs.modules.crescentshell.overview
+import qs.modules.crescentshell.polkit
+import qs.modules.crescentshell.regionSelector
+import qs.modules.crescentshell.screenCorners
+import qs.modules.crescentshell.sessionScreen
+import qs.modules.crescentshell.sidebarLeft
+import qs.modules.crescentshell.sidebarRight
+import qs.modules.crescentshell.overlay
+import qs.modules.crescentshell.verticalBar
+import qs.modules.crescentshell.wallpaperSelector
 
 Scope {
     PanelLoader { extraCondition: !Config.options.bar.vertical; component: Bar {} }

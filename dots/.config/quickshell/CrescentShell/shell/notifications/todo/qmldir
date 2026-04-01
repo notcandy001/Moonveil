@@ -1,4 +1,0 @@
-module qs.shell.notifications.todo
-TaskList 1.0 TaskList.qml
-TodoItemActionButton 1.0 TodoItemActionButton.qml
-TodoWidget 1.0 TodoWidget.qml

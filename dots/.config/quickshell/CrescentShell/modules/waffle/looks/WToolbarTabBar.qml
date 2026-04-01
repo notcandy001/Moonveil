@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import qs.modules.common
-import qs.modules.common.functions
+import qs.modules
+import qs.modules.functions
 
 TabBar {
     id: root

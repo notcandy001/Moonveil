@@ -1,4 +1,4 @@
-import qs.core
+import qs.modules
 import QtQuick;
 
 /**

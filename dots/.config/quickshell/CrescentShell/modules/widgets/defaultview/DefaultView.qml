@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell.Services.Mpris
 import qs.modules.theme
 import qs.modules.services
-import qs.modules.notch
+import qs.modules.unified.notch
 import qs.modules.components
 import qs.config
 

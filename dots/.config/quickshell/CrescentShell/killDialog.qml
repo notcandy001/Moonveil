@@ -14,9 +14,9 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
-import qs.modules.common.functions
+import qs.modules
+import qs.modules.uikit
+import qs.modules.functions
 
 ApplicationWindow {
     id: root

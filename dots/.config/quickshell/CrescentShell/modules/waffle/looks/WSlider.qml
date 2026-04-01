@@ -3,8 +3,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Widgets
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 
 Slider {
     id: root

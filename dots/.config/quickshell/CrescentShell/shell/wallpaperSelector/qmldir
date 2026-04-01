@@ -1,4 +1,0 @@
-module qs.shell.wallpaperSelector
-WallpaperDirectoryItem 1.0 WallpaperDirectoryItem.qml
-WallpaperSelector 1.0 WallpaperSelector.qml
-WallpaperSelectorContent 1.0 WallpaperSelectorContent.qml

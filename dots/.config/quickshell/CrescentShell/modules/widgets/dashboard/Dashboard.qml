@@ -6,7 +6,7 @@ import qs.modules.theme
 import qs.modules.components
 import qs.modules.globals
 import qs.modules.services
-import qs.modules.notch
+import qs.modules.unified.notch
 import qs.modules.widgets.dashboard.widgets
 import qs.modules.widgets.dashboard.controls
 import qs.modules.widgets.dashboard.wallpapers

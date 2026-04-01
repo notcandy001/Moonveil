@@ -1,9 +1,0 @@
-module qs.modules.cs.regionSelector
-CircleSelectionDetails 1.0 CircleSelectionDetails.qml
-CursorGuide 1.0 CursorGuide.qml
-OptionsToolbar 1.0 OptionsToolbar.qml
-RectCornersSelectionDetails 1.0 RectCornersSelectionDetails.qml
-RegionFunctions 1.0 RegionFunctions.qml
-RegionSelection 1.0 RegionSelection.qml
-RegionSelector 1.0 RegionSelector.qml
-TargetRegion 1.0 TargetRegion.qml

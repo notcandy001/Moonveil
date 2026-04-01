@@ -1,0 +1,3 @@
+module qs.modules.crescentshell.onScreenDisplay.indicators
+BrightnessIndicator 1.0 BrightnessIndicator.qml
+VolumeIndicator 1.0 VolumeIndicator.qml

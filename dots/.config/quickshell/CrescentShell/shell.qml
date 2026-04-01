@@ -8,7 +8,7 @@
 // Remove two slashes below and adjust the value to change the UI scale
 ////@ pragma Env QT_SCALE_FACTOR=1
 
-import "core"
+import "modules"
 import "services"
 import "panelFamilies"
 
@@ -44,7 +44,7 @@ ShellRoot {
 
 
     // Panel families
-    property list<string> families: ["crescent"]
+    property list<string> families: ["ii", "waffle"]
     function cyclePanelFamily() {
         const currentIndex = families.indexOf(Config.options.panelFamily)
         const nextIndex = (currentIndex + 1) % families.length
@@ -62,7 +62,10 @@ ShellRoot {
         component: CrescentShellFamily {}
     }
 
-
+    PanelFamilyLoader {
+        identifier: "waffle"
+        component: WaffleFamily {}
+    }
 
 
     // Shortcuts

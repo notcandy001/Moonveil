@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import Qt.labs.synchronizer
 import Quickshell
 import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 import qs.modules.waffle.looks
 import qs.modules.waffle.bar
 

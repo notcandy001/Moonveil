@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Effects
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 
 StyledRectangularShadow {
     blur: 10

@@ -6,8 +6,8 @@ import Quickshell
 import Qt.labs.synchronizer
 import qs
 import qs.services
-import qs.modules.common
-import qs.modules.common.functions
+import qs.modules
+import qs.modules.functions
 import qs.modules.waffle.looks
 
 WBarAttachedPanelContent {

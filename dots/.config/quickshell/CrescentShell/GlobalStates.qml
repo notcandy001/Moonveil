@@ -1,4 +1,4 @@
-import qs.modules.common
+import qs.modules
 import qs.services
 import QtQuick
 import Quickshell

@@ -3,8 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import qs.services
-import qs.modules.common
-import qs.modules.common.functions
+import qs.modules
+import qs.modules.functions
 import qs.modules.waffle.looks
 import qs.modules.waffle.bar
 import Quickshell

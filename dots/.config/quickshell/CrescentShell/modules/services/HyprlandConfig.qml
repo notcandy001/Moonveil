@@ -4,7 +4,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.config
 import qs.modules.theme
-import qs.modules.bar
+import qs.modules.unified.bar
 import qs.modules.globals
 
 QtObject {
