@@ -1,8 +1,8 @@
 pragma ComponentBehavior: Bound
 import qs
-import qs.modules.common
-import qs.modules.common.functions
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.functions
+import qs.modules.uikit
 import qs.services
 import QtQuick
 import QtQuick.Controls

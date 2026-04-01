@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.SystemTray
 import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 import qs.modules.waffle.looks
 import qs.modules.waffle.bar
 

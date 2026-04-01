@@ -1,5 +1,5 @@
 import QtQuick
-import qs.modules.common
+import qs.modules
 
 // Yes, this is (mostly) a copy of FadeLoader.
 // The animation of a Behavior cannot be changed... I'd love to be proven wrong.

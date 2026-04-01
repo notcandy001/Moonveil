@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
-import qs.core
+import qs.modules
 
 /**
  * Exposes the active Hyprland Xkb keyboard layout name and code for indicators.

@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import qs
 import qs.services
-import qs.modules.common
+import qs.modules
 import qs.modules.waffle.looks
 
 

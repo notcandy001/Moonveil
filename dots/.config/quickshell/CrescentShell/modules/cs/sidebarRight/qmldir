@@ -1,6 +1,0 @@
-module qs.modules.cs.sidebarRight
-BottomWidgetGroup 1.0 BottomWidgetGroup.qml
-CenterWidgetGroup 1.0 CenterWidgetGroup.qml
-QuickSliders 1.0 QuickSliders.qml
-SidebarRight 1.0 SidebarRight.qml
-SidebarRightContent 1.0 SidebarRightContent.qml

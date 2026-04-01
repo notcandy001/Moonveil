@@ -1,0 +1,3 @@
+module qs.modules.unified.frame
+ScreenFrame 1.0 ScreenFrame.qml
+ScreenFrameContent 1.0 ScreenFrameContent.qml

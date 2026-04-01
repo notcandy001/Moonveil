@@ -1,4 +1,0 @@
-module qs.modules.bar.workspaces
-HyprlandData 1.0 HyprlandData.qml
-WorkspaceButton 1.0 WorkspaceButton.qml
-Workspaces 1.0 Workspaces.qml

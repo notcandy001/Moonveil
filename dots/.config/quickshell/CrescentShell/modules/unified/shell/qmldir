@@ -1,0 +1,3 @@
+module qs.modules.unified.shell
+ReservationWindows 1.0 ReservationWindows.qml
+UnifiedShellPanel 1.0 UnifiedShellPanel.qml

@@ -5,8 +5,8 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs
 import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 import qs.modules.waffle.looks
 
 Scope {

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 import qs.modules.waffle.looks
 import qs.modules.waffle.bar.tasks
 import qs.modules.waffle.bar.tray

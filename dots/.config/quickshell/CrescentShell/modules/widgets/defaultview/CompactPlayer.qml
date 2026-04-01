@@ -8,7 +8,7 @@ import Quickshell.Widgets
 import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import qs.modules.theme
-import qs.modules.bar.workspaces
+import qs.modules.unified.bar.workspaces
 import qs.modules.services
 import qs.modules.components
 import qs.config

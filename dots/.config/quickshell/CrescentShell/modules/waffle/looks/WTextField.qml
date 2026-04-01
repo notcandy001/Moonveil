@@ -1,4 +1,4 @@
-import qs.modules.common
+import qs.modules
 import QtQuick
 import QtQuick.Controls.FluentWinUI3
 import QtQuick.Controls

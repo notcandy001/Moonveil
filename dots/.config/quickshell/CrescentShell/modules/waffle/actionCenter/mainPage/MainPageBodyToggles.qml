@@ -6,10 +6,10 @@ import QtQuick.Controls
 import Quickshell
 import qs
 import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
-import qs.modules.common.models.quickToggles
-import qs.modules.common.functions
+import qs.modules
+import qs.modules.uikit
+import qs.modules.models.quickToggles
+import qs.modules.functions
 import qs.modules.waffle.looks
 import qs.modules.waffle.actionCenter.toggles
 

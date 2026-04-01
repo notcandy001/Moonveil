@@ -1,5 +1,5 @@
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 import QtQuick
 import QtQuick.Controls
 

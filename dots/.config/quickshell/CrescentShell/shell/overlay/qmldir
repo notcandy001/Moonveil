@@ -1,8 +1,0 @@
-module qs.shell.overlay
-Overlay 1.0 Overlay.qml
-OverlayBackground 1.0 OverlayBackground.qml
-OverlayContent 1.0 OverlayContent.qml
-OverlayContext 1.0 OverlayContext.qml
-OverlayTaskbar 1.0 OverlayTaskbar.qml
-OverlayWidgetDelegateChooser 1.0 OverlayWidgetDelegateChooser.qml
-StyledOverlayWidget 1.0 StyledOverlayWidget.qml

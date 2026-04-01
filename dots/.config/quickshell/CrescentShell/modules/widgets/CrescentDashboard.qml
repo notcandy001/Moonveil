@@ -6,8 +6,8 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import qs
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 
 // CrescentDashboard
 // Hosts the Ambxst Dashboard in a floating overlay.

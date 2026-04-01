@@ -1,3 +1,0 @@
-module qs.modules.cs.overlay.fpsLimiter
-FpsLimiter 1.0 FpsLimiter.qml
-FpsLimiterContent 1.0 FpsLimiterContent.qml

@@ -12,9 +12,9 @@ import QtQuick.Layouts
 import QtQuick.Window
 import Quickshell
 import qs.services
-import qs.core
-import qs.core.widgets
-import qs.core.functions as CF
+import qs.modules
+import qs.modules.uikit
+import qs.modules.functions as CF
 
 ApplicationWindow {
     id: root

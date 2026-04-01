@@ -3,8 +3,8 @@ import Qt5Compat.GraphicalEffects
 import qs
 import qs.services
 import qs.services.network
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.uikit
 
 
 StyledIndeterminateProgressBar {

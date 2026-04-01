@@ -1,5 +1,0 @@
-module qs.modules.cs.sidebarRight.volumeMixer
-AudioDeviceSelectorButton 1.0 AudioDeviceSelectorButton.qml
-VolumeDialog 1.0 VolumeDialog.qml
-VolumeDialogContent 1.0 VolumeDialogContent.qml
-VolumeMixerEntry 1.0 VolumeMixerEntry.qml

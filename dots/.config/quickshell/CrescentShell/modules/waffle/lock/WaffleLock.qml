@@ -9,10 +9,10 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs
 import qs.services
-import qs.modules.common
-import qs.modules.common.functions
-import qs.modules.common.widgets
-import qs.modules.common.panels.lock
+import qs.modules
+import qs.modules.functions
+import qs.modules.uikit
+import qs.modules.panels.lock
 import qs.modules.waffle.looks
 import qs.modules.waffle.sessionScreen as SessionScreen
 

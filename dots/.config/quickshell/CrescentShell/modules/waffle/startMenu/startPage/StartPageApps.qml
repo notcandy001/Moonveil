@@ -5,9 +5,9 @@ import QtQuick.Layouts
 import Quickshell
 import qs
 import qs.services
-import qs.modules.common
-import qs.modules.common.functions
-import qs.modules.common.widgets
+import qs.modules
+import qs.modules.functions
+import qs.modules.uikit
 import qs.modules.waffle.looks
 
 BodyRectangle {

@@ -1,0 +1,3 @@
+module qs.modules.crescentshell.sidebarLeft
+SidebarLeft 1.0 SidebarLeft.qml
+SidebarLeftContent 1.0 SidebarLeftContent.qml

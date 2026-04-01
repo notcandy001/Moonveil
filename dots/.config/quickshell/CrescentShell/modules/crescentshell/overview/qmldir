@@ -1,0 +1,7 @@
+module qs.modules.crescentshell.overview
+Overview 1.0 Overview.qml
+OverviewWidget 1.0 OverviewWidget.qml
+OverviewWindow 1.0 OverviewWindow.qml
+SearchBar 1.0 SearchBar.qml
+SearchItem 1.0 SearchItem.qml
+SearchWidget 1.0 SearchWidget.qml

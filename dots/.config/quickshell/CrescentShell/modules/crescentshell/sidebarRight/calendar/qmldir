@@ -1,0 +1,4 @@
+module qs.modules.crescentshell.sidebarRight.calendar
+CalendarDayButton 1.0 CalendarDayButton.qml
+CalendarHeaderButton 1.0 CalendarHeaderButton.qml
+CalendarWidget 1.0 CalendarWidget.qml
