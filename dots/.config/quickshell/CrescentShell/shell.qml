@@ -44,7 +44,7 @@ ShellRoot {
 
 
     // Panel families
-    property list<string> families: ["ii", "waffle"]
+    property list<string> families: ["crescent"]
     function cyclePanelFamily() {
         const currentIndex = families.indexOf(Config.options.panelFamily)
         const nextIndex = (currentIndex + 1) % families.length
@@ -61,12 +61,6 @@ ShellRoot {
         identifier: "crescent"
         component: CrescentShellFamily {}
     }
-
-    PanelFamilyLoader {
-        identifier: "waffle"
-        component: WaffleFamily {}
-    }
-
 
     // Shortcuts
     IpcHandler {
