@@ -11,24 +11,25 @@
 #  Moonveil — Entry Point & Distro Router
 #  https://github.com/notcandy001/moonveil
 #
-#  This script detects your Linux distribution and hands off to the
-#  correct installer. Do not run the sub-installers directly.
+#  Detects your distro and hands off to dots-extra/<distro>/install.sh
 #
-#  One-liner install:
-#    bash <(curl -fsSL https://raw.githubusercontent.com/notcandy001/moonveil/main/install.sh)
+#  One-liner:
+#    bash <(curl -fsSL https://raw.githubusercontent.com/notcandy001/moonveil/main/get/install.sh)
 #
 # ==============================================================================
 
 set -Eeuo pipefail
 
 # ── Version ───────────────────────────────────────────────────────────────────
+readonly MV_VERSION="1.0.0"
 readonly MV_REPO="https://github.com/notcandy001/moonveil"
-readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master/get/arch-installer.sh"
+readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/moonveil/main"
 
-# ── Runtime dir (where sub-scripts live) ──────────────────────────────────────
-# When run via curl|bash, we download the sub-scripts on the fly.
-# When run from a local clone, we resolve relative to this file.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ── Paths ─────────────────────────────────────────────────────────────────────
+# When cloned locally, SCRIPT_DIR = <repo>/get/
+# When piped via curl, we download everything on the fly
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # ── Log ───────────────────────────────────────────────────────────────────────
 readonly LOG_FILE="/tmp/moonveil-$(date +%Y%m%d-%H%M%S).log"
@@ -109,7 +110,6 @@ _check_internet() {
 }
 
 _check_wayland() {
-  # Moonveil is Wayland/Hyprland only — warn on Xorg-only machines
   if [[ -z "${WAYLAND_DISPLAY:-}" && -z "${XDG_SESSION_TYPE:-}" ]]; then
     warn "Could not detect Wayland session. Moonveil requires Wayland/Hyprland."
     warn "If you are in a TTY this is expected — continuing."
@@ -133,10 +133,8 @@ _check_disk() {
 #  DISTRO DETECTION
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Returns a normalised distro ID: arch | debian | fedora | unsupported
 _detect_distro() {
-  local id=""
-  local id_like=""
+  local id="" id_like=""
 
   if [[ -f /etc/os-release ]]; then
     # shellcheck source=/dev/null
@@ -147,21 +145,16 @@ _detect_distro() {
     id=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
   fi
 
-  # Normalise
   case "$id" in
-    arch|artix|cachyos|endeavouros|garuda|manjaro)
-      echo "arch" ;;
-    debian|ubuntu|linuxmint|pop|elementary|zorin|kali|parrot|raspbian)
-      echo "debian" ;;
-    fedora|rhel|centos|almalinux|rocky|nobara)
-      echo "fedora" ;;
+    arch|artix|cachyos|endeavouros|garuda|manjaro) echo "arch"   ;;
+    debian|ubuntu|linuxmint|pop|elementary|zorin|kali|parrot|raspbian) echo "debian" ;;
+    fedora|rhel|centos|almalinux|rocky|nobara)     echo "fedora" ;;
     *)
-      # Fallback via ID_LIKE
       case "$id_like" in
-        *arch*)   echo "arch"   ;;
+        *arch*)            echo "arch"   ;;
         *debian*|*ubuntu*) echo "debian" ;;
         *fedora*|*rhel*)   echo "fedora" ;;
-        *)        echo "unsupported" ;;
+        *)                 echo "unsupported" ;;
       esac
       ;;
   esac
@@ -183,32 +176,59 @@ _print_distro_info() {
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  SUB-SCRIPT LOADER
+#  SCRIPT LOADER
+#
+#  Priority:
+#    1. Local clone  →  <repo>/dots-extra/<distro>/install.sh
+#    2. Remote       →  download from GitHub raw
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Try local first, else download from GitHub
-_load_script() {
-  local rel_path="$1"   # e.g. "installers/arch.sh"
-  local local_path="${SCRIPT_DIR}/${rel_path}"
+_load_distro_script() {
+  local family="$1"
 
+  # ── Try local clone first ──────────────────────────────────────────────────
+  local local_path="${REPO_ROOT}/dots-extra/${family}/install.sh"
   if [[ -f "$local_path" ]]; then
     echo "$local_path"
     return 0
   fi
 
-  # Download to a temp file
+  # ── Download from GitHub ───────────────────────────────────────────────────
+  local url="${MV_RAW}/dots-extra/${family}/install.sh"
   local tmp
-  tmp=$(mktemp /tmp/moonveil-XXXXXX.sh)
-  local url="${MV_RAW}/${rel_path}"
+  tmp=$(mktemp /tmp/moonveil-${family}-XXXXXX.sh)
 
-  info "Downloading ${rel_path}..."
+  info "Downloading dots-extra/${family}/install.sh..."
   if curl -fsSL "$url" -o "$tmp" 2>/dev/null; then
     chmod +x "$tmp"
+
+    # Also try to download common.sh alongside it
+    _ensure_common_lib
     echo "$tmp"
     return 0
   fi
 
-  error "Could not load ${rel_path} (local not found, download failed)."
+  error "Could not load dots-extra/${family}/install.sh (local not found, download failed)."
+}
+
+# Ensure get/lib/common.sh is available; download if needed
+_ensure_common_lib() {
+  local lib_local="${REPO_ROOT}/get/lib/common.sh"
+  if [[ -f "$lib_local" ]]; then
+    export MV_COMMON_LIB="$lib_local"
+    return 0
+  fi
+
+  local lib_tmp
+  lib_tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
+  local url="${MV_RAW}/get/lib/common.sh"
+
+  if curl -fsSL "$url" -o "$lib_tmp" 2>/dev/null; then
+    export MV_COMMON_LIB="$lib_tmp"
+    return 0
+  fi
+
+  error "Could not load get/lib/common.sh"
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -234,43 +254,48 @@ main() {
   local family
   family=$(_detect_distro)
 
-  # Source os-release for pretty name in output
   [[ -f /etc/os-release ]] && source /etc/os-release || true
   _print_distro_info "$family"
 
-  # ── Route to correct installer ──────────────────────────────────────────────
+  # ── Ensure common lib path is exported ──────────────────────────────────────
+  _ensure_common_lib
+
+  # ── Route ───────────────────────────────────────────────────────────────────
   case "$family" in
 
     arch)
-      success "Detected: Arch-based  →  launching Arch installer"
+      success "Detected: Arch-based  →  dots-extra/arch/install.sh"
       echo ""
-      local arch_script
-      arch_script=$(_load_script "installers/arch.sh")
-      exec bash "$arch_script" \
-        --log    "$LOG_FILE" \
-        --script-dir "$SCRIPT_DIR" \
+      local script
+      script=$(_load_distro_script "arch")
+      exec bash "$script" \
+        --log        "$LOG_FILE"     \
+        --repo-root  "$REPO_ROOT"    \
+        --common-lib "$MV_COMMON_LIB" \
         --version    "$MV_VERSION"
       ;;
 
     debian)
-      success "Detected: Debian-based  →  launching Debian installer"
+      success "Detected: Debian-based  →  dots-extra/debian/install.sh"
       echo ""
-      local deb_script
-      deb_script=$(_load_script "installers/debian.sh")
-      exec bash "$deb_script" \
-        --log    "$LOG_FILE" \
-        --script-dir "$SCRIPT_DIR" \
+      local script
+      script=$(_load_distro_script "debian")
+      exec bash "$script" \
+        --log        "$LOG_FILE"     \
+        --repo-root  "$REPO_ROOT"    \
+        --common-lib "$MV_COMMON_LIB" \
         --version    "$MV_VERSION"
       ;;
 
     fedora)
-      success "Detected: Fedora-based  →  launching Fedora installer"
+      success "Detected: Fedora-based  →  dots-extra/fedora/install.sh"
       echo ""
-      local fed_script
-      fed_script=$(_load_script "installers/fedora.sh")
-      exec bash "$fed_script" \
-        --log    "$LOG_FILE" \
-        --script-dir "$SCRIPT_DIR" \
+      local script
+      script=$(_load_distro_script "fedora")
+      exec bash "$script" \
+        --log        "$LOG_FILE"     \
+        --repo-root  "$REPO_ROOT"    \
+        --common-lib "$MV_COMMON_LIB" \
         --version    "$MV_VERSION"
       ;;
 
@@ -285,7 +310,7 @@ main() {
       echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Debian, Ubuntu, Pop!_OS, Linux Mint, Zorin${R}"
       echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Fedora, Nobara${R}"
       echo ""
-      echo -e "  ${GRAY}  To request support:  ${BLUE}${MV_REPO}/issues${R}"
+      echo -e "  ${GRAY}  Request support:  ${BLUE}${MV_REPO}/issues${R}"
       echo ""
       exit 1
       ;;
