@@ -5,22 +5,21 @@
 #  ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
 #  ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
 #  ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
-#  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
-#  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
+#  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║█████╗
+#  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚═════╝
 #
 #  Moonveil — Entry Point & Distro Router
-#  https://github.com/notcandy001/moonveil
+#  https://github.com/notcandy001/Moonveil
 #
 #  Detects your distro and hands off to dots-extra/<distro>/install.sh
-#
 # ==============================================================================
 
 set -Eeuo pipefail
 
 # ── Version ───────────────────────────────────────────────────────────────────
 readonly MV_VERSION="1.0.0"
-readonly MV_REPO="https://github.com/notcandy001/moonveil"
-readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/moonveil/main"
+readonly MV_REPO="https://github.com/notcandy001/Moonveil"
+readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 # When cloned locally, SCRIPT_DIR = <repo>/get/
@@ -76,8 +75,8 @@ _banner() {
   ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
   ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
   ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
-  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
-  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
+  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║██████╗
+  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚═════╝
 EOF
   echo -e "${R}"
   echo -e "  ${LPURPLE}  A quiet, moonlit Hyprland environment${R}"

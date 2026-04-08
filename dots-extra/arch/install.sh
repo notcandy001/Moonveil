@@ -64,7 +64,7 @@ _resolve_common_lib() {
   local tmp
   tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
   curl -fsSL \
-    "https://raw.githubusercontent.com/notcandy001/moonveil/main/get/lib/common.sh" \
+    "https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master/get/lib/common.sh" \
     -o "$tmp" 2>/dev/null || { echo "ERROR: cannot load common.sh" >&2; exit 1; }
   echo "$tmp"
 }
@@ -73,7 +73,7 @@ _resolve_common_lib() {
 source "$(_resolve_common_lib)"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-readonly REPO_URL="https://github.com/notcandy001/moonveil.git"
+readonly REPO_URL="https://github.com/notcandy001/Moonveil.git"
 readonly AUR_REPO="https://aur.archlinux.org/yay-bin.git"
 readonly INSTALL_DIR="$HOME/moonveil"
 readonly BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
