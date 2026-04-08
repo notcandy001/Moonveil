@@ -8,6 +8,11 @@
 #  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║███████╗
 #  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚══════╝
 #
+#  Moonveil — Entry Point & Distro Router
+#  https://github.com/notcandy001/moonveil
+#
+#  Detects your distro and hands off to dots-extra/<distro>/install.sh
+#
 # ==============================================================================
 
 set -Eeuo pipefail
@@ -15,7 +20,7 @@ set -Eeuo pipefail
 # ── Version ───────────────────────────────────────────────────────────────────
 readonly MV_VERSION="1.0.0"
 readonly MV_REPO="https://github.com/notcandy001/moonveil"
-readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/moonveil/master"
+readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/moonveil/main"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 # When cloned locally, SCRIPT_DIR = <repo>/get/
@@ -175,6 +180,31 @@ _print_distro_info() {
 #    2. Remote       →  download from GitHub raw
 # ══════════════════════════════════════════════════════════════════════════════
 
+# NOTE: these functions are called via $() subshell for their return value.
+# ALL diagnostic output MUST go to stderr (>&2) — anything on stdout gets
+# captured into the caller's variable and corrupts the file path.
+
+_ensure_common_lib() {
+  local lib_local="${REPO_ROOT}/get/lib/common.sh"
+  if [[ -f "$lib_local" ]]; then
+    export MV_COMMON_LIB="$lib_local"
+    return 0
+  fi
+
+  local lib_tmp
+  lib_tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
+  local url="${MV_RAW}/get/lib/common.sh"
+
+  echo -e "  ${GRAY}[ INFO ]${R}  Downloading get/lib/common.sh..." >&2
+  if curl -fsSL "$url" -o "$lib_tmp" 2>/dev/null; then
+    export MV_COMMON_LIB="$lib_tmp"
+    return 0
+  fi
+
+  echo -e "\n  ${RED}ERROR${R}  Could not download get/lib/common.sh\n" >&2
+  exit 1
+}
+
 _load_distro_script() {
   local family="$1"
 
@@ -188,39 +218,20 @@ _load_distro_script() {
   # ── Download from GitHub ───────────────────────────────────────────────────
   local url="${MV_RAW}/dots-extra/${family}/install.sh"
   local tmp
-  tmp=$(mktemp /tmp/moonveil-${family}-XXXXXX.sh)
+  tmp=$(mktemp "/tmp/moonveil-${family}-XXXXXX.sh")
 
-  info "Downloading dots-extra/${family}/install.sh..."
+  # >&2 so this line doesn't get captured into the caller's $() assignment
+  echo -e "  ${GRAY}[ INFO ]${R}  Downloading dots-extra/${family}/install.sh..." >&2
+
   if curl -fsSL "$url" -o "$tmp" 2>/dev/null; then
     chmod +x "$tmp"
-
-    # Also try to download common.sh alongside it
-    _ensure_common_lib
-    echo "$tmp"
+    echo "$tmp"   # ← only this goes to stdout / gets captured
     return 0
   fi
 
-  error "Could not load dots-extra/${family}/install.sh (local not found, download failed)."
-}
-
-# Ensure get/lib/common.sh is available; download if needed
-_ensure_common_lib() {
-  local lib_local="${REPO_ROOT}/get/lib/common.sh"
-  if [[ -f "$lib_local" ]]; then
-    export MV_COMMON_LIB="$lib_local"
-    return 0
-  fi
-
-  local lib_tmp
-  lib_tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
-  local url="${MV_RAW}/get/lib/common.sh"
-
-  if curl -fsSL "$url" -o "$lib_tmp" 2>/dev/null; then
-    export MV_COMMON_LIB="$lib_tmp"
-    return 0
-  fi
-
-  error "Could not load get/lib/common.sh"
+  echo -e "\n  ${RED}ERROR${R}  Could not download dots-extra/${family}/install.sh\n" >&2
+  echo -e "  ${GRAY}  Log: ${LOG_FILE}${R}\n" >&2
+  exit 1
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
