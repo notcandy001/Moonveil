@@ -1,5 +1,5 @@
-
 import qs.modules
+import qs.modules.theme
 import QtQuick
 import QtQuick.Layouts
 import qs.services
@@ -7,8 +7,10 @@ import qs.services
 RowLayout {
     id: root
     spacing: 10
-    Layout.leftMargin: 8
-    Layout.rightMargin: 8
+    Layout.leftMargin: 10
+    Layout.rightMargin: 10
+    Layout.fillWidth: true
+    implicitHeight: 40
 
     property string text: ""
     property string buttonIcon: ""
@@ -19,25 +21,21 @@ RowLayout {
     property real to: slider.to
     property real textWidth: 120
 
-    RowLayout {
-        id: row
-        spacing: 10
-
-        OptionalMaterialSymbol {
-            id: iconWidget
-            icon: root.buttonIcon
-            iconSize: Appearance.font.pixelSize.larger
-        }
-        StyledText {
-            id: labelWidget
-            Layout.preferredWidth: root.textWidth
-            text: root.text
-            color: Appearance.colors.colOnSecondaryContainer
-        }
+    OptionalMaterialSymbol {
+        icon: root.buttonIcon
+        iconSize: Appearance.font.pixelSize.larger
     }
-    
+
+    StyledText {
+        Layout.preferredWidth: root.textWidth
+        text: root.text
+        color: Colors.overBackground
+        font.pixelSize: Appearance.font.pixelSize.small
+    }
+
     StyledSlider {
         id: slider
+        Layout.fillWidth: true
         configuration: StyledSlider.Configuration.XS
         usePercentTooltip: root.usePercentTooltip
         value: root.value

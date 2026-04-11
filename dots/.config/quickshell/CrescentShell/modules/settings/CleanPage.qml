@@ -5,6 +5,7 @@ import QtQuick.Controls
 import qs.services
 import qs.modules
 import qs.modules.uikit
+import qs.modules.theme
 
 Item {
     id: root
@@ -21,12 +22,12 @@ Item {
             anchors { top: parent.top; left: parent.left; right: parent.right; margins: 24 }
             spacing: 6
 
-            // Page title
             Text {
                 text: root.pageTitle
-                font.pixelSize: 13
-                font.weight: Font.Normal
-                color: "#666666"
+                font.pixelSize: Styling.fontSize(-1)
+                font.weight: Font.SemiBold
+                font.letterSpacing: 1.2
+                color: Colors.overSurfaceVariant
                 Layout.bottomMargin: 6
                 visible: root.pageTitle !== ""
             }
@@ -39,13 +40,14 @@ Item {
         }
     }
 
-    // Card component
     component CCard: Rectangle {
         default property alias content: inner.data
         Layout.fillWidth: true
         implicitHeight: inner.implicitHeight + 24
-        radius: 12
-        color: "#1e1e1e"
+        radius: Styling.radius(0)
+        color: Colors.surfaceContainer
+        border.width: 1
+        border.color: Qt.rgba(Colors.outlineVariant.r, Colors.outlineVariant.g, Colors.outlineVariant.b, 0.35)
 
         ColumnLayout {
             id: inner
@@ -54,92 +56,99 @@ Item {
         }
     }
 
-    // Section label
     component CSectionLabel: Text {
         Layout.fillWidth: true
         Layout.topMargin: 10
-        Layout.bottomMargin: 2
-        font.pixelSize: 12
-        font.weight: Font.Medium
-        color: "#888888"
-        leftPadding: 4
+        font.pixelSize: Styling.fontSize(-2)
+        font.weight: Font.SemiBold
+        font.letterSpacing: 1.3
+        color: Colors.overSurfaceVariant
+        opacity: 0.75
     }
 
-    // Row item (for cards with chevron)
     component CRow: Rectangle {
         id: crow
         property string icon: ""
         property string label: ""
         property string subtitle: ""
-        property alias trailing: trailingSlot.data
         signal clicked()
+
         Layout.fillWidth: true
-        height: 52; radius: 12
-        color: rowHov.containsMouse ? "#262626" : "#1e1e1e"
-        Behavior on color { ColorAnimation { duration: 80 } }
-        HoverHandler { id: rowHov }
-        MouseArea { anchors.fill: parent; onClicked: crow.clicked() }
+        implicitHeight: crowContent.implicitHeight + 14
+        radius: Styling.radius(-2)
+        color: rowHov.containsMouse ? Colors.surfaceContainerHigh : "transparent"
+        Behavior on color { ColorAnimation { duration: 100 } }
 
         RowLayout {
-            anchors { fill: parent; leftMargin: 14; rightMargin: 14 }
-            spacing: 12
+            id: crowContent
+            anchors { fill: parent; leftMargin: 10; rightMargin: 10 }
+            spacing: 10
+
             MaterialSymbol {
-                text: crow.icon; iconSize: 18
-                color: "#aaaaaa"
+                text: crow.icon
+                iconSize: Appearance.font.pixelSize.larger
+                color: Colors.overSurfaceVariant
                 visible: crow.icon !== ""
             }
             ColumnLayout {
-                Layout.fillWidth: true; spacing: 1
-                Text { text: crow.label; font.pixelSize: 13; color: "#ffffff" }
-                Text { text: crow.subtitle; font.pixelSize: 11; color: "#666"; visible: crow.subtitle !== "" }
+                Layout.fillWidth: true
+                spacing: 1
+                Text { text: crow.label; font.pixelSize: Styling.fontSize(0); color: Colors.overBackground }
+                Text { text: crow.subtitle; font.pixelSize: Styling.fontSize(-2); color: Colors.overSurfaceVariant; visible: crow.subtitle !== "" }
             }
-            Item { id: trailingSlot }
+        }
+        MouseArea {
+            id: rowHov; anchors.fill: parent; hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor; onClicked: crow.clicked()
         }
     }
 
-    // Toggle row
     component CToggle: Rectangle {
         id: ctog
         property string icon: ""
         property string label: ""
         property bool checked: false
-        signal toggled(bool val)
+        signal toggled(bool state)
+
         Layout.fillWidth: true
-        height: 52; radius: 12
-        color: "#1e1e1e"
+        implicitHeight: ctogRow.implicitHeight + 14
+        radius: Styling.radius(-2)
+        color: Colors.surfaceContainer
+        border.width: 1
+        border.color: Qt.rgba(Colors.outlineVariant.r, Colors.outlineVariant.g, Colors.outlineVariant.b, 0.3)
 
         RowLayout {
-            anchors { fill: parent; leftMargin: 14; rightMargin: 14 }
-            spacing: 12
+            id: ctogRow
+            anchors { fill: parent; leftMargin: 10; rightMargin: 10 }
+            spacing: 10
+
             MaterialSymbol {
-                text: ctog.icon; iconSize: 18; color: "#aaaaaa"
-                visible: ctog.icon !== ""
+                text: ctog.icon; iconSize: Appearance.font.pixelSize.larger
+                color: Colors.overSurfaceVariant; visible: ctog.icon !== ""
             }
-            Text {
-                text: ctog.label; font.pixelSize: 13; color: "#ffffff"
-                Layout.fillWidth: true
-            }
+            Text { Layout.fillWidth: true; text: ctog.label; font.pixelSize: Styling.fontSize(0); color: Colors.overBackground }
+
             Rectangle {
-                id: sw
-                width: 44; height: 24; radius: 12
-                color: ctog.checked ? Appearance.colors.colPrimary : "#333333"
-                Behavior on color { ColorAnimation { duration: 150 } }
+                implicitWidth: 38; implicitHeight: 20; radius: height / 2
+                color: ctog.checked ? Colors.primary : Colors.surfaceContainerHighest
+                border.width: 1
+                border.color: ctog.checked
+                    ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.6)
+                    : Qt.rgba(Colors.outline.r, Colors.outline.g, Colors.outline.b, 0.5)
+                Behavior on color        { ColorAnimation { duration: 150 } }
+                Behavior on border.color { ColorAnimation { duration: 150 } }
                 Rectangle {
-                    width: 18; height: 18; radius: 9
-                    anchors.verticalCenter: parent.verticalCenter
                     x: ctog.checked ? parent.width - width - 3 : 3
-                    color: "white"
-                    Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                    y: 3; width: parent.height - 6; height: width; radius: width / 2
+                    color: ctog.checked ? Colors.overPrimary : Colors.overSurfaceVariant
+                    Behavior on x     { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
-                MouseArea { anchors.fill: parent; onClicked: ctog.toggled(!ctog.checked) }
             }
         }
-    }
-
-    // Divider
-    component CDivider: Rectangle {
-        Layout.fillWidth: true; height: 1
-        color: "#2a2a2a"
-        Layout.leftMargin: 14; Layout.rightMargin: 14
+        MouseArea {
+            anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+            onClicked: { ctog.checked = !ctog.checked; ctog.toggled(ctog.checked) }
+        }
     }
 }

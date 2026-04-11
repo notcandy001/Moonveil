@@ -15,7 +15,6 @@ Rectangle {
     color: "transparent"
     implicitWidth: 400
     implicitHeight: 300
-    // 0: Network, 1: Bluetooth, 2: Mixer, 3: Effects, 4: Theme, 5: Binds, 6: System, 7: Shell
 
     property int currentSection: 0
     property int selectedIndex: 0
@@ -23,7 +22,6 @@ Rectangle {
 
     onFilteredSectionsChanged: selectedIndex = 0
 
-    // Timer to restore focus after panel transitions
     Timer {
         id: focusRestoreTimer
         interval: 50
@@ -32,420 +30,264 @@ Rectangle {
 
     onSelectedIndexChanged: {
         if (filteredSections && selectedIndex >= 0 && selectedIndex < filteredSections.length) {
-            const item = filteredSections[selectedIndex];
-            root.currentSection = item.section;
-            // Automatically show subsection preview when navigating search results
-            root.dispatchSubSection(item.section, item.subSection);
-            root.scrollSidebarToSelection();
-            // Use timer to ensure focus is restored AFTER any panel focus-stealing
-            focusRestoreTimer.restart();
+            const item = filteredSections[selectedIndex]
+            root.currentSection = item.section
+            root.dispatchSubSection(item.section, item.subSection)
+            root.scrollSidebarToSelection()
+            focusRestoreTimer.restart()
         }
     }
 
-    // Focus the search input (called from parent Dashboard)
-    function focusSearchInput() {
-        searchInput.focusInput();
-    }
+    function focusSearchInput() { searchInput.focusInput() }
 
-    SettingsIndex {
-        id: searchIndex
-    }
+    SettingsIndex { id: searchIndex }
 
-    // Dynamic Settings Indexer
+    // ── Dynamic settings indexer ──────────────────────────────────────
     Item {
         id: settingsIndexer
-        visible: false // Headless
-
+        visible: false
         property int currentPanelIndex: 0
         property var aggregatedItems: []
         property bool isIndexing: false
 
-        // Helper to load panels one by one
         Loader {
             id: indexerLoader
             active: settingsIndexer.isIndexing
             asynchronous: true
-            source: settingsIndexer.isIndexing && settingsIndexer.currentPanelIndex < contentArea.panelComponents.length ? contentArea.panelComponents[settingsIndexer.currentPanelIndex].component : ""
-
+            source: settingsIndexer.isIndexing && settingsIndexer.currentPanelIndex < contentArea.panelComponents.length
+                ? contentArea.panelComponents[settingsIndexer.currentPanelIndex].component : ""
             onStatusChanged: {
                 if (status === Loader.Ready && item) {
-                    // Scrape
-                    const sectionId = contentArea.panelComponents[settingsIndexer.currentPanelIndex].section;
-                    const newItems = SettingsCrawler.crawl(item, sectionId);
-                    settingsIndexer.aggregatedItems = settingsIndexer.aggregatedItems.concat(newItems);
-
-                    // Move to next
-                    settingsIndexer.currentPanelIndex++;
+                    const sectionId = contentArea.panelComponents[settingsIndexer.currentPanelIndex].section
+                    settingsIndexer.aggregatedItems = settingsIndexer.aggregatedItems.concat(SettingsCrawler.crawl(item, sectionId))
+                    settingsIndexer.currentPanelIndex++
                 } else if (status === Loader.Error) {
-                    console.warn("Failed to load panel for indexing:", source);
-                    settingsIndexer.currentPanelIndex++;
+                    settingsIndexer.currentPanelIndex++
                 }
             }
         }
 
         onCurrentPanelIndexChanged: {
-            if (currentPanelIndex >= contentArea.panelComponents.length) {
-                // Done
-                if (isIndexing) {
-                    isIndexing = false;
-                    searchIndex.addDynamicItems(aggregatedItems);
-                }
+            if (currentPanelIndex >= contentArea.panelComponents.length && isIndexing) {
+                isIndexing = false
+                searchIndex.addDynamicItems(aggregatedItems)
             }
         }
 
-        Component.onCompleted: {
-            // Start indexing after a short delay to allow UI to settle
-            indexingTimer.start();
-        }
-
-        Timer {
-            id: indexingTimer
-            interval: 500
-            onTriggered: {
-                settingsIndexer.isIndexing = true;
-            }
-        }
+        Component.onCompleted: indexingTimer.start()
+        Timer { id: indexingTimer; interval: 500; onTriggered: settingsIndexer.isIndexing = true }
     }
 
-    // Store pending subsection to apply when panel loads
     property string pendingSubSection: ""
 
     function dispatchSubSection(sectionId, subSectionId) {
-        if (!subSectionId || subSectionId === "")
-            return;
-
-        // Panels that support subsections: Theme(4), System(6), Compositor(7), Shell(8)
+        if (!subSectionId || subSectionId === "") return
         if ([4, 6, 7, 8].includes(sectionId)) {
             if (panelLoader.item && panelLoader.status === Loader.Ready) {
-                panelLoader.item.currentSection = subSectionId;
+                panelLoader.item.currentSection = subSectionId
             } else {
-                pendingSubSection = subSectionId;
+                pendingSubSection = subSectionId
             }
         }
     }
 
-    // Scroll sidebar to ensure visible selection
     function scrollSidebarToSelection() {
-        if (sidebarFlickable.height <= 0)
-            return;
-
-        const tabHeight = 48;
-        const tabSpacing = 0;
-        const itemY = root.selectedIndex * (tabHeight + tabSpacing);
-
-        // Check bounds and scroll if needed
+        if (sidebarFlickable.height <= 0) return
+        const itemY = root.selectedIndex * 46
         if (itemY < sidebarFlickable.contentY) {
-            sidebarFlickable.contentY = itemY;
-        } else if (itemY + tabHeight > sidebarFlickable.contentY + sidebarFlickable.height) {
-            sidebarFlickable.contentY = itemY + tabHeight - sidebarFlickable.height;
+            sidebarFlickable.contentY = itemY
+        } else if (itemY + 46 > sidebarFlickable.contentY + sidebarFlickable.height) {
+            sidebarFlickable.contentY = itemY + 46 - sidebarFlickable.height
         }
     }
 
-    // Fuzzy match: checks if all characters of query appear in order in target
     function fuzzyMatch(query, target) {
-        if (query.length === 0)
-            return true;
-        if (target.length === 0)
-            return false;
-        const lowerQuery = query.toLowerCase();
-        const lowerTarget = target.toLowerCase();
-        let queryIndex = 0;
-        for (let i = 0; i < lowerTarget.length && queryIndex < lowerQuery.length; i++) {
-            if (lowerTarget[i] === lowerQuery[queryIndex]) {
-                queryIndex++;
-            }
-        }
-        return queryIndex === lowerQuery.length;
+        if (query.length === 0) return true
+        const lq = query.toLowerCase(), lt = target.toLowerCase()
+        let qi = 0
+        for (let i = 0; i < lt.length && qi < lq.length; i++)
+            if (lt[i] === lq[qi]) qi++
+        return qi === lq.length
     }
 
-    // Score a fuzzy match (higher is better)
     function fuzzyScore(query, target) {
-        if (query.length === 0)
-            return 0;
-        if (target.length === 0)
-            return -1;
-        const lowerQuery = query.toLowerCase();
-        const lowerTarget = target.toLowerCase();
-
-        // Exact match gets highest score
-        if (lowerTarget.includes(lowerQuery))
-            return 1000 + (100 - target.length);
-
-        // Fuzzy scoring
-        let queryIndex = 0, score = 0, consecutive = 0, maxConsecutive = 0;
-        for (let i = 0; i < lowerTarget.length && queryIndex < lowerQuery.length; i++) {
-            if (lowerTarget[i] === lowerQuery[queryIndex]) {
-                queryIndex++;
-                consecutive++;
-                maxConsecutive = Math.max(maxConsecutive, consecutive);
-                if (i === 0 || " -_".includes(lowerTarget[i - 1]))
-                    score += 10;
-            } else {
-                consecutive = 0;
-            }
+        if (query.length === 0) return 0
+        const lq = query.toLowerCase(), lt = target.toLowerCase()
+        if (lt.includes(lq)) return 1000 + (100 - target.length)
+        let qi = 0, score = 0, cons = 0, maxCons = 0
+        for (let i = 0; i < lt.length && qi < lq.length; i++) {
+            if (lt[i] === lq[qi]) {
+                qi++; cons++; maxCons = Math.max(maxCons, cons)
+                if (i === 0 || " -_".includes(lt[i - 1])) score += 10
+            } else { cons = 0 }
         }
-        return queryIndex === lowerQuery.length ? score + maxConsecutive * 5 : -1;
+        return qi === lq.length ? score + maxCons * 5 : -1
     }
 
-    // Original sections model
     readonly property var sectionModel: [
-        {
-            icon: Icons.wifiHigh,
-            label: "Network",
-            section: 0,
-            isIcon: true
-        },
-        {
-            icon: Icons.bluetooth,
-            label: "Bluetooth",
-            section: 1,
-            isIcon: true
-        },
-        {
-            icon: Icons.faders,
-            label: "Mixer",
-            section: 2,
-            isIcon: true
-        },
-        {
-            icon: Icons.waveform,
-            label: "Effects",
-            section: 3,
-            isIcon: true
-        },
-        {
-            icon: Icons.paintBrush,
-            label: "Theme",
-            section: 4,
-            isIcon: true
-        },
-        {
-            icon: Icons.keyboard,
-            label: "Binds",
-            section: 5,
-            isIcon: true
-        },
-        {
-            icon: Icons.circuitry,
-            label: "System",
-            section: 6,
-            isIcon: true
-        },
-        {
-            icon: Icons.compositor,
-            label: "Compositor",
-            section: 7,
-            isIcon: true
-        },
-        {
-            icon: Qt.resolvedUrl("../../../../assets/ambxst/ambxst-icon.svg"),
-            label: "Ambxst",
-            section: 8,
-            isIcon: false
-        }
+        { icon: Icons.wifiHigh,    label: "Network",     section: 0, isIcon: true },
+        { icon: Icons.bluetooth,   label: "Bluetooth",   section: 1, isIcon: true },
+        { icon: Icons.faders,      label: "Mixer",       section: 2, isIcon: true },
+        { icon: Icons.waveform,    label: "Effects",     section: 3, isIcon: true },
+        { icon: Icons.paintBrush,  label: "Theme",       section: 4, isIcon: true },
+        { icon: Icons.keyboard,    label: "Binds",       section: 5, isIcon: true },
+        { icon: Icons.circuitry,   label: "System",      section: 6, isIcon: true },
+        { icon: Icons.compositor,  label: "Compositor",  section: 7, isIcon: true },
+        { icon: Qt.resolvedUrl("../../../../assets/ambxst/ambxst-icon.svg"), label: "Ambxst", section: 8, isIcon: false },
     ]
 
-    // Filtered sections based on search query
     readonly property var filteredSections: {
-        if (searchQuery.length === 0)
-            return sectionModel;
-
-        const query = searchQuery.toLowerCase();
-        return searchIndex.items.filter(item => {
-            return fuzzyMatch(query, item.label) || (item.keywords && item.keywords.includes(query));
-        }).map(item => {
-            // Find section metadata
-            const sectionMeta = sectionModel.find(s => s.section === item.section) || {};
+        if (searchQuery.length === 0) return sectionModel
+        const q = searchQuery.toLowerCase()
+        return searchIndex.items.filter(item =>
+            fuzzyMatch(q, item.label) || (item.keywords && item.keywords.includes(q))
+        ).map(item => {
+            const meta = sectionModel.find(s => s.section === item.section) || {}
             return {
-                label: item.label,
-                section: item.section,
-                subSection: item.subSection || "",
-                subLabel: item.subLabel || "",
-                // Use section icon instead of item icon
-                icon: sectionMeta.icon || item.icon,
-                isIcon: sectionMeta.isIcon !== undefined ? sectionMeta.isIcon : (item.isIcon !== undefined ? item.isIcon : true),
-                score: fuzzyScore(query, item.label)
-            };
-        }).sort((a, b) => b.score - a.score);
+                label: item.label, section: item.section,
+                subSection: item.subSection || "", subLabel: item.subLabel || "",
+                icon: meta.icon || item.icon,
+                isIcon: meta.isIcon !== undefined ? meta.isIcon : (item.isIcon !== undefined ? item.isIcon : true),
+                score: fuzzyScore(q, item.label)
+            }
+        }).sort((a, b) => b.score - a.score)
     }
 
-    // Find the index of current section in filtered list
-    function getFilteredIndex(sectionId) {
-        for (let i = 0; i < filteredSections.length; i++) {
-            if (filteredSections[i].section === sectionId)
-                return i;
-        }
-        return -1;
-    }
-
+    // ── Layout ─────────────────────────────────────────────────────────
     RowLayout {
         anchors.fill: parent
         spacing: 8
 
-        // Sidebar area: search + list
+        // ── LEFT SIDEBAR ───────────────────────────────────────────────
         ColumnLayout {
-            Layout.preferredWidth: 200
-            Layout.maximumWidth: 200
+            Layout.preferredWidth: 192
+            Layout.maximumWidth: 192
             Layout.fillHeight: true
             spacing: 4
 
-            // Search input (separate from panel list)
-            SearchInput {
-                id: searchInput
+            // Search bar
+            Rectangle {
                 Layout.fillWidth: true
-                placeholderText: "Search..."
-                clearOnEscape: true
+                Layout.preferredHeight: 36
+                radius: Styling.radius(-2)
+                color: searchInput.activeFocus
+                    ? Colors.surfaceContainerHighest
+                    : Colors.surfaceContainerLow
+                border.width: searchInput.activeFocus ? 1 : 0
+                border.color: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.45)
+                Behavior on color  { ColorAnimation { duration: 120 } }
 
-                onSearchTextChanged: text => {
-                    root.searchQuery = text;
-                }
-                // ESC to escape dashboard
-                onEscapePressed: {
-                    searchInput.focus = false;
-                    root.forceActiveFocus();
-                }
+                RowLayout {
+                    anchors { fill: parent; leftMargin: 8; rightMargin: 6 }
+                    spacing: 5
 
-                onAccepted: {
-                    // If single result, select it; if multiple, select top one
-                    if (root.filteredSections.length > 0) {
-                        const item = root.filteredSections[root.selectedIndex];
-                        root.currentSection = item.section;
-                        root.dispatchSubSection(item.section, item.subSection);
+                    Text {
+                        text: "search"
+                        font.family: Icons.font
+                        font.pixelSize: 15
+                        color: searchInput.activeFocus ? Colors.primary : Colors.outlineVariant
+                        Behavior on color { ColorAnimation { duration: 120 } }
                     }
-                }
 
-                onDownPressed: {
-                    if (root.selectedIndex < root.filteredSections.length - 1) {
-                        root.selectedIndex++;
-                    } else {
-                        root.selectedIndex = 0;
-                    }
-                }
+                    SearchInput {
+                        id: searchInput
+                        Layout.fillWidth: true
+                        placeholderText: "Search…"
+                        clearOnEscape: true
 
-                onUpPressed: {
-                    if (root.selectedIndex > 0) {
-                        root.selectedIndex--;
-                    } else {
-                        root.selectedIndex = root.filteredSections.length - 1;
+                        onSearchTextChanged: text => root.searchQuery = text
+                        onEscapePressed: { searchInput.focus = false; root.forceActiveFocus() }
+                        onAccepted: {
+                            if (root.filteredSections.length > 0) {
+                                const item = root.filteredSections[root.selectedIndex]
+                                root.currentSection = item.section
+                                root.dispatchSubSection(item.section, item.subSection)
+                            }
+                        }
+                        onDownPressed: root.selectedIndex = (root.selectedIndex < root.filteredSections.length - 1) ? root.selectedIndex + 1 : 0
+                        onUpPressed: root.selectedIndex = (root.selectedIndex > 0) ? root.selectedIndex - 1 : root.filteredSections.length - 1
                     }
                 }
             }
 
-            // Sidebar container with background
-            StyledRect {
-                id: sidebarContainer
-                variant: "common"
+            // Nav list
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                radius: Styling.radius(0)
+                color: Colors.surfaceContainerLow
+                border.width: 1
+                border.color: Qt.rgba(Colors.outlineVariant.r, Colors.outlineVariant.g, Colors.outlineVariant.b, 0.35)
+                clip: true
+
+                // Sliding selection pill
+                Rectangle {
+                    id: selPill
+                    x: 4; width: parent.width - 8; height: 38
+                    radius: Styling.radius(-2)
+                    color: Colors.primaryContainer
+                    opacity: root.selectedIndex >= 0 && root.selectedIndex < root.filteredSections.length ? 1 : 0
+                    y: {
+                        const idx = root.selectedIndex
+                        return idx >= 0 ? idx * 46 + 4 - sidebarFlickable.contentY : 4
+                    }
+                    Behavior on y { NumberAnimation { duration: (Config.animDuration ?? 0) / 2; easing.type: Easing.OutCubic } }
+                    Behavior on opacity { NumberAnimation { duration: 100 } }
+                }
 
                 Flickable {
                     id: sidebarFlickable
-                    anchors.fill: parent
-                    anchors.margins: 4
+                    anchors { fill: parent; margins: 4 }
                     contentWidth: width
-                    contentHeight: sidebar.height
+                    contentHeight: navCol.implicitHeight
                     clip: true
                     boundsBehavior: Flickable.StopAtBounds
 
-                    Behavior on contentY {
-                        enabled: Config.animDuration > 0 && !sidebarFlickable.moving
-                        NumberAnimation {
-                            duration: Config.animDuration / 2
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    // Sliding highlight behind tabs
-                    StyledRect {
-                        id: tabHighlight
-                        variant: "focus"
-                        width: parent.width
-                        height: 48
-                        radius: Styling.radius(-6)
-                        z: 0
-
-                        readonly property int tabHeight: 48
-                        readonly property int tabSpacing: 0
-
-                        x: 0
-                        y: {
-                            const idx = root.selectedIndex;
-                            return idx >= 0 ? idx * (tabHeight + tabSpacing) : 0;
-                        }
-                        visible: root.selectedIndex >= 0 && root.selectedIndex < root.filteredSections.length
-
-                        Behavior on y {
-                            enabled: Config.animDuration > 0
-                            NumberAnimation {
-                                duration: Config.animDuration / 2
-                                easing.type: Easing.OutCubic
-                            }
-                        }
+                    ScrollBar.vertical: ScrollBar {
+                        width: 3
+                        contentItem: Rectangle { color: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.45); radius: 2 }
+                        background: Rectangle { color: "transparent" }
                     }
 
                     Column {
-                        id: sidebar
+                        id: navCol
                         width: parent.width
                         spacing: 0
-                        z: 1
 
                         Repeater {
                             model: root.filteredSections
 
-                            delegate: Button {
-                                id: sidebarButton
+                            delegate: Item {
+                                id: navItem
                                 required property var modelData
                                 required property int index
+                                width: navCol.width
+                                height: 46
 
-                                width: sidebar.width
-                                height: 48
-                                flat: true
-                                hoverEnabled: true
+                                readonly property bool isActive: index === root.selectedIndex
 
-                                property bool isActive: index === root.selectedIndex
-
-                                background: Rectangle {
-                                    color: "transparent"
-                                }
-
-                                contentItem: Row {
+                                RowLayout {
+                                    anchors { fill: parent; leftMargin: 8; rightMargin: 8 }
                                     spacing: 8
 
-                                    // Icon on the left (font icon)
+                                    // Font icon
                                     Text {
-                                        id: iconText
-                                        text: sidebarButton.modelData.isIcon ? sidebarButton.modelData.icon : ""
+                                        visible: navItem.modelData.isIcon && (root.searchQuery.length === 0 || !navItem.modelData.subSection)
+                                        text: navItem.modelData.isIcon ? navItem.modelData.icon : ""
                                         font.family: Icons.font
-                                        font.pixelSize: 20
-                                        color: sidebarButton.isActive ? Styling.srItem("overprimary") : Styling.srItem("common")
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        leftPadding: 10
-                                        visible: sidebarButton.modelData.isIcon && (root.searchQuery.length === 0 || !sidebarButton.modelData.subSection)
-
-                                        Behavior on color {
-                                            enabled: Config.animDuration > 0
-                                            ColorAnimation {
-                                                duration: Config.animDuration
-                                                easing.type: Easing.OutCubic
-                                            }
-                                        }
+                                        font.pixelSize: 17
+                                        color: navItem.isActive ? Colors.overPrimaryContainer : Colors.overSurfaceVariant
+                                        Behavior on color { ColorAnimation { duration: (Config.animDuration ?? 0) } }
                                     }
 
                                     // SVG icon
                                     Item {
-                                        width: 30
-                                        height: 20
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        visible: !sidebarButton.modelData.isIcon && (root.searchQuery.length === 0 || !sidebarButton.modelData.subSection)
-
+                                        width: 20; height: 20
+                                        visible: !navItem.modelData.isIcon && (root.searchQuery.length === 0 || !navItem.modelData.subSection)
                                         Image {
-                                            id: svgIcon
-                                            width: 20
-                                            height: 20
-                                            anchors.centerIn: parent
-                                            anchors.horizontalCenterOffset: 5
-                                            source: !sidebarButton.modelData.isIcon ? sidebarButton.modelData.icon : ""
-                                            sourceSize: Qt.size(width * 2, height * 2)
+                                            anchors.fill: parent
+                                            source: !navItem.modelData.isIcon ? navItem.modelData.icon : ""
+                                            sourceSize: Qt.size(40, 40)
                                             fillMode: Image.PreserveAspectFit
                                             smooth: true
                                             asynchronous: true
@@ -453,155 +295,136 @@ Rectangle {
                                             layer.effect: MultiEffect {
                                                 brightness: 1.0
                                                 colorization: 1.0
-                                                colorizationColor: sidebarButton.isActive ? Styling.srItem("overprimary") : Styling.srItem("common")
+                                                colorizationColor: navItem.isActive ? Colors.overPrimaryContainer : Colors.overSurfaceVariant
                                             }
                                         }
                                     }
 
-                                    // Text
-                                    Column {
-                                        anchors.verticalCenter: parent.verticalCenter
+                                    // Labels
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 1
 
                                         Text {
-                                            text: sidebarButton.modelData.label
+                                            Layout.fillWidth: true
+                                            text: navItem.modelData.label
                                             font.family: Config.theme.font
                                             font.pixelSize: Styling.fontSize(0)
-                                            font.weight: sidebarButton.isActive ? Font.Bold : Font.Normal
-                                            color: sidebarButton.isActive ? Styling.srItem("overprimary") : Styling.srItem("common")
-
-                                            Behavior on color {
-                                                enabled: Config.animDuration > 0
-                                                ColorAnimation {
-                                                    duration: Config.animDuration
-                                                    easing.type: Easing.OutCubic
-                                                }
-                                            }
+                                            font.weight: navItem.isActive ? Font.SemiBold : Font.Normal
+                                            color: navItem.isActive ? Colors.overPrimaryContainer : Colors.overSurface
+                                            elide: Text.ElideRight
+                                            Behavior on color { ColorAnimation { duration: (Config.animDuration ?? 0) } }
                                         }
 
                                         Text {
-                                            visible: !!sidebarButton.modelData.subLabel
-                                            text: sidebarButton.modelData.subLabel || ""
+                                            visible: !!navItem.modelData.subLabel
+                                            text: navItem.modelData.subLabel || ""
                                             font.family: Config.theme.font
                                             font.pixelSize: Styling.fontSize(-2)
-                                            color: Colors.overSurfaceVariant
+                                            color: Colors.outlineVariant
+                                            elide: Text.ElideRight
                                         }
                                     }
                                 }
 
-                                onClicked: {
-                                    root.selectedIndex = index;
-                                    // currentSection updates via binding on selectedIndex
-                                    root.dispatchSubSection(sidebarButton.modelData.section, sidebarButton.modelData.subSection);
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        root.selectedIndex = index
+                                        root.dispatchSubSection(navItem.modelData.section, navItem.modelData.subSection)
+                                    }
                                 }
                             }
                         }
                     }
 
-                    // Scroll wheel navigation between sections
                     WheelHandler {
                         enabled: sidebarFlickable.contentHeight <= sidebarFlickable.height
                         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
                         onWheel: event => {
-                            if (event.angleDelta.y > 0 && root.selectedIndex > 0) {
-                                root.selectedIndex--;
-                            } else if (event.angleDelta.y < 0 && root.selectedIndex < root.filteredSections.length - 1) {
-                                root.selectedIndex++;
-                            }
+                            if (event.angleDelta.y > 0 && root.selectedIndex > 0) root.selectedIndex--
+                            else if (event.angleDelta.y < 0 && root.selectedIndex < root.filteredSections.length - 1) root.selectedIndex++
                         }
                     }
                 }
             }
         }
 
-        // Content area with animated transitions
-        Item {
+        // ── CONTENT PANEL ──────────────────────────────────────────────
+        Rectangle {
             id: contentArea
             Layout.fillWidth: true
             Layout.fillHeight: true
+            radius: Styling.radius(0)
+            color: Colors.surfaceContainerLowest
+            border.width: 1
+            border.color: Qt.rgba(Colors.outlineVariant.r, Colors.outlineVariant.g, Colors.outlineVariant.b, 0.3)
             clip: true
 
             property int previousSection: 0
             readonly property int maxContentWidth: 480
 
-            // Track section changes for animation direction
-            onVisibleChanged: {
-                if (visible) {
-                    contentArea.previousSection = root.currentSection;
-                }
-            }
-
             Connections {
                 target: root
-                function onCurrentSectionChanged() {
-                    contentArea.previousSection = root.currentSection;
-                }
+                function onCurrentSectionChanged() { contentArea.previousSection = root.currentSection }
             }
 
-            // Panel definitions for Loader
             readonly property var panelComponents: [
-                {
-                    component: "WifiPanel.qml",
-                    section: 0
-                },
-                {
-                    component: "BluetoothPanel.qml",
-                    section: 1
-                },
-                {
-                    component: "AudioMixerPanel.qml",
-                    section: 2
-                },
-                {
-                    component: "EasyEffectsPanel.qml",
-                    section: 3
-                },
-                {
-                    component: "ThemePanel.qml",
-                    section: 4
-                },
-                {
-                    component: "BindsPanel.qml",
-                    section: 5
-                },
-                {
-                    component: "SystemPanel.qml",
-                    section: 6
-                },
-                {
-                    component: "CompositorPanel.qml",
-                    section: 7
-                },
-                {
-                    component: "ShellPanel.qml",
-                    section: 8
-                }
+                { component: "WifiPanel.qml",         section: 0 },
+                { component: "BluetoothPanel.qml",    section: 1 },
+                { component: "AudioMixerPanel.qml",   section: 2 },
+                { component: "EasyEffectsPanel.qml",  section: 3 },
+                { component: "ThemePanel.qml",        section: 4 },
+                { component: "BindsPanel.qml",        section: 5 },
+                { component: "SystemPanel.qml",       section: 6 },
+                { component: "CompositorPanel.qml",   section: 7 },
+                { component: "ShellPanel.qml",        section: 8 },
             ]
 
-            // Lazy-loaded panel using Loader
             Loader {
                 id: panelLoader
                 anchors.fill: parent
                 asynchronous: true
                 source: contentArea.panelComponents[root.currentSection]?.component ?? ""
 
-                // Fade in animation
                 opacity: status === Loader.Ready ? 1 : 0
                 Behavior on opacity {
-                    enabled: Config.animDuration > 0
-                    NumberAnimation {
-                        duration: Config.animDuration
-                        easing.type: Easing.OutCubic
-                    }
+                    enabled: (Config.animDuration ?? 0) > 0
+                    NumberAnimation { duration: Config.animDuration ?? 0; easing.type: Easing.OutCubic }
                 }
 
                 onLoaded: {
                     if (item) {
-                        item.maxContentWidth = contentArea.maxContentWidth;
-                        // Apply pending subsection if any
+                        item.maxContentWidth = contentArea.maxContentWidth
                         if (root.pendingSubSection !== "" && item.currentSection !== undefined) {
-                            item.currentSection = root.pendingSubSection;
-                            root.pendingSubSection = "";
+                            item.currentSection = root.pendingSubSection
+                            root.pendingSubSection = ""
                         }
+                    }
+                }
+            }
+
+            // Loading indicator
+            Rectangle {
+                anchors.centerIn: parent
+                visible: panelLoader.status === Loader.Loading
+                width: 32; height: 32; radius: 8
+                color: Colors.surfaceContainer
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "sync"
+                    font.family: Icons.font
+                    font.pixelSize: 18
+                    color: Colors.primary
+
+                    RotationAnimation on rotation {
+                        running: parent.visible
+                        from: 0; to: 360
+                        duration: 900
+                        loops: Animation.Infinite
                     }
                 }
             }
