@@ -1,3 +1,11 @@
+> [!WARNING]
+> Moonveil development is being paused.
+>
+> I’ll fix the installer and bring the project to a stable state, then step away for the time being. No active updates are planned after that.
+>
+> The repository will remain available, and contributions are welcome. Branch protection is currently enabled, but once I step away it may be disabled  so if you contribute, please keep the codebase clean and follow the existing structure and standards.
+
+
 <p align="center">
   <a href="https://github.com/notcandy001/Moonveil">
     <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/cover.png" alt="Moonveil" width="100%" />
@@ -20,15 +28,6 @@
     <img src="https://img.shields.io/badge/Wall%20Collection-click%20here-5E81AC?style=for-the-badge&logo=github&logoColor=white&labelColor=000000" alt="Wallpapers">
   </a>
   
-
------
-⚠️ Notice
-
-Moonveil development is being paused.
-
-I’ll fix the installer and bring the project to a stable state, then step away for the time being. No active updates are planned after that.
-
-The repository will remain available, and contributions are welcome. Branch protection is currently enabled, but once I step away it may be disabled so if you contribute, please keep the codebase clean and follow the existing structure and standards.
 
 -----
 
