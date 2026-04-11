@@ -22,6 +22,15 @@
   
 
 -----
+⚠️ Notice
+
+Moonveil development is being paused.
+
+I’ll fix the installer and bring the project to a stable state, then step away for the time being. No active updates are planned after that.
+
+The repository will remain available, and contributions are welcome. Branch protection is currently enabled, but once I step away it may be disabled so if you contribute, please keep the codebase clean and follow the existing structure and standards.
+
+-----
 
 <h2><sub><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png" width="32" height="32" /></sub> Screenshots</h2>
 
