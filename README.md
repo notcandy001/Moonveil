@@ -1,4 +1,4 @@
-> [!WARNING]
+> [!Notice]
 > Moonveil development is being paused.
 >
 > I’ll fix the installer and bring the project to a stable state, then step away for the time being. No active updates are planned after that.
