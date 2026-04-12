@@ -2,15 +2,20 @@
 # ==============================================================================
 #  dots-extra/fedora/install.sh  —  Moonveil Fedora Installer
 #
-#  Called by get/install.sh when a Fedora-based distro is detected.
 #  Supports: Fedora, Nobara, RHEL, AlmaLinux, Rocky
+#
+#  Notes:
+#    · RPM Fusion free + nonfree repos will be enabled
+#    · solopasha/hyprland copr will be enabled for Hyprland packages
+#    · QuickShell is built from source (no copr available yet)
+#    · matugen installed via cargo, pywal via pip
 #
 #  Do NOT run directly — use get/install.sh
 # ==============================================================================
 
 set -Eeuo pipefail
 
-# ── Parse args ────────────────────────────────────────────────────────────────
+# ── Parse args passed by get/install.sh ──────────────────────────────────────
 MV_LOG_FILE="/tmp/moonveil.log"
 MV_REPO_ROOT=""
 MV_COMMON_LIB=""
@@ -18,10 +23,10 @@ MV_VERSION="1.0.0"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --log)         MV_LOG_FILE="$2";    shift 2 ;;
-    --repo-root)   MV_REPO_ROOT="$2";  shift 2 ;;
-    --common-lib)  MV_COMMON_LIB="$2"; shift 2 ;;
-    --version)     MV_VERSION="$2";    shift 2 ;;
+    --log)        MV_LOG_FILE="$2";   shift 2 ;;
+    --repo-root)  MV_REPO_ROOT="$2";  shift 2 ;;
+    --common-lib) MV_COMMON_LIB="$2"; shift 2 ;;
+    --version)    MV_VERSION="$2";    shift 2 ;;
     *) shift ;;
   esac
 done
@@ -30,23 +35,37 @@ export MV_LOG_FILE MV_REPO_ROOT MV_COMMON_LIB MV_VERSION
 
 # ── Load shared library ───────────────────────────────────────────────────────
 _resolve_common_lib() {
-  [[ -n "${MV_COMMON_LIB:-}" && -f "$MV_COMMON_LIB" ]] && { echo "$MV_COMMON_LIB"; return; }
+  # 1. Passed explicitly
+  if [[ -n "${MV_COMMON_LIB:-}" && -f "$MV_COMMON_LIB" ]]; then
+    echo "$MV_COMMON_LIB"; return 0
+  fi
+
+  # 2. Local repo — skip when running from a downloaded tmp file
   local src="${BASH_SOURCE[0]:-}"
   if [[ -n "$src" && "$src" != /tmp/* ]]; then
-    local this_dir; this_dir="$(cd "$(dirname "$src")" && pwd)"
+    local this_dir
+    this_dir="$(cd "$(dirname "$src")" && pwd)"
     local local_lib="${this_dir}/../../get/lib/common.sh"
-    [[ -f "$local_lib" ]] && { echo "$local_lib"; return; }
+    if [[ -f "$local_lib" ]]; then
+      echo "$local_lib"; return 0
+    fi
   fi
-  local tmp; tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
+
+  # 3. Download
+  local tmp
+  tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
   if curl -fsSL \
       "https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master/get/lib/common.sh" \
       -o "$tmp" 2>/dev/null; then
-    echo "$tmp"; return
+    echo "$tmp"; return 0
   fi
+
   echo "ERROR: cannot load common.sh — pass --common-lib or check your internet" >&2
   exit 1
 }
+
 _common_lib=$(_resolve_common_lib)
+# shellcheck source=../../get/lib/common.sh
 source "$_common_lib"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
@@ -64,7 +83,7 @@ _start_sudo_keepalive() {
   SUDO_PID=$!
 }
 _stop_sudo_keepalive() {
-  [[ -n "$SUDO_PID" ]] && kill "$SUDO_PID" 2>/dev/null || true
+  [[ -n "${SUDO_PID:-}" ]] && kill "$SUDO_PID" 2>/dev/null || true
 }
 trap '_stop_sudo_keepalive' EXIT INT TERM
 
@@ -84,7 +103,7 @@ _step_update() {
   sudo dnf install -y \
     "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
     "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm" \
-    >> "$MV_LOG_FILE" 2>&1 || mv_warn "RPM Fusion already enabled or failed — continuing"
+    >> "$MV_LOG_FILE" 2>&1 || mv_warn "RPM Fusion already enabled or unavailable — continuing"
 
   mv_info "Running dnf upgrade..."
   echo ""
@@ -125,7 +144,6 @@ _step_core() {
 _step_packages() {
   mv_step "Moonveil Packages"
 
-  # Copr for Hyprland on Fedora
   mv_info "Enabling solopasha/hyprland copr..."
   sudo dnf copr enable -y solopasha/hyprland >> "$MV_LOG_FILE" 2>&1 \
     || mv_warn "copr enable failed — Hyprland packages may not be available"
@@ -173,7 +191,7 @@ _step_packages() {
     "bluez|dnf"
     "bluez-tools|dnf"
     "gnome-bluetooth|dnf"
-    # Monitor / visualizer
+    # Monitor + visualizer
     "btop|dnf"
     "cava|dnf"
     # Theming
@@ -198,63 +216,75 @@ _step_packages() {
 
   local prev_group=""
   for entry in "${pkgs[@]}"; do
-    local pkg="${entry%%|*}"; local src="${entry##*|}"
+    local pkg="${entry%%|*}"
+    local src="${entry##*|}"
     local group=""
+
     case "$pkg" in
-      hyprland|xdg-desktop-portal*|xdg-utils|xwayland|hyprlock|hypridle|hyprpaper) group="Hyprland Compositor" ;;
-      swaync)                                   group="Notifications Backend" ;;
-      grim|slurp|swappy)                        group="Screenshot" ;;
-      wl-clipboard|cliphist)                    group="Clipboard" ;;
-      kitty)                                    group="Terminal" ;;
-      neovim|luarocks)                          group="Editor" ;;
-      nautilus|ffmpegthumbnailer|gvfs*)         group="File Manager" ;;
-      pipewire*|wireplumber|pavucontrol|pamixer|playerctl|brightnessctl) group="Audio & Media" ;;
-      bluez*|gnome-bluetooth*)                  group="Bluetooth" ;;
-      btop|cava)                                group="Monitor & Visualizer" ;;
-      ImageMagick|lxappearance|papirus*|libnotify*) group="Theming" ;;
-      google-noto-*)                            group="Fonts" ;;
-      eza|bat|ripgrep|fd-find|jq|yazi)          group="CLI Utilities" ;;
+      hyprland|xdg-desktop-portal*|xdg-utils|xwayland|hyprlock|hypridle|hyprpaper)
+                                                         group="Hyprland Compositor" ;;
+      swaync)                                            group="Notifications Backend" ;;
+      grim|slurp|swappy)                                 group="Screenshot" ;;
+      wl-clipboard|cliphist)                             group="Clipboard" ;;
+      kitty)                                             group="Terminal" ;;
+      neovim|luarocks)                                   group="Editor" ;;
+      nautilus|ffmpegthumbnailer|gvfs*)                  group="File Manager" ;;
+      pipewire*|wireplumber|pavucontrol|pamixer|playerctl|brightnessctl)
+                                                         group="Audio & Media" ;;
+      bluez*|gnome-bluetooth*)                           group="Bluetooth" ;;
+      btop|cava)                                         group="Monitor & Visualizer" ;;
+      ImageMagick|lxappearance|papirus*|libnotify*)      group="Theming" ;;
+      google-noto-*)                                     group="Fonts" ;;
+      eza|bat|ripgrep|fd-find|jq|yazi)                   group="CLI Utilities" ;;
     esac
-    [[ -n "$group" && "$group" != "$prev_group" ]] && { mv_section "$group"; prev_group="$group"; }
+
+    if [[ -n "$group" && "$group" != "$prev_group" ]]; then
+      mv_section "$group"
+      prev_group="$group"
+    fi
+
     mv_install_pkg "$pkg" "$src" _dnf_installed _dnf_install
   done
 
-  # QuickShell — build from source on Fedora (no copr yet)
+  # QuickShell — build from source (no copr yet)
   mv_section "CrescentShell (QuickShell — build from source)"
   if ! command -v quickshell &>/dev/null; then
-    mv_info "Building QuickShell from source..."
+    mv_info "Installing QuickShell build deps..."
+    sudo dnf install -y cmake qt6-qtbase-devel qt6-qtdeclarative-devel \
+      qt6-qtwayland-devel pipewire-devel >> "$MV_LOG_FILE" 2>&1 || true
+
+    mv_info "Cloning QuickShell..."
     local qs_tmp; qs_tmp=$(mktemp -d)
-    git clone https://github.com/quickshell-mirror/quickshell.git "$qs_tmp" >> "$MV_LOG_FILE" 2>&1 \
-      || { mv_warn "QuickShell clone failed — install manually"; rm -rf "$qs_tmp"; }
-    if [[ -d "$qs_tmp" ]]; then
-      sudo dnf install -y cmake qt6-qtbase-devel qt6-qtdeclarative-devel \
-        qt6-qtwayland-devel pipewire-devel >> "$MV_LOG_FILE" 2>&1 || true
+    if git clone https://github.com/quickshell-mirror/quickshell.git "$qs_tmp" >> "$MV_LOG_FILE" 2>&1; then
       cmake -S "$qs_tmp" -B "$qs_tmp/build" -DCMAKE_BUILD_TYPE=Release >> "$MV_LOG_FILE" 2>&1
       cmake --build "$qs_tmp/build" -j"$(nproc)" >> "$MV_LOG_FILE" 2>&1
       sudo cmake --install "$qs_tmp/build" >> "$MV_LOG_FILE" 2>&1
       rm -rf "$qs_tmp"
       mv_success "QuickShell built and installed"
+    else
+      mv_warn "QuickShell clone failed — install manually from https://github.com/quickshell-mirror/quickshell"
+      rm -rf "$qs_tmp"
     fi
   else
     mv_skip "QuickShell already installed"
   fi
 
-  # matugen via cargo
+  # matugen — cargo
   mv_section "matugen (cargo)"
   if ! command -v matugen &>/dev/null; then
     sudo dnf install -y cargo >> "$MV_LOG_FILE" 2>&1 || true
     cargo install matugen >> "$MV_LOG_FILE" 2>&1 \
-      || mv_warn "matugen install failed — run: cargo install matugen"
+      || mv_warn "matugen install failed — run manually: cargo install matugen"
     mv_success "matugen installed"
   else
     mv_skip "matugen already installed"
   fi
 
-  # pywal via pip
+  # pywal — pip
   mv_section "pywal (pip)"
   if ! command -v wal &>/dev/null; then
     pip3 install --user pywal >> "$MV_LOG_FILE" 2>&1 \
-      || mv_warn "pywal install failed — run: pip3 install --user pywal"
+      || mv_warn "pywal install failed — run manually: pip3 install --user pywal"
     mv_success "pywal installed"
   else
     mv_skip "pywal already installed"
@@ -271,15 +301,19 @@ _step_packages() {
 
 _step_clone() {
   mv_step "Moonveil Repository"
+
   if [[ -d "$INSTALL_DIR/.git" ]]; then
-    mv_warn "~/moonveil exists — pulling..."
-    git -C "$INSTALL_DIR" pull --ff-only >> "$MV_LOG_FILE" 2>&1 \
-      && mv_success "Updated" || mv_warn "Using existing checkout"
+    mv_warn "~/moonveil already exists — pulling latest..."
+    if git -C "$INSTALL_DIR" pull --ff-only >> "$MV_LOG_FILE" 2>&1; then
+      mv_success "Repository updated"
+    else
+      mv_warn "Fast-forward failed — using existing checkout"
+    fi
   else
     mv_info "Cloning into ~/moonveil..."
     git clone "$REPO_URL" "$INSTALL_DIR" >> "$MV_LOG_FILE" 2>&1 \
-      || mv_error "Failed to clone."
-    mv_success "Cloned → ~/moonveil"
+      || mv_error "Failed to clone repository."
+    mv_success "Repository cloned → ~/moonveil"
   fi
 }
 
@@ -289,27 +323,39 @@ _step_clone() {
 
 _step_dotfiles() {
   mv_step "Backup & Dotfiles"
-  mv_section "Backing up"; mv_backup_configs "$BACKUP_DIR"; echo ""
+
+  mv_section "Backing up existing configs"
+  mv_backup_configs "$BACKUP_DIR"
+
+  echo ""
   mv_section "Applying ~/.config"
-  [[ -d "${INSTALL_DIR}/dots/.config" ]] \
-    && { mkdir -p "$HOME/.config"; cp -r "${INSTALL_DIR}/dots/.config/"* "$HOME/.config/"; mv_success "~/.config applied"; } \
-    || mv_warn "dots/.config not found"
+  if [[ -d "${INSTALL_DIR}/dots/.config" ]]; then
+    mkdir -p "$HOME/.config"
+    cp -r "${INSTALL_DIR}/dots/.config/"* "$HOME/.config/"
+    mv_success "~/.config applied"
+  else
+    mv_warn "dots/.config not found in repo — skipping"
+  fi
+
   mv_section "Applying ~/.local"
   if [[ -d "${INSTALL_DIR}/dots/.local" ]]; then
     mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
     cp -r "${INSTALL_DIR}/dots/.local/"* "$HOME/.local/"
     find "$HOME/.local/bin" -maxdepth 1 -type f -exec chmod +x {} \;
-    mv_success "~/.local applied"
+    mv_success "~/.local applied  (binaries marked executable)"
   else
-    mv_warn "dots/.local not found"
+    mv_warn "dots/.local not found in repo — skipping"
   fi
-  mv_section "Shell configs"
-  local s="${INSTALL_DIR}/dots/shell"
-  [[ -f "$s/zshrc"    ]] && cp "$s/zshrc"    "$HOME/.zshrc"    && mv_success "~/.zshrc"
-  [[ -f "$s/p10k.zsh" ]] && cp "$s/p10k.zsh" "$HOME/.p10k.zsh" && mv_success "~/.p10k.zsh"
-  [[ -f "${INSTALL_DIR}/dots/keybinds.toml" ]] \
-    && cp "${INSTALL_DIR}/dots/keybinds.toml" "$HOME/.config/keybinds.toml" \
-    && mv_success "~/.config/keybinds.toml"
+
+  mv_section "Applying shell configs"
+  local shell_dir="${INSTALL_DIR}/dots/shell"
+  [[ -f "${shell_dir}/zshrc"    ]] && cp "${shell_dir}/zshrc"    "$HOME/.zshrc"    && mv_success "~/.zshrc"
+  [[ -f "${shell_dir}/p10k.zsh" ]] && cp "${shell_dir}/p10k.zsh" "$HOME/.p10k.zsh" && mv_success "~/.p10k.zsh"
+
+  if [[ -f "${INSTALL_DIR}/dots/keybinds.toml" ]]; then
+    cp "${INSTALL_DIR}/dots/keybinds.toml" "$HOME/.config/keybinds.toml"
+    mv_success "~/.config/keybinds.toml"
+  fi
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -318,39 +364,79 @@ _step_dotfiles() {
 
 _step_post() {
   mv_step "Post-install Setup"
+
   mv_set_shell_zsh
+
   local p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-  [[ ! -d "$p10k_dir" ]] \
-    && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir" >> "$MV_LOG_FILE" 2>&1 \
-    && mv_success "p10k installed" || mv_skip "p10k present"
-  grep -q '.local/bin' "$HOME/.zshrc" 2>/dev/null \
-    || { echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.zshrc"; mv_success "~/.local/bin in PATH"; }
+  if [[ ! -d "$p10k_dir" ]]; then
+    mv_info "Installing Powerlevel10k..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
+      "$p10k_dir" >> "$MV_LOG_FILE" 2>&1 \
+      || mv_warn "p10k clone failed — run manually later"
+    mv_success "Powerlevel10k installed"
+  else
+    mv_skip "Powerlevel10k already present"
+  fi
+
+  if ! grep -q '.local/bin' "$HOME/.zshrc" 2>/dev/null; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.zshrc"
+    mv_success "~/.local/bin added to PATH in .zshrc"
+  else
+    mv_skip "~/.local/bin already in PATH"
+  fi
+
   mv_enable_service "bluetooth"
   mv_rebuild_font_cache
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
+#  WELCOME PROMPT
+# ══════════════════════════════════════════════════════════════════════════════
+
 _welcome() {
-  echo -e "  ${WHITE}${B}Fedora/Nobara — Moonveil installer${R}"; echo ""
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  RPM Fusion repos will be enabled${R}"
+  echo -e "  ${WHITE}${B}Fedora/Nobara — Moonveil installer${R}"
+  echo ""
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  RPM Fusion free + nonfree repos will be enabled${R}"
   echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  solopasha/hyprland copr will be enabled${R}"
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  QuickShell built from source (no copr yet)${R}"; echo ""
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  QuickShell built from source (no copr yet)${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  matugen (cargo)  +  pywal (pip)${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Moonveil dotfiles  →  ~/.config  ~/.local  ~/.zshrc${R}"
+  echo ""
+  echo -e "  ${YELLOW}  Existing configs will be backed up before anything changes.${R}"
   echo -e "  ${GRAY}  Backup  →  ${BACKUP_DIR}${R}"
-  echo -e "  ${GRAY}  Log     →  ${MV_LOG_FILE}${R}"; echo ""
-  mv_divider; echo ""
+  echo -e "  ${GRAY}  Log     →  ${MV_LOG_FILE}${R}"
+  echo ""
+  mv_divider
+  echo ""
   echo -ne "  ${CYAN}${B}➜  Start Fedora installation? [y/N]${R}  "
-  read -r REPLY </dev/tty; echo ""
+  read -r REPLY </dev/tty
+  echo ""
+
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
-    echo -e "  ${YELLOW}  Cancelled.${R}"; exit 0
+    echo -e "  ${YELLOW}  Cancelled.${R}"
+    echo ""
+    exit 0
   fi
-  mv_success "Starting — sit back! ☽"; sleep 0.5
+
+  mv_success "Starting installation — sit back! ☽"
+  sleep 0.5
 }
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  MAIN
+# ══════════════════════════════════════════════════════════════════════════════
 
 main() {
   _welcome
-  _step_update; _step_core; _step_packages
-  _step_clone; _step_dotfiles; _step_post
-  _stop_sudo_keepalive; trap - EXIT
+  _step_update
+  _step_core
+  _step_packages
+  _step_clone
+  _step_dotfiles
+  _step_post
+  _stop_sudo_keepalive
+  trap - EXIT
   mv_print_complete "$MV_VERSION" "$BACKUP_DIR" "$MV_LOG_FILE"
 }
+
 main "$@"

@@ -22,8 +22,6 @@ readonly MV_REPO="https://github.com/notcandy001/Moonveil"
 readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-# When cloned locally, SCRIPT_DIR = <repo>/get/
-# When piped via curl, we download everything on the fly
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
@@ -107,8 +105,7 @@ _check_internet() {
 
 _check_wayland() {
   if [[ -z "${WAYLAND_DISPLAY:-}" && -z "${XDG_SESSION_TYPE:-}" ]]; then
-    warn "Could not detect Wayland session. Moonveil requires Wayland/Hyprland."
-    warn "If you are in a TTY this is expected — continuing."
+    warn "Could not detect Wayland session — if you are in a TTY this is expected, continuing."
   else
     success "Session type: ${XDG_SESSION_TYPE:-wayland}"
   fi
@@ -172,16 +169,11 @@ _print_distro_info() {
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  SCRIPT LOADER
+#  COMMON LIB + DISTRO SCRIPT LOADER
 #
-#  Priority:
-#    1. Local clone  →  <repo>/dots-extra/<distro>/install.sh
-#    2. Remote       →  download from GitHub raw
+#  All diagnostic output goes to stderr (>&2) so it is NOT captured into
+#  $() assignments — only the file path should reach stdout.
 # ══════════════════════════════════════════════════════════════════════════════
-
-# NOTE: these functions are called via $() subshell for their return value.
-# ALL diagnostic output MUST go to stderr (>&2) — anything on stdout gets
-# captured into the caller's variable and corrupts the file path.
 
 _ensure_common_lib() {
   local lib_local="${REPO_ROOT}/get/lib/common.sh"
@@ -207,24 +199,23 @@ _ensure_common_lib() {
 _load_distro_script() {
   local family="$1"
 
-  # ── Try local clone first ──────────────────────────────────────────────────
+  # Try local clone first
   local local_path="${REPO_ROOT}/dots-extra/${family}/install.sh"
   if [[ -f "$local_path" ]]; then
     echo "$local_path"
     return 0
   fi
 
-  # ── Download from GitHub ───────────────────────────────────────────────────
+  # Download from GitHub
   local url="${MV_RAW}/dots-extra/${family}/install.sh"
   local tmp
   tmp=$(mktemp "/tmp/moonveil-${family}-XXXXXX.sh")
 
-  # >&2 so this line doesn't get captured into the caller's $() assignment
   echo -e "  ${GRAY}[ INFO ]${R}  Downloading dots-extra/${family}/install.sh..." >&2
 
   if curl -fsSL "$url" -o "$tmp" 2>/dev/null; then
     chmod +x "$tmp"
-    echo "$tmp"   # ← only this goes to stdout / gets captured
+    echo "$tmp"
     return 0
   fi
 
@@ -259,48 +250,17 @@ main() {
   [[ -f /etc/os-release ]] && source /etc/os-release || true
   _print_distro_info "$family"
 
-  # ── Ensure common lib path is exported ──────────────────────────────────────
+  # ── Ensure common lib is available and exported ──────────────────────────────
   _ensure_common_lib
 
-  # ── Route ───────────────────────────────────────────────────────────────────
+  # ── Load distro script path into a variable before exec ─────────────────────
+  local script
   case "$family" in
-
-    arch)
-      success "Detected: Arch-based  →  dots-extra/arch/install.sh"
+    arch|debian|fedora)
+      success "Detected: ${family^}-based  →  dots-extra/${family}/install.sh"
       echo ""
-      local script
-      script=$(_load_distro_script "arch")
-      exec bash "$script" \
-        --log        "$LOG_FILE"     \
-        --repo-root  "$REPO_ROOT"    \
-        --common-lib "$MV_COMMON_LIB" \
-        --version    "$MV_VERSION"
+      script=$(_load_distro_script "$family")
       ;;
-
-    debian)
-      success "Detected: Debian-based  →  dots-extra/debian/install.sh"
-      echo ""
-      local script
-      script=$(_load_distro_script "debian")
-      exec bash "$script" \
-        --log        "$LOG_FILE"     \
-        --repo-root  "$REPO_ROOT"    \
-        --common-lib "$MV_COMMON_LIB" \
-        --version    "$MV_VERSION"
-      ;;
-
-    fedora)
-      success "Detected: Fedora-based  →  dots-extra/fedora/install.sh"
-      echo ""
-      local script
-      script=$(_load_distro_script "fedora")
-      exec bash "$script" \
-        --log        "$LOG_FILE"     \
-        --repo-root  "$REPO_ROOT"    \
-        --common-lib "$MV_COMMON_LIB" \
-        --version    "$MV_VERSION"
-      ;;
-
     unsupported)
       echo ""
       divider
@@ -317,6 +277,12 @@ main() {
       exit 1
       ;;
   esac
+
+  exec bash "$script" \
+    --log        "$LOG_FILE"      \
+    --repo-root  "$REPO_ROOT"     \
+    --common-lib "$MV_COMMON_LIB" \
+    --version    "$MV_VERSION"
 }
 
 main "$@"

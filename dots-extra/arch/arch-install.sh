@@ -2,7 +2,6 @@
 # ==============================================================================
 #  dots-extra/arch/install.sh  —  Moonveil Arch Linux Installer
 #
-#  Called by get/install.sh when an Arch-based distro is detected.
 #  Supports: Arch, Manjaro, EndeavourOS, CachyOS, Garuda, Artix
 #
 #  Stack:
@@ -12,21 +11,20 @@
 #    Editor        →  Neovim (NvChad)
 #    Theming       →  matugen + pywal (Material You)
 #    Notifications →  swaync (D-Bus backend, UI via CrescentShell)
-#    Lock          →  hyprlock
-#    Idle          →  hypridle
+#    Lock          →  hyprlock  /  Idle → hypridle
 #    Monitor       →  btop + cava
 #    Fetch         →  fastfetch
 #
 #  NOTE: waybar and rofi are NOT installed.
 #        CrescentShell handles bar, launcher, control-center,
-#        overview and notification surface entirely via QML.
+#        overview and notifications entirely via QML.
 #
 #  Do NOT run directly — use get/install.sh
 # ==============================================================================
 
 set -Eeuo pipefail
 
-# ── Parse args from get/install.sh ───────────────────────────────────────────
+# ── Parse args passed by get/install.sh ──────────────────────────────────────
 MV_LOG_FILE="/tmp/moonveil.log"
 MV_REPO_ROOT=""
 MV_COMMON_LIB=""
@@ -34,10 +32,10 @@ MV_VERSION="1.0.0"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --log)         MV_LOG_FILE="$2";    shift 2 ;;
-    --repo-root)   MV_REPO_ROOT="$2";  shift 2 ;;
-    --common-lib)  MV_COMMON_LIB="$2"; shift 2 ;;
-    --version)     MV_VERSION="$2";    shift 2 ;;
+    --log)        MV_LOG_FILE="$2";   shift 2 ;;
+    --repo-root)  MV_REPO_ROOT="$2";  shift 2 ;;
+    --common-lib) MV_COMMON_LIB="$2"; shift 2 ;;
+    --version)    MV_VERSION="$2";    shift 2 ;;
     *) shift ;;
   esac
 done
@@ -45,14 +43,17 @@ done
 export MV_LOG_FILE MV_REPO_ROOT MV_COMMON_LIB MV_VERSION
 
 # ── Load shared library ───────────────────────────────────────────────────────
-# Priority: --common-lib arg → local repo path → download
+# Priority:
+#   1. --common-lib arg  (set by get/install.sh — most reliable)
+#   2. Local repo path   (only when BASH_SOURCE[0] is a real path, not /tmp/*)
+#   3. Download from GitHub
 _resolve_common_lib() {
-  # 1. Passed explicitly via --common-lib (normal path when launched from get/install.sh)
+  # 1. Passed explicitly
   if [[ -n "${MV_COMMON_LIB:-}" && -f "$MV_COMMON_LIB" ]]; then
     echo "$MV_COMMON_LIB"; return 0
   fi
 
-  # 2. Local repo — only safe when BASH_SOURCE[0] is a real path, not a tmp file
+  # 2. Local repo — skip when running from a downloaded tmp file
   local src="${BASH_SOURCE[0]:-}"
   if [[ -n "$src" && "$src" != /tmp/* ]]; then
     local this_dir
@@ -76,8 +77,8 @@ _resolve_common_lib() {
   exit 1
 }
 
-# shellcheck source=../../get/lib/common.sh
 _common_lib=$(_resolve_common_lib)
+# shellcheck source=../../get/lib/common.sh
 source "$_common_lib"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
@@ -86,7 +87,6 @@ readonly AUR_REPO="https://aur.archlinux.org/yay-bin.git"
 readonly INSTALL_DIR="$HOME/moonveil"
 readonly BACKUP_DIR="$HOME/.moonveil-backup-$(date +%Y%m%d-%H%M%S)"
 
-# ── Step count ────────────────────────────────────────────────────────────────
 MV_STEP_TOTAL=7
 
 # ── Sudo keepalive ────────────────────────────────────────────────────────────
@@ -97,7 +97,7 @@ _start_sudo_keepalive() {
   SUDO_PID=$!
 }
 _stop_sudo_keepalive() {
-  [[ -n "$SUDO_PID" ]] && kill "$SUDO_PID" 2>/dev/null || true
+  [[ -n "${SUDO_PID:-}" ]] && kill "$SUDO_PID" 2>/dev/null || true
 }
 trap '_stop_sudo_keepalive' EXIT INT TERM
 
@@ -113,11 +113,9 @@ _aur_install()      { yay -S --needed --noconfirm --removemake --cleanafter "$1"
 
 _step_update() {
   mv_step "System Update"
-
   mv_info "Requesting sudo..."
   _start_sudo_keepalive
   mv_success "Sudo active"
-
   mv_info "Running pacman -Syu..."
   echo ""
   sudo pacman -Syu --noconfirm
@@ -133,22 +131,11 @@ _step_core() {
   mv_step "Core Dependencies"
 
   local -a pkgs=(
-    base-devel
-    git
-    curl
-    wget
-    unzip
-    zsh
-    zsh-completions
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    networkmanager
-    network-manager-applet
-    nm-connection-editor
-    power-profiles-daemon
-    upower
-    fastfetch
-    polkit-gnome
+    base-devel git curl wget unzip
+    zsh zsh-completions zsh-autosuggestions zsh-syntax-highlighting
+    networkmanager network-manager-applet nm-connection-editor
+    power-profiles-daemon upower
+    fastfetch polkit-gnome
   )
 
   mv_pkg_start "${#pkgs[@]}" "core packages via pacman"
@@ -157,11 +144,9 @@ _step_core() {
   done
 
   echo ""
-  mv_success "Core packages ready"
-
   mv_info "Enabling NetworkManager..."
   sudo systemctl enable --now NetworkManager >> "$MV_LOG_FILE" 2>&1 || true
-  mv_success "NetworkManager enabled"
+  mv_success "Core packages ready"
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -194,14 +179,6 @@ _step_aur_helper() {
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  STEP 4 — MOONVEIL PACKAGES
-#
-#  No waybar, no rofi.
-#  CrescentShell (QuickShell/QML) handles:
-#    · Panel / taskbar
-#    · App launcher
-#    · Control center   (moonveil-control-center in dots/.local/bin)
-#    · Notification UI  (wraps swaync over D-Bus)
-#    · Overview / window switcher
 # ══════════════════════════════════════════════════════════════════════════════
 
 _step_packages() {
@@ -209,7 +186,7 @@ _step_packages() {
 
   # Format: "name|source"
   local -a pkgs=(
-    # ── Hyprland stack ───────────────────────────────────
+    # Hyprland stack
     "hyprland|pacman"
     "xdg-desktop-portal-hyprland|pacman"
     "xdg-desktop-portal-gtk|pacman"
@@ -218,91 +195,63 @@ _step_packages() {
     "hyprlock|pacman"
     "hypridle|pacman"
     "hyprpaper|pacman"
-
-    # ── CrescentShell — full shell UI via QML ────────────
+    # CrescentShell
     "quickshell-git|aur"
-
-    # ── Notifications D-Bus backend ──────────────────────
+    # Notifications backend
     "swaync|aur"
-
-    # ── Screenshot ───────────────────────────────────────
+    # Screenshot
     "grim|pacman"
     "slurp|pacman"
     "swappy|pacman"
-
-    # ── Clipboard ────────────────────────────────────────
+    # Clipboard + color picker
     "wl-clipboard|pacman"
     "cliphist|pacman"
-
-    # ── Color picker (control-center) ────────────────────
     "hyprpicker|aur"
-
-    # ── Terminal ─────────────────────────────────────────
+    # Terminal
     "kitty|pacman"
-
-    # ── Editor — NvChad config lives in dots/.local/share/nvim
+    # Editor
     "neovim|pacman"
     "luarocks|pacman"
     "stylua|pacman"
-
-    # ── File manager ─────────────────────────────────────
+    # File manager
     "nautilus|pacman"
     "ffmpegthumbnailer|pacman"
     "gvfs|pacman"
     "gvfs-mtp|pacman"
-
-    # ── Audio ────────────────────────────────────────────
+    # Audio
     "pipewire|pacman"
     "pipewire-alsa|pacman"
     "pipewire-pulse|pacman"
     "wireplumber|pacman"
     "pavucontrol|pacman"
     "pamixer|pacman"
-
-    # ── Media controls (MPRIS widget in CrescentShell) ───
     "playerctl|pacman"
-
-    # ── Brightness (CrescentShell slider) ────────────────
     "brightnessctl|pacman"
-
-    # ── Bluetooth ────────────────────────────────────────
+    # Bluetooth
     "bluez|pacman"
     "bluez-utils|pacman"
     "gnome-bluetooth-3.0|pacman"
-
-    # ── Visualizer ───────────────────────────────────────
-    "cava|aur"
-
-    # ── System monitor ───────────────────────────────────
+    # Monitor + visualizer
     "btop|pacman"
-
-    # ── Theming — walset-backend uses matugen + pywal ────
+    "cava|pacman"
+    # Theming
     "matugen|aur"
     "python-pywal|aur"
     "imagemagick|pacman"
-    "adw-gtk-theme|aur"
+    "adw-gtk3|aur"
     "bibata-cursor-theme|aur"
-    "nwg-look|aur"
-
-    # ── Icons & GTK ──────────────────────────────────────
+    "nwg-look|pacman"
     "papirus-icon-theme|pacman"
     "lxappearance|pacman"
-
-    # ── Notifications library ────────────────────────────
     "libnotify|pacman"
-
-    # ── Fonts ────────────────────────────────────────────
+    # Fonts
     "ttf-jetbrains-mono-nerd|pacman"
+    "ttf-nerd-fonts-symbols|pacman"
     "noto-fonts|pacman"
     "noto-fonts-cjk|pacman"
     "noto-fonts-emoji|pacman"
-    "otf-geist-mono|aur"
-    "ttf-geist-mono-nerd|aur"
-    "otf-geist-mono-nerd|aur"
-    "otf-codenewroman-nerd|aur"
-    "ttf-libre-barcode|aur"
-
-    # ── CLI utilities ────────────────────────────────────
+    "otf-font-awesome|pacman"
+    # CLI utilities
     "eza|pacman"
     "bat|pacman"
     "ripgrep|pacman"
@@ -311,36 +260,35 @@ _step_packages() {
     "yazi|pacman"
   )
 
-  mv_pkg_start "${#pkgs[@]}" "Moonveil packages (pacman + AUR)"
+  mv_pkg_start "${#pkgs[@]}" "Moonveil packages"
 
   local prev_group=""
   for entry in "${pkgs[@]}"; do
     local pkg="${entry%%|*}"
     local src="${entry##*|}"
-
     local group=""
+
     case "$pkg" in
       hyprland|xdg-desktop-portal*|xdg-utils|xwayland|hyprlock|hypridle|hyprpaper)
-                                                     group="Hyprland Compositor" ;;
-      quickshell*)                                   group="CrescentShell (QuickShell)" ;;
-      swaync)                                        group="Notifications Backend" ;;
-      grim|slurp|swappy)                             group="Screenshot" ;;
-      wl-clipboard|cliphist|hyprpicker)              group="Clipboard & Color" ;;
-      kitty)                                         group="Terminal" ;;
-      neovim|luarocks|stylua)                        group="Editor (Neovim + NvChad)" ;;
-      nautilus|ffmpegthumbnailer|gvfs*)              group="File Manager" ;;
-      pipewire*|wireplumber|pavucontrol|pamixer)     group="Audio (Pipewire)" ;;
-      playerctl)                                     group="Media Controls" ;;
-      brightnessctl)                                 group="Brightness" ;;
-      bluez*|gnome-bluetooth*)                       group="Bluetooth" ;;
-      cava)                                          group="Visualizer" ;;
-      btop)                                          group="System Monitor" ;;
+                                                   group="Hyprland Compositor" ;;
+      quickshell*)                                 group="CrescentShell (QuickShell)" ;;
+      swaync)                                      group="Notifications Backend" ;;
+      grim|slurp|swappy)                           group="Screenshot" ;;
+      wl-clipboard|cliphist|hyprpicker)            group="Clipboard & Color" ;;
+      kitty)                                       group="Terminal" ;;
+      neovim|luarocks|stylua)                      group="Editor (Neovim)" ;;
+      nautilus|ffmpegthumbnailer|gvfs*)            group="File Manager" ;;
+      pipewire*|wireplumber|pavucontrol|pamixer)   group="Audio (Pipewire)" ;;
+      playerctl)                                   group="Media Controls" ;;
+      brightnessctl)                               group="Brightness" ;;
+      bluez*|gnome-bluetooth*)                     group="Bluetooth" ;;
+      cava)                                        group="Visualizer" ;;
+      btop)                                        group="System Monitor" ;;
       matugen|python-pywal|imagemagick|adw-gtk*|bibata*|nwg-look)
-                                                     group="Theming (Material You)" ;;
-      papirus-icon-theme|lxappearance)               group="Icons & GTK" ;;
-      libnotify)                                     group="Notifications Library" ;;
-      ttf-*|noto-*|otf-*)                            group="Fonts" ;;
-      eza|bat|ripgrep|fd|jq|yazi)                    group="CLI Utilities" ;;
+                                                   group="Theming (Material You)" ;;
+      papirus-icon-theme|lxappearance|libnotify)   group="Icons & GTK" ;;
+      ttf-*|noto-*|otf-*)                          group="Fonts" ;;
+      eza|bat|ripgrep|fd|jq|yazi)                  group="CLI Utilities" ;;
     esac
 
     if [[ -n "$group" && "$group" != "$prev_group" ]]; then
@@ -387,44 +335,14 @@ _step_clone() {
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  STEP 6 — BACKUP + DOTFILES
-#
-#  Repo layout applied:
-#    dots/.config/         →  ~/.config/
-#      hypr/               →  Hyprland config
-#      quickshell/
-#        CrescentShell/    →  QML shell (bar, launcher, control-center, etc.)
-#      kitty/
-#      nvim/
-#      btop/
-#      cava/
-#      fastfetch/
-#      gtk-3.0/ gtk-4.0/
-#      matugen/
-#      swaync/
-#      wal/
-#      control-center/
-#
-#    dots/.local/
-#      bin/
-#        moonveil-control-center   →  QS control-center launcher
-#        walset-backend            →  matugen/pywal wallpaper setter
-#      share/nvim/                 →  NvChad plugin cache (lazy/mason)
-#
-#    dots/shell/
-#      zshrc      →  ~/.zshrc
-#      p10k.zsh   →  ~/.p10k.zsh
-#
-#    dots/keybinds.toml  →  ~/.config/keybinds.toml
 # ══════════════════════════════════════════════════════════════════════════════
 
 _step_dotfiles() {
   mv_step "Backup & Dotfiles"
 
-  # ── Backup ──────────────────────────────────────────────────────────────────
   mv_section "Backing up existing configs"
   mv_backup_configs "$BACKUP_DIR"
 
-  # ── .config ─────────────────────────────────────────────────────────────────
   echo ""
   mv_section "Applying ~/.config"
   if [[ -d "${INSTALL_DIR}/dots/.config" ]]; then
@@ -435,25 +353,21 @@ _step_dotfiles() {
     mv_warn "dots/.config not found in repo — skipping"
   fi
 
-  # ── .local ──────────────────────────────────────────────────────────────────
   mv_section "Applying ~/.local"
   if [[ -d "${INSTALL_DIR}/dots/.local" ]]; then
     mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
     cp -r "${INSTALL_DIR}/dots/.local/"* "$HOME/.local/"
-    # Make binaries executable
     find "$HOME/.local/bin" -maxdepth 1 -type f -exec chmod +x {} \;
     mv_success "~/.local applied  (binaries marked executable)"
   else
     mv_warn "dots/.local not found in repo — skipping"
   fi
 
-  # ── Shell ────────────────────────────────────────────────────────────────────
   mv_section "Applying shell configs"
   local shell_dir="${INSTALL_DIR}/dots/shell"
-  [[ -f "${shell_dir}/zshrc"   ]] && cp "${shell_dir}/zshrc"   "$HOME/.zshrc"    && mv_success "~/.zshrc"
-  [[ -f "${shell_dir}/p10k.zsh" ]] && cp "${shell_dir}/p10k.zsh" "$HOME/.p10k.zsh" && mv_success "~/.p10k.zsh"
+  [[ -f "${shell_dir}/zshrc"    ]] && cp "${shell_dir}/zshrc"    "$HOME/.zshrc"     && mv_success "~/.zshrc"
+  [[ -f "${shell_dir}/p10k.zsh" ]] && cp "${shell_dir}/p10k.zsh" "$HOME/.p10k.zsh"  && mv_success "~/.p10k.zsh"
 
-  # ── keybinds.toml ────────────────────────────────────────────────────────────
   if [[ -f "${INSTALL_DIR}/dots/keybinds.toml" ]]; then
     cp "${INSTALL_DIR}/dots/keybinds.toml" "$HOME/.config/keybinds.toml"
     mv_success "~/.config/keybinds.toml"
@@ -467,22 +381,19 @@ _step_dotfiles() {
 _step_post() {
   mv_step "Post-install Setup"
 
-  # Default shell → zsh
   mv_set_shell_zsh
 
-  # Powerlevel10k (zshrc uses p10k prompt)
   local p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
   if [[ ! -d "$p10k_dir" ]]; then
     mv_info "Installing Powerlevel10k..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
       "$p10k_dir" >> "$MV_LOG_FILE" 2>&1 \
-      || mv_warn "p10k clone failed — run manually: git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $p10k_dir"
+      || mv_warn "p10k clone failed — run manually later"
     mv_success "Powerlevel10k installed"
   else
     mv_skip "Powerlevel10k already present"
   fi
 
-  # Ensure ~/.local/bin is in PATH
   if ! grep -q '.local/bin' "$HOME/.zshrc" 2>/dev/null; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.zshrc"
     mv_success "~/.local/bin added to PATH in .zshrc"
@@ -490,11 +401,8 @@ _step_post() {
     mv_skip "~/.local/bin already in PATH"
   fi
 
-  # Services
   mv_enable_service "power-profiles-daemon"
   mv_enable_service "bluetooth"
-
-  # Font cache
   mv_rebuild_font_cache
 }
 
@@ -506,11 +414,11 @@ _welcome() {
   echo -e "  ${WHITE}${B}What will be installed:${R}"
   echo ""
   echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  System update                    pacman -Syu${R}"
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Core dependencies          16     git, zsh, NetworkManager…${R}"
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  AUR helper                        yay-bin${R}"
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Hyprland + CrescentShell   55     pacman + AUR${R}"
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Moonveil dotfiles                 ~/.config  ~/.local  ~/.zshrc${R}"
-  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Post-install setup                zsh, p10k, fonts, services${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Core dependencies                git, zsh, NetworkManager…${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  AUR helper                       yay-bin${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Hyprland + CrescentShell         pacman + AUR${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Moonveil dotfiles                ~/.config  ~/.local  ~/.zshrc${R}"
+  echo -e "  ${GRAY}  ${PURPLE}◆${R}${GRAY}  Post-install setup               zsh, p10k, fonts, services${R}"
   echo ""
   echo -e "  ${PURPLE}  Shell UI:  ${WHITE}CrescentShell (QuickShell/QML)${R}"
   echo -e "  ${GRAY}  → bar, launcher, control-center, overview, notifications — all QML${R}"
@@ -527,8 +435,11 @@ _welcome() {
   echo ""
 
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
-    echo -e "  ${YELLOW}  Cancelled.${R}"; echo ""; exit 0
+    echo -e "  ${YELLOW}  Cancelled.${R}"
+    echo ""
+    exit 0
   fi
+
   mv_success "Starting installation — sit back! ☽"
   sleep 0.5
 }
