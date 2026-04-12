@@ -3,13 +3,10 @@ set -euo pipefail
 
 #——— binaries ————————————————————————————
 MATUGEN="$(command -v matugen || true)"
-SWWW="$(command -v swww || true)"
+AWWW="$(command -v awww || true)"
 HYPRCTL="$(command -v hyprctl || true)"
 NOTIFY="$(command -v notify-send || true)"
 MOONBAR_RUN="$HOME/.local/bin/moonbar-run"
-
-#——— process names ——————————————————————
-MOONBAR_PROC="moonshell"
 
 #——— config paths ——————————————————————
 MATUGEN_CONFIG="$HOME/.config/matugen/matugen.toml"
@@ -27,7 +24,7 @@ LOG_DIR="/tmp/walset-backend"
 mkdir -p "$LOG_DIR"
 
 MATUGEN_LOG="$LOG_DIR/matugen.log"
-SWWW_LOG="$LOG_DIR/swww.log"
+AWWW_LOG="$LOG_DIR/awww.log"
 
 #——— args ——————————————————————————————
 if [ "$#" -ne 1 ]; then
@@ -36,10 +33,10 @@ if [ "$#" -ne 1 ]; then
 fi
 
 IMAGE="$1"
-[ -f "$IMAGE" ] || { echo "Image not found: $IMAGE"; exit 1; }
+[ -f "$IMAGE" ] || { echo "Image not found: $IMAGE" >&2; exit 1; }
 
 #——— dependency checks ——————————————————
-for bin in "$MATUGEN" "$SWWW"; do
+for bin in "$MATUGEN" "$AWWW"; do
   if [ -z "$bin" ]; then
     echo "Missing dependency: $bin" >&2
     exit 1
@@ -51,27 +48,18 @@ done
   exit 1
 }
 
-#——— notify start ——————————————————————
-[ -n "$NOTIFY" ] && "$NOTIFY" "Moonveil" "Applying wallpaper & theme…"
-
-#——— detect moonbar state —————————————
-MOONBAR_WAS_RUNNING=false
-if pgrep -x "$MOONBAR_PROC" >/dev/null; then
-  MOONBAR_WAS_RUNNING=true
+#——— ensure awww-daemon is running ————
+if ! pgrep -x awww-daemon >/dev/null 2>&1; then
+  awww-daemon &
+  sleep 1
 fi
 
-#——— kill moonbar ONLY if running ——————
-if [ "$MOONBAR_WAS_RUNNING" = true ]; then
-  pkill -x "$MOONBAR_PROC"
-  sleep 0.4
-fi
-
-#——— apply wallpaper (swww) ———————————
-"$SWWW" img "$IMAGE" \
+#——— apply wallpaper (awww) ———————————
+"$AWWW" img "$IMAGE" \
   --transition-type any \
   --transition-fps 60 \
   --transition-step 255 \
-  >"$SWWW_LOG" 2>&1 || true
+  >"$AWWW_LOG" 2>&1 || true
 
 #——— sync wallpaper for lockscreen —————
 cp -f "$IMAGE" "$CACHE_WALL"
@@ -80,6 +68,7 @@ pkill -USR1 hyprlock 2>/dev/null || true
 #——— generate colors (matugen) —————————
 "$MATUGEN" image "$IMAGE" \
   -c "$MATUGEN_CONFIG" \
+  --source-color-index 0 \
   -v >"$MATUGEN_LOG" 2>&1
 
 #——— validate outputs ——————————————————
@@ -95,13 +84,5 @@ done
 
 #——— reload hyprland ——————————————————
 [ -x "$HYPRCTL" ] && "$HYPRCTL" reload >/dev/null 2>&1 || true
-
-#——— restart moonbar ONLY if it was running —
-if [ "$MOONBAR_WAS_RUNNING" = true ]; then
-  nohup "$MOONBAR_RUN" >/dev/null 2>&1 &
-fi
-
-#——— notify done ——————————————————————
-[ -n "$NOTIFY" ] && "$NOTIFY" "Moonveil" "Wallpaper & colors applied"
 
 exit 0

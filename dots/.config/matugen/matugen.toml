@@ -47,11 +47,7 @@ input_path = '~/.config/matugen/templates/cava-colors.ini'
 output_path = '~/.config/cava/config'
 post_hook =   'pkill -USR1 cava'
 
-# swaync 
-[templates.swaync]
-input_path = '~/.config/matugen/templates/matugen-swaync.css'
-output_path = '~/.config/swaync/matugen/matugen-swaync.css'
-post_hook = 'swaync-client -rs'
+
 
 
 [templates.m3colors]
