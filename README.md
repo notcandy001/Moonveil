@@ -1,9 +1,9 @@
-> [!Note]
+> [!IMPORTANT]
 > Moonveil development is being paused.
 >
-> I’ll fix the installer and bring the project to a stable state, then step away for the time being. No active updates are planned after that.
+> The installer is now stable and the project is in a useable state. No active updates are planned for the foreseeable future.
 >
-> The repository will remain available, and contributions are welcome. Branch protection is currently enabled, but once I step away it may be disabled  so if you contribute, please keep the codebase clean and follow the existing structure and standards.
+> The repository will remain available and contributions are welcome. Branch protection is no longer enforced so if you contribute, please keep the codebase clean and follow the existing structure and standards......
 
 
 <p align="center">
