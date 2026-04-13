@@ -47,11 +47,13 @@ input_path = '~/.config/matugen/templates/cava-colors.ini'
 output_path = '~/.config/cava/config'
 post_hook =   'pkill -USR1 cava'
 
-# swaync 
-[templates.swaync]
-input_path = '~/.config/matugen/templates/matugen-swaync.css'
-output_path = '~/.config/swaync/matugen/matugen-swaync.css'
-post_hook = 'swaync-client -rs'
+
+
+
+[templates.m3colors]
+input_path = '~/.config/matugen/templates/colors.json'
+output_path = '~/.local/state/quickshell/user/generated/colors.json'
+
 
 
 [templates.nvim]
@@ -101,3 +103,7 @@ blend = true
 input_path = '~/.config/matugen/templates/matugen-waybar.css'
 output_path = '~/.config/moonshell/styles/colors.css'
 #---------------bar-end----------------
+
+[templates.prelock]
+input_path = "~/.config/matugen/templates/prelock-color.txt"
+output_path = "~/.config/hypr/lock_animation/prelock_color"
