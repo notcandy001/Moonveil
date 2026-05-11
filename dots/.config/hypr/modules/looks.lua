@@ -47,14 +47,13 @@ hl.config({
             input_methods_ignorealpha = 0.8,
         },
 
-        shadow = {
-            enabled       = true,
-            ignore_window = true,
-            range         = 50,
-            offset        = "0 4",
-            render_power  = 10,
-            color         = "rgba(00000027)",
-        },
+      shadow = {
+      enabled      = true,
+      range        = 50,
+      offset       = "0 4",
+      render_power = 10,
+      color        = "rgba(00000027)",
+},
 
         dim_inactive = true,
         dim_strength = 0.05,
