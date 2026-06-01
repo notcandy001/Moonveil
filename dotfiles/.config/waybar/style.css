@@ -1,0 +1,154 @@
+/* ── Palette ─────────────────────────────────────────────────────────────── */
+@define-color bg       #e8ddd0;
+@define-color bg-alt   #ddd0c0;
+@define-color fg       #1a1510;
+@define-color fg-dim   #5c4a38;
+@define-color accent   #1a1510;
+@define-color border   #b8a898;
+@define-color sel-bg   #1a1510;
+@define-color sel-fg   #e8ddd0;
+
+/* ── Global reset ────────────────────────────────────────────────────────── */
+* {
+  font-family: "Sarasa Mono J", "JetBrains Mono", "Noto Sans CJK JP", monospace;
+  font-size: 13px;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* ── Bar window ──────────────────────────────────────────────────────────── */
+window#waybar {
+  background: @bg;
+  color: @fg;
+  border-bottom: 1px solid @border;
+}
+
+window#waybar.bottom {
+  border-bottom: none;
+  border-top: 1px solid @border;
+}
+
+/* ── Generic module padding ──────────────────────────────────────────────── */
+.modules-left,
+.modules-center,
+.modules-right {
+  padding: 0 6px;
+}
+
+#workspaces,
+#mpris,
+#battery,
+#network,
+#pulseaudio,
+#clock,
+#custom-quote,
+#custom-wm,
+#language {
+  padding: 0 10px;
+  color: @fg;
+  background: transparent;
+}
+
+/* ── Workspaces ──────────────────────────────────────────────────────────── */
+#workspaces {
+  padding: 0 4px;
+}
+
+#workspaces button {
+  color: @fg-dim;
+  background: transparent;
+  padding: 0 7px;
+  border-radius: 0;
+  min-width: 0;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+#workspaces button:hover {
+  color: @fg;
+  background: @bg-alt;
+  box-shadow: none;
+}
+
+#workspaces button.active {
+  color: @sel-fg;
+  background: @sel-bg;
+  font-weight: bold;
+}
+
+#workspaces button.urgent {
+  color: @sel-fg;
+  background: @fg-dim;
+}
+
+/* ── Vertical separator helper ───────────────────────────────────────────── */
+#workspaces button + button {
+  border-left: none;
+}
+
+/* ── mpris ───────────────────────────────────────────────────────────────── */
+#mpris {
+  color: @fg;
+  letter-spacing: 0.02em;
+}
+
+/* ── Right modules ───────────────────────────────────────────────────────── */
+#battery {
+  padding-right: 14px;
+}
+
+#battery.warning {
+  color: #8b6914;
+}
+
+#battery.critical {
+  color: #8b1414;
+}
+
+#network {
+  padding-right: 14px;
+}
+
+#pulseaudio {
+  padding-right: 14px;
+}
+
+#pulseaudio.muted {
+  color: @fg-dim;
+}
+
+#clock {
+  font-weight: bold;
+  padding-right: 14px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Bottom bar ──────────────────────────────────────────────────────────── */
+#custom-quote {
+  color: @fg-dim;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  padding-left: 14px;
+}
+
+#custom-wm {
+  color: @fg-dim;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  padding-right: 14px;
+}
+
+/* ── Tooltip ─────────────────────────────────────────────────────────────── */
+tooltip {
+  background: @fg;
+  color: @bg;
+  border: 1px solid @border;
+  border-radius: 0;
+  padding: 4px 8px;
+}
+
+tooltip label {
+  color: @bg;
+}

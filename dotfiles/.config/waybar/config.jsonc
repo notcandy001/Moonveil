@@ -1,0 +1,110 @@
+[
+  // ── TOP BAR ─────────────────────────────────────────────────────────────
+  {
+    "layer": "top",
+    "position": "top",
+    "height": 36,
+    "spacing": 0,
+    "exclusive": true,
+
+    "modules-left": [
+      "hyprland/workspaces"
+    ],
+    "modules-center": [
+      "mpris"
+    ],
+    "modules-right": [
+      "battery",
+      "network",
+      "pulseaudio",
+      "clock"
+    ],
+
+    // ── Workspaces ──────────────────────────────────────────────────────────
+    "hyprland/workspaces": {
+      "format": "{id}",
+      "on-click": "activate",
+      "sort-by-number": true,
+      "persistent-workspaces": {
+        "*": [1,2,3,4,5,6,7,8,9]
+      }
+    },
+
+    // ── Music (mpris) ───────────────────────────────────────────────────────
+    "mpris": {
+      "format": "♪  {artist} – {title}",
+      "format-paused": "♪  {artist} – {title}",
+      "player": "playerctld",
+      "ignored-players": ["firefox"],
+      "max-length": 60
+    },
+
+    // ── Battery ─────────────────────────────────────────────────────────────
+    "battery": {
+      "format": " {capacity}%",
+      "format-charging": " {capacity}%",
+      "format-plugged": " {capacity}%",
+      "states": {
+        "warning": 30,
+        "critical": 15
+      }
+    },
+
+    // ── Network ─────────────────────────────────────────────────────────────
+    "network": {
+      "format-wifi": "  {essid}",
+      "format-ethernet": "  eth",
+      "format-disconnected": "  offline",
+      "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    // ── Volume ──────────────────────────────────────────────────────────────
+    "pulseaudio": {
+      "format": " {volume}%",
+      "format-muted": " muted",
+      "on-click": "pavucontrol",
+      "scroll-step": 5
+    },
+
+    // ── Clock ───────────────────────────────────────────────────────────────
+    "clock": {
+      "format": "{:%H:%M}",
+      "tooltip-format": "{:%Y-%m-%d}"
+    }
+  },
+
+  // ── BOTTOM BAR ──────────────────────────────────────────────────────────
+  {
+    "layer": "top",
+    "position": "bottom",
+    "height": 28,
+    "spacing": 0,
+    "exclusive": true,
+
+    "modules-left": [
+      "custom/quote"
+    ],
+    "modules-right": [
+      "hyprland/language",
+      "custom/wm"
+    ],
+
+    // ── Quote ───────────────────────────────────────────────────────────────
+    "custom/quote": {
+      "format": "// 夢を見ることを忘れないでください。",
+      "tooltip": false
+    },
+
+    // ── WM label ────────────────────────────────────────────────────────────
+    "custom/wm": {
+      "exec": "echo 'HYPRLAND · ST · ZSH'",
+      "format": "{}",
+      "interval": "once",
+      "tooltip": false
+    },
+
+    "hyprland/language": {
+      "format": ""
+    }
+  }
+]
