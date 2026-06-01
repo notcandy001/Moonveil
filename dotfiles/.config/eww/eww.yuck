@@ -1,0 +1,112 @@
+; ── Windows ──────────────────────────────────────────────────────────────────
+
+(defwindow mood-widget
+  :monitor 0
+  :geometry (geometry :x "16px" :y "80px" :width "400px" :height "180px"
+                      :anchor "top left")
+  :stacking "fg"
+  :resizable false
+  :focusable false
+  (mood-box))
+
+(defwindow cava-widget
+  :monitor 0
+  :geometry (geometry :x "16px" :y "278px" :width "400px" :height "130px"
+                      :anchor "top left")
+  :stacking "fg"
+  :resizable false
+  :focusable false
+  (cava-box))
+
+(defwindow clock-widget
+  :monitor 0
+  :geometry (geometry :x "50%" :y "180px" :width "200px" :height "250px"
+                      :anchor "top center")
+  :stacking "fg"
+  :resizable false
+  :focusable false
+  (clock-box))
+
+(defwindow nowplaying-widget
+  :monitor 0
+  :geometry (geometry :x "440px" :y "545px" :width "280px" :height "190px"
+                      :anchor "top left")
+  :stacking "fg"
+  :resizable false
+  :focusable false
+  (nowplaying-box))
+
+; ── Variables ─────────────────────────────────────────────────────────────────
+
+(defpoll time-hm   :interval "1s"  "date +'%H:%M'")
+(defpoll time-date :interval "60s" "date +'%Y-%m-%d'")
+(defpoll time-day  :interval "60s" "date +'%A' | python3 -c \"
+import sys
+days = {'Monday':'月曜日','Tuesday':'火曜日','Wednesday':'水曜日',
+        'Thursday':'木曜日','Friday':'金曜日','Saturday':'土曜日','Sunday':'日曜日'}
+print(days.get(sys.stdin.read().strip(), ''))
+\"")
+
+(defpoll song-title  :interval "2s" "playerctl metadata title  2>/dev/null || echo '–'")
+(defpoll song-artist :interval "2s" "playerctl metadata artist 2>/dev/null || echo '–'")
+(defpoll song-album  :interval "2s" "playerctl metadata album  2>/dev/null || echo ''")
+(defpoll song-art    :interval "2s" "~/.config/eww/scripts/get-art.sh")
+(defpoll song-pos    :interval "1s" "~/.config/eww/scripts/song-position.sh")
+(defpoll song-len    :interval "5s" "~/.config/eww/scripts/song-length.sh")
+(defpoll song-frac   :interval "1s" "~/.config/eww/scripts/song-fraction.sh")
+
+(defpoll cava-bars   :interval "150ms" "~/.config/eww/scripts/cava-read.sh")
+
+; ── Widgets ───────────────────────────────────────────────────────────────────
+
+; Mood / Journal box
+(defwidget mood-box []
+  (box :class "widget-box mood-box" :orientation "v" :spacing 0
+    (box :class "widget-header" :halign "start"
+      (label :text "今日の気分は？"))
+    (box :class "widget-body" :orientation "v" :spacing 4
+      (label :class "mood-text" :halign "start" :wrap true
+             :text "静かで、少しだけノスタルジック。")
+      (label :class "mood-text" :halign "start" :wrap true
+             :text "コードの中の静けさ。")
+      (box :class "mood-spacer")
+      (label :class "prompt-user" :halign "start" :text "user@arch")
+      (label :class "prompt-cursor" :halign "start" :text "> _"))))
+
+; Cava visualizer box
+(defwidget cava-box []
+  (box :class "widget-box cava-box" :orientation "v" :spacing 0
+    (box :class "widget-header" :halign "start"
+      (label :text "cava"))
+    (box :class "cava-separator")
+    (box :class "cava-bars-area" :halign "center" :valign "end"
+      (label :class "cava-bars" :text {cava-bars}))
+    (box :class "cava-separator")))
+
+; Clock widget
+(defwidget clock-box []
+  (box :class "widget-box clock-box" :orientation "v" :halign "center" :spacing 0
+    (box :class "analog-clock-area" :halign "center"
+      (image :path "~/.config/eww/assets/clock-face.svg"
+             :image-width 120 :image-height 120))
+    (label :class "clock-time"  :halign "center" :text {time-hm})
+    (label :class "clock-date"  :halign "center" :text {time-date})
+    (label :class "clock-day"   :halign "center" :text {time-day})))
+
+; Now Playing widget
+(defwidget nowplaying-box []
+  (box :class "widget-box nowplaying-box" :orientation "v" :spacing 0
+    (box :class "widget-header" :halign "start"
+      (label :text "再生中"))
+    (box :class "np-content" :orientation "h" :spacing 10
+      (image :path {song-art} :image-width 60 :image-height 60 :class "np-art")
+      (box :orientation "v" :spacing 2 :valign "center"
+        (label :class "np-title"  :halign "start" :limit-width 20 :text {song-title})
+        (label :class "np-artist" :halign "start" :limit-width 20 :text {song-artist})
+        (label :class "np-album"  :halign "start" :limit-width 20 :text {song-album})))
+    (box :class "np-separator")
+    (scale :class "np-progress" :min 0 :max 100 :value {song-frac}
+           :draw-value false :hexpand true)
+    (box :orientation "h" :hexpand true
+      (label :class "np-pos" :halign "start"  :hexpand true :text {song-pos})
+      (label :class "np-len" :halign "end"    :text {song-len}))))

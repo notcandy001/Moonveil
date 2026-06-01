@@ -1,0 +1,175 @@
+/* ── Palette ─────────────────────────────────────────────────────────────── */
+$bg:       #e8ddd0;
+$bg-alt:   #ddd0c0;
+$fg:       #1a1510;
+$fg-dim:   #5c4a38;
+$border:   #b8a898;
+$sel-bg:   #1a1510;
+$sel-fg:   #e8ddd0;
+
+/* ── Font ────────────────────────────────────────────────────────────────── */
+$font-mono: "Sarasa Mono J", "JetBrains Mono", "Noto Sans CJK JP", monospace;
+
+/* ── Global ──────────────────────────────────────────────────────────────── */
+* {
+  font-family: $font-mono;
+  font-size: 13px;
+  color: $fg;
+}
+
+/* ── Shared widget box ───────────────────────────────────────────────────── */
+.widget-box {
+  background: $bg;
+  border: 1px solid $border;
+  padding: 0;
+}
+
+.widget-header {
+  background: $fg;
+  color: $sel-fg;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: bold;
+  label { color: $sel-fg; }
+}
+
+.widget-body {
+  padding: 12px 14px 10px;
+}
+
+/* ── Mood box ────────────────────────────────────────────────────────────── */
+.mood-box .widget-body {
+  min-height: 120px;
+}
+
+.mood-text {
+  font-size: 13px;
+  color: $fg;
+  line-height: 1.6;
+}
+
+.mood-spacer {
+  min-height: 16px;
+}
+
+.prompt-user {
+  font-size: 12px;
+  color: $fg-dim;
+}
+
+.prompt-cursor {
+  font-size: 12px;
+  color: $fg;
+}
+
+/* ── Cava box ────────────────────────────────────────────────────────────── */
+.cava-box {
+  padding: 0;
+}
+
+.cava-separator {
+  min-height: 1px;
+  background: $border;
+  margin: 0 8px;
+}
+
+.cava-bars-area {
+  min-height: 80px;
+  padding: 8px 10px 4px;
+}
+
+.cava-bars {
+  font-family: "Cava Symbols", monospace;
+  font-size: 20px;
+  color: $fg;
+  letter-spacing: -1px;
+}
+
+/* ── Clock box ───────────────────────────────────────────────────────────── */
+.clock-box {
+  padding: 16px 20px 14px;
+  min-width: 190px;
+}
+
+.analog-clock-area {
+  padding-bottom: 10px;
+}
+
+.clock-time {
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  color: $fg;
+  padding-bottom: 4px;
+}
+
+.clock-date {
+  font-size: 13px;
+  color: $fg-dim;
+  padding-bottom: 2px;
+}
+
+.clock-day {
+  font-size: 13px;
+  color: $fg-dim;
+}
+
+/* ── Now Playing box ─────────────────────────────────────────────────────── */
+.nowplaying-box {
+  min-width: 260px;
+}
+
+.np-content {
+  padding: 10px 12px 6px;
+}
+
+.np-art {
+  border: 1px solid $border;
+}
+
+.np-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: $fg;
+}
+
+.np-artist {
+  font-size: 12px;
+  color: $fg-dim;
+}
+
+.np-album {
+  font-size: 12px;
+  color: $fg-dim;
+  font-style: italic;
+}
+
+.np-separator {
+  min-height: 1px;
+  background: $border;
+  margin: 4px 10px;
+}
+
+.np-progress {
+  margin: 0 10px 2px;
+  trough {
+    background: $bg-alt;
+    min-height: 2px;
+    border-radius: 0;
+  }
+  highlight {
+    background: $fg;
+    border-radius: 0;
+  }
+  slider {
+    min-width: 0;
+    min-height: 0;
+    background: transparent;
+  }
+}
+
+.np-pos, .np-len {
+  font-size: 11px;
+  color: $fg-dim;
+  padding: 0 12px 6px;
+}
