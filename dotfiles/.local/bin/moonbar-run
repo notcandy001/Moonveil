@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-# Moonbar launcher
-
-export MOONBAR_ROOT="$HOME/.config/moonshell"
-export PYTHONPATH="$MOONBAR_ROOT"
-export FABRIC_LOG_LEVEL=INFO
-
-exec python3 "$MOONBAR_ROOT/main.py"
