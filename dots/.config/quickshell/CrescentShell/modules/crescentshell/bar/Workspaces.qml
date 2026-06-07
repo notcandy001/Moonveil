@@ -57,25 +57,30 @@ Item {
     }
 
     // Function to update workspaceOccupied
+    // Uses RodctlService when daemon is running, otherwise empty
     function updateWorkspaceOccupied() {
-        workspaceOccupied = Array.from({ length: root.workspacesShown }, (_, i) => {
-            return Hyprland.workspaces.values.some(ws => ws.id === workspaceGroup * root.workspacesShown + i + 1);
-        })
+        if (RodctlService.running) {
+            workspaceOccupied = Array.from({ length: root.workspacesShown }, (_, i) => {
+                return RodctlService.workspaces.some(ws => ws.id === workspaceGroup * root.workspacesShown + i + 1);
+            })
+        } else {
+            workspaceOccupied = Array.from({ length: root.workspacesShown }, () => false)
+        }
     }
 
-    // Occupied workspace updates
     Component.onCompleted: updateWorkspaceOccupied()
     Connections {
+        target: RodctlService
+        function onWorkspacesChanged() { updateWorkspaceOccupied() }
+        function onRunningChanged() { updateWorkspaceOccupied() }
+    }
+    Connections {
         target: Hyprland.workspaces
-        function onValuesChanged() {
-            updateWorkspaceOccupied();
-        }
+        function onValuesChanged() { updateWorkspaceOccupied() }
     }
     Connections {
         target: Hyprland
-        function onFocusedWorkspaceChanged() {
-            updateWorkspaceOccupied();
-        }
+        function onFocusedWorkspaceChanged() { updateWorkspaceOccupied() }
     }
     onWorkspaceGroupChanged: {
         updateWorkspaceOccupied();
@@ -207,7 +212,7 @@ Item {
                     id: workspaceButtonBackground
                     implicitWidth: workspaceButtonWidth
                     implicitHeight: workspaceButtonWidth
-                    property var biggestWindow: HyprlandData.biggestWindowForWorkspace(button.workspaceValue)
+                    property var biggestWindow: RodctlService.running ? RodctlService.biggestWindowForWorkspace(button.workspaceValue) : null
                     property var mainAppIconSource: Quickshell.iconPath(AppSearch.guessIcon(biggestWindow?.class), "image-missing")
 
                     StyledText { // Workspace number text

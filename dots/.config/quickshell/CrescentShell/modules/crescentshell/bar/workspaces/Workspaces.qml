@@ -53,11 +53,17 @@ Item {
     }
 
     function updateWorkspaceOccupied() {
-        workspaceOccupied = Array.from({ length: root.workspacesShown }, (_, i) => {
-            return Hyprland.workspaces.values.some(ws => ws.id === workspaceGroup * root.workspacesShown + i + 1)
-        })
+        if (RodctlService.running) {
+            workspaceOccupied = Array.from({ length: root.workspacesShown }, (_, i) => {
+                return RodctlService.workspaces.some(ws => ws.id === workspaceGroup * root.workspacesShown + i + 1)
+            })
+        } else {
+            workspaceOccupied = Array.from({ length: root.workspacesShown }, () => false)
+        }
     }
     Component.onCompleted: updateWorkspaceOccupied()
+    Connections { target: RodctlService; function onWorkspacesChanged() { updateWorkspaceOccupied() } }
+    Connections { target: RodctlService; function onRunningChanged()    { updateWorkspaceOccupied() } }
     Connections { target: Hyprland.workspaces;  function onValuesChanged()        { updateWorkspaceOccupied() } }
     Connections { target: Hyprland;             function onFocusedWorkspaceChanged() { updateWorkspaceOccupied() } }
     onWorkspaceGroupChanged: updateWorkspaceOccupied()
@@ -166,7 +172,7 @@ Item {
 
                     property int wsValue: root.workspaceGroup * root.workspacesShown + index + 1
                     property bool isActive: root.effectiveActiveWorkspaceId === wsValue
-                    property var biggestWindow: HyprlandData.biggestWindowForWorkspace(wsValue)
+                    property var biggestWindow: RodctlService.running ? RodctlService.biggestWindowForWorkspace(wsValue) : null
                     property var iconSource: Quickshell.iconPath(AppSearch.guessIcon(biggestWindow?.class), "image-missing")
 
                     // Number text

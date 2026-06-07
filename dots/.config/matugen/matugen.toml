@@ -13,6 +13,12 @@ input_path = '~/.config/matugen/templates/hyprland-colors.conf'
 output_path = '~/.config/hypr/colors.conf'
 post_hook = 'hyprctl reload'
 
+# hyprland lua colors (for require("colors") in hyprland.lua modules)
+[templates.hyprland_lua]
+input_path = '~/.config/matugen/templates/hyprland-colors.lua'
+output_path = '~/.config/hypr/colors.lua'
+post_hook = 'hyprctl reload'
+
 # waybar 
 [templates.waybar]
 input_path = '~/.config/matugen/templates/matugen-waybar.css'

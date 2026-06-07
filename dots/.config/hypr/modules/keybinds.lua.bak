@@ -27,35 +27,35 @@ hl.bind(mainMod .. " + Print",     hl.dsp.exec_cmd("grim ~/Pictures/$(date +'%Y-
 -------------------------------------------------------------------------------
 
 -- Sidebar left (Control Center)
-hl.bind(mainMod .. " + A",              hl.dsp.exec_cmd("qs ipc call sidebarLeft toggle"))
+hl.bind(mainMod .. " + A",              hl.dsp.exec_cmd("qs ipc call sidebarLeftToggle"))
 
 -- Wallpaper selector
-hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.exec_cmd("qs ipc call wallpaperSelector toggle"))
+hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.exec_cmd("qs ipc call wallpaperSelectorToggle"))
 
 -- Sidebar right (Notifications)
-hl.bind(mainMod .. " + N",              hl.dsp.exec_cmd("qs ipc call sidebarRight toggle"))
+hl.bind(mainMod .. " + N",              hl.dsp.exec_cmd("qs ipc call sidebarRightToggle"))
 
 -- Overview / Launcher
 -- hl.bind(mainMod .. " + Tab",         hl.dsp.exec_cmd("qs ipc call overviewWorkspacesToggle"))
-hl.bind(mainMod .. " + R",              hl.dsp.exec_cmd("qs ipc call search toggle"))
+hl.bind(mainMod .. " + R",              hl.dsp.exec_cmd("qs ipc call searchToggle"))
 
 -- Cheatsheet
-hl.bind(mainMod .. " + slash",          hl.dsp.exec_cmd("qs ipc call cheatsheet toggle"))
+hl.bind(mainMod .. " + slash",          hl.dsp.exec_cmd("qs ipc call cheatsheetToggle"))
 
 -- Lock screen
-hl.bind(mainMod .. " + L",              hl.dsp.exec_cmd("qs ipc call lock activate"))
+hl.bind(mainMod .. " + L",              hl.dsp.exec_cmd("qs ipc call lock"))
 
 -- Settings
-hl.bind(mainMod .. " + I",              hl.dsp.exec_cmd("qs -p ~/.config/quickshell/CrescentShell/settings.qml"))
+hl.bind(mainMod .. " + I",              hl.dsp.exec_cmd("qs ipc call settingsOpen"))
 
 -- Session / Power menu
-hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd("qs ipc call session open"))
+hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd("qs ipc call sessionOpen"))
 
 -- Screen snip
-hl.bind(mainMod .. " + SHIFT + S",      hl.dsp.exec_cmd("qs ipc call region screenshot"))
+hl.bind(mainMod .. " + SHIFT + S",      hl.dsp.exec_cmd("qs ipc call regionScreenshot"))
 
 -- Bar toggle
-hl.bind(mainMod .. " + ALT + B",        hl.dsp.exec_cmd("qs ipc call bar toggle"))
+hl.bind(mainMod .. " + ALT + B",        hl.dsp.exec_cmd("qs ipc call barToggle"))
 
 -- Overview toggle
 hl.bind("SUPER + TAB",                  hl.dsp.exec_cmd("qs ipc -c overview call overview toggle"))

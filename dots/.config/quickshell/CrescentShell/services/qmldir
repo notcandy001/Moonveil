@@ -29,6 +29,7 @@ singleton Notifications 1.0 Notifications.qml
 singleton PolkitService 1.0 PolkitService.qml
 singleton Privacy 1.0 Privacy.qml
 singleton ResourceUsage 1.0 ResourceUsage.qml
+singleton RodctlService 1.0 RodctlService.qml
 singleton SessionWarnings 1.0 SessionWarnings.qml
 singleton SongRec 1.0 SongRec.qml
 singleton SystemInfo 1.0 SystemInfo.qml
