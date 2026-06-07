@@ -1,5 +1,5 @@
 > [!Note]
-> Moonveil development is back one the track with more updates.
+> Moonveil development is back on the track with more updates.
 
 <p align="center">
   <a href="https://github.com/notcandy001/Moonveil">
