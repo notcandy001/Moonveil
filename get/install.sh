@@ -1,288 +1,157 @@
 #!/usr/bin/env bash
+set -e
+
 # ==============================================================================
+#  get/install.sh  —  Entry Point
 #
-#  ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗███████╗██╗██╗
-#  ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
-#  ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
-#  ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
-#  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║█████╗
-#  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚═════╝
-#
-#  Moonveil — Entry Point & Distro Router
 #  https://github.com/notcandy001/Moonveil
 #
-#  Detects your distro and hands off to dots-extra/<distro>/install.sh
+#  Detects your distro and hands off to dots-extra/arch/install.sh
 # ==============================================================================
 
-set -Eeuo pipefail
+# === Configuration ===
+readonly VERSION="1.0.0"
+readonly REPO_URL="https://github.com/notcandy001/Moonveil.git"
+readonly RAW_URL="https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master"
 
-# ── Version ───────────────────────────────────────────────────────────────────
-readonly MV_VERSION="1.0.0"
-readonly MV_REPO="https://github.com/notcandy001/Moonveil"
-readonly MV_RAW="https://raw.githubusercontent.com/notcandy001/Moonveil/refs/heads/master"
-
-# ── Paths ─────────────────────────────────────────────────────────────────────
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-# ── Log ───────────────────────────────────────────────────────────────────────
-readonly LOG_FILE="/tmp/moonveil-$(date +%Y%m%d-%H%M%S).log"
+readonly LOG_FILE="/tmp/install-$(date +%Y%m%d-%H%M%S).log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-# ── Colors ────────────────────────────────────────────────────────────────────
-R="\e[0m"; B="\e[1m"; D="\e[2m"
-PURPLE="\e[38;5;141m"; LPURPLE="\e[38;5;183m"
-CYAN="\e[38;5;51m";    GREEN="\e[38;5;82m"
-RED="\e[38;5;196m";    YELLOW="\e[38;5;226m"
-WHITE="\e[38;5;255m";  GRAY="\e[38;5;240m"
-BLUE="\e[38;5;75m"
+# === Colors ===
+GREEN='\033[0;32m' BLUE='\033[0;34m' YELLOW='\033[1;33m' RED='\033[0;31m' NC='\033[0m'
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
-tag()     { echo -e "  ${GRAY}[${1}]${R}  ${2}"; }
-info()    { tag "${CYAN}${B} INFO ${R}" "$*"; }
-success() { tag "${GREEN}${B}  OK  ${R}" "${GREEN}$*${R}"; }
-warn()    { tag "${YELLOW}${B} WARN ${R}" "${YELLOW}$*${R}"; }
-error()   {
-  echo ""
-  tag "${RED}${B}ERROR${R}" "${RED}${B}$*${R}"
-  echo -e "  ${GRAY}  └─ Log: ${LOG_FILE}${R}"
-  echo ""
-  exit 1
-}
-divider() { echo -e "  ${GRAY}──────────────────────────────────────────────────────────${R}"; }
+log_info()    { echo -e "${BLUE}ℹ  $1${NC}" >&2; }
+log_success() { echo -e "${GREEN}✔  $1${NC}" >&2; }
+log_warn()    { echo -e "${YELLOW}⚠  $1${NC}" >&2; }
+log_error()   { echo -e "${RED}✖  $1${NC}" >&2; echo -e "  Log: ${LOG_FILE}" >&2; exit 1; }
 
-# ── Cleanup on interrupt ──────────────────────────────────────────────────────
-_cleanup() {
-  echo ""
-  echo -e "  ${YELLOW}${B}  Interrupted.${R}  ${GRAY}Log: ${LOG_FILE}${R}"
-  echo ""
-  exit 130
-}
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
+
+_cleanup() { echo -e "\n  ${YELLOW}Interrupted.${NC}  Log: ${LOG_FILE}\n"; exit 130; }
 trap _cleanup INT TERM
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  BANNER
-# ══════════════════════════════════════════════════════════════════════════════
+[[ "$EUID" -eq 0 ]] && log_error "Do not run as root. Use your normal user account."
 
-_banner() {
-  clear
-  echo ""
-  echo -e "${PURPLE}${B}"
-  cat << "EOF"
-  ███╗   ███╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗███████╗██╗██╗
-  ████╗ ████║██╔═══██╗██╔═══██╗████╗  ██║██║   ██║██╔════╝██║██║
-  ██╔████╔██║██║   ██║██║   ██║██╔██╗ ██║██║   ██║█████╗  ██║██║
-  ██║╚██╔╝██║██║   ██║██║   ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║██║
-  ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║ ╚████╔╝ ███████╗██║██████╗
-  ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝╚═════╝
-EOF
-  echo -e "${R}"
-  echo -e "  ${LPURPLE}  A quiet, moonlit Hyprland environment${R}"
-  echo -e "  ${GRAY}  ${BLUE}${MV_REPO}${R}  ${GRAY}·  v${MV_VERSION}${R}"
-  echo ""
-  divider
-  echo ""
-}
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  SYSTEM CHECKS
-# ══════════════════════════════════════════════════════════════════════════════
-
-_check_root() {
-  if [[ "$(id -u)" -eq 0 ]]; then
-    error "Do not run as root. Use your normal user account."
-  fi
-  success "Running as user: $(whoami)"
-}
-
-_check_internet() {
-  info "Checking internet connection..."
-  if ! ping -c1 -W3 github.com &>/dev/null; then
-    error "No internet connection. Please connect and retry."
-  fi
-  success "Internet OK"
-}
-
-_check_wayland() {
-  if [[ -z "${WAYLAND_DISPLAY:-}" && -z "${XDG_SESSION_TYPE:-}" ]]; then
-    warn "Could not detect Wayland session — if you are in a TTY this is expected, continuing."
-  else
-    success "Session type: ${XDG_SESSION_TYPE:-wayland}"
-  fi
-}
-
-_check_disk() {
-  local free_kb free_gb
-  free_kb=$(df --output=avail "$HOME" | tail -1)
-  free_gb=$(( free_kb / 1024 / 1024 ))
-  if [[ "$free_gb" -lt 5 ]]; then
-    warn "Low disk space: ~${free_gb} GB free — 5 GB+ recommended"
-  else
-    success "Disk space: ~${free_gb} GB free"
-  fi
-}
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  DISTRO DETECTION
-# ══════════════════════════════════════════════════════════════════════════════
-
-_detect_distro() {
+# === Distro Detection ===
+detect_distro() {
   local id="" id_like=""
-
   if [[ -f /etc/os-release ]]; then
     # shellcheck source=/dev/null
     source /etc/os-release
     id="${ID:-}"
     id_like="${ID_LIKE:-}"
-  elif command -v lsb_release &>/dev/null; then
+  elif has_cmd lsb_release; then
     id=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
   fi
 
   case "$id" in
-    arch|artix|cachyos|endeavouros|garuda|manjaro) echo "arch"   ;;
-    debian|ubuntu|linuxmint|pop|elementary|zorin|kali|parrot|raspbian) echo "debian" ;;
-    fedora|rhel|centos|almalinux|rocky|nobara)     echo "fedora" ;;
+    arch|artix|cachyos|endeavouros|garuda|manjaro) echo "arch" && return ;;
     *)
       case "$id_like" in
-        *arch*)            echo "arch"   ;;
-        *debian*|*ubuntu*) echo "debian" ;;
-        *fedora*|*rhel*)   echo "fedora" ;;
-        *)                 echo "unsupported" ;;
+        *arch*) echo "arch" && return ;;
       esac
       ;;
   esac
+
+  has_cmd pacman && echo "arch" && return
+  echo "unsupported"
 }
 
-_print_distro_info() {
-  local family="$1"
-  local distro_name="${PRETTY_NAME:-${NAME:-Unknown}}"
+# === System Checks ===
+check_system() {
+  log_info "Checking internet connection..."
+  ping -c1 -W3 github.com &>/dev/null || log_error "No internet connection. Please connect and retry."
+  log_success "Internet OK"
 
-  echo -e "  ${WHITE}${B}System Information${R}"
-  echo ""
-  echo -e "  ${GRAY}  Distro     ${R}  ${WHITE}${distro_name}${R}"
-  echo -e "  ${GRAY}  Family     ${R}  ${WHITE}${family}${R}"
-  echo -e "  ${GRAY}  Kernel     ${R}  ${WHITE}$(uname -r)${R}"
-  echo -e "  ${GRAY}  Arch       ${R}  ${WHITE}$(uname -m)${R}"
-  echo -e "  ${GRAY}  User       ${R}  ${WHITE}$(whoami)${R}"
-  echo -e "  ${GRAY}  Log        ${R}  ${WHITE}${LOG_FILE}${R}"
-  echo ""
+  if [[ -z "${WAYLAND_DISPLAY:-}" && -z "${XDG_SESSION_TYPE:-}" ]]; then
+    log_warn "Could not detect Wayland session — if you are in a TTY this is expected."
+  else
+    log_success "Session type: ${XDG_SESSION_TYPE:-wayland}"
+  fi
+
+  local free_kb free_gb
+  free_kb=$(df --output=avail "$HOME" | tail -1)
+  free_gb=$(( free_kb / 1024 / 1024 ))
+  if [[ "$free_gb" -lt 5 ]]; then
+    log_warn "Low disk space: ~${free_gb} GB free — 5 GB+ recommended"
+  else
+    log_success "Disk space: ~${free_gb} GB free"
+  fi
 }
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  COMMON LIB + DISTRO SCRIPT LOADER
-#
-#  All diagnostic output goes to stderr (>&2) so it is NOT captured into
-#  $() assignments — only the file path should reach stdout.
-# ══════════════════════════════════════════════════════════════════════════════
-
-_ensure_common_lib() {
+# === Common Lib Loader ===
+ensure_common_lib() {
   local lib_local="${REPO_ROOT}/get/lib/common.sh"
   if [[ -f "$lib_local" ]]; then
-    export MV_COMMON_LIB="$lib_local"
+    export COMMON_LIB="$lib_local"
     return 0
   fi
 
   local lib_tmp
-  lib_tmp=$(mktemp /tmp/moonveil-common-XXXXXX.sh)
-  local url="${MV_RAW}/get/lib/common.sh"
-
-  echo -e "  ${GRAY}[ INFO ]${R}  Downloading get/lib/common.sh..." >&2
-  if curl -fsSL "$url" -o "$lib_tmp" 2>/dev/null; then
-    export MV_COMMON_LIB="$lib_tmp"
+  lib_tmp=$(mktemp /tmp/install-common-XXXXXX.sh)
+  log_info "Downloading get/lib/common.sh..."
+  if curl -fsSL "${RAW_URL}/get/lib/common.sh" -o "$lib_tmp" 2>/dev/null; then
+    export COMMON_LIB="$lib_tmp"
     return 0
   fi
 
-  echo -e "\n  ${RED}ERROR${R}  Could not download get/lib/common.sh\n" >&2
-  exit 1
+  log_error "Could not download get/lib/common.sh — check your internet connection."
 }
 
-_load_distro_script() {
-  local family="$1"
-
-  # Try local clone first
-  local local_path="${REPO_ROOT}/dots-extra/${family}/install.sh"
+# === Distro Script Loader ===
+load_arch_script() {
+  local local_path="${REPO_ROOT}/dots-extra/arch/install.sh"
   if [[ -f "$local_path" ]]; then
     echo "$local_path"
     return 0
   fi
 
-  # Download from GitHub
-  local url="${MV_RAW}/dots-extra/${family}/install.sh"
   local tmp
-  tmp=$(mktemp "/tmp/moonveil-${family}-XXXXXX.sh")
-
-  echo -e "  ${GRAY}[ INFO ]${R}  Downloading dots-extra/${family}/install.sh..." >&2
-
-  if curl -fsSL "$url" -o "$tmp" 2>/dev/null; then
+  tmp=$(mktemp "/tmp/install-arch-XXXXXX.sh")
+  log_info "Downloading dots-extra/arch/install.sh..."
+  if curl -fsSL "${RAW_URL}/dots-extra/arch/install.sh" -o "$tmp" 2>/dev/null; then
     chmod +x "$tmp"
     echo "$tmp"
     return 0
   fi
 
-  echo -e "\n  ${RED}ERROR${R}  Could not download dots-extra/${family}/install.sh\n" >&2
-  echo -e "  ${GRAY}  Log: ${LOG_FILE}${R}\n" >&2
-  exit 1
+  log_error "Could not download dots-extra/arch/install.sh — log: ${LOG_FILE}"
 }
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  MAIN
-# ══════════════════════════════════════════════════════════════════════════════
-
+# === Main ===
 main() {
-  _banner
-
-  # ── System checks ───────────────────────────────────────────────────────────
-  echo -e "  ${PURPLE}${B}━━  System Checks${R}"
   echo ""
-  _check_root
-  _check_internet
-  _check_wayland
-  _check_disk
+  log_info "Installer  v${VERSION}"
+  log_info "Log: ${LOG_FILE}"
   echo ""
 
-  # ── Detect distro ───────────────────────────────────────────────────────────
-  echo -e "  ${PURPLE}${B}━━  Detecting Distribution${R}"
-  echo ""
+  check_system
 
   local family
-  family=$(_detect_distro)
+  family=$(detect_distro)
 
-  [[ -f /etc/os-release ]] && source /etc/os-release || true
-  _print_distro_info "$family"
-
-  # ── Ensure common lib is available and exported ──────────────────────────────
-  _ensure_common_lib
-
-  # ── Load distro script path into a variable before exec ─────────────────────
-  local script
   case "$family" in
-    arch|debian|fedora)
-      success "Detected: ${family^}-based  →  dots-extra/${family}/install.sh"
-      echo ""
-      script=$(_load_distro_script "$family")
+    arch)
+      log_success "Detected: Arch-based"
       ;;
     unsupported)
-      echo ""
-      divider
-      echo ""
-      echo -e "  ${RED}${B}  ✘  Unsupported distribution${R}"
-      echo ""
-      echo -e "  ${GRAY}  Moonveil currently supports:${R}"
-      echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Arch Linux, Manjaro, EndeavourOS, CachyOS, Garuda${R}"
-      echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Debian, Ubuntu, Pop!_OS, Linux Mint, Zorin${R}"
-      echo -e "  ${GRAY}    ${PURPLE}◆${R}${GRAY}  Fedora, Nobara${R}"
-      echo ""
-      echo -e "  ${GRAY}  Request support:  ${BLUE}${MV_REPO}/issues${R}"
-      echo ""
-      exit 1
+      log_error "Unsupported distribution. Only Arch-based distros are supported (Arch, Manjaro, EndeavourOS, CachyOS, Garuda, Artix)."
       ;;
   esac
 
+  ensure_common_lib
+
+  local script
+  script=$(load_arch_script)
+
   exec bash "$script" \
-    --log        "$LOG_FILE"      \
-    --repo-root  "$REPO_ROOT"     \
-    --common-lib "$MV_COMMON_LIB" \
-    --version    "$MV_VERSION"
+    --log        "$LOG_FILE"   \
+    --repo-root  "$REPO_ROOT"  \
+    --common-lib "$COMMON_LIB" \
+    --version    "$VERSION"
 }
 
 main "$@"
