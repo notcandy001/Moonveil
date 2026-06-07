@@ -1,10 +1,5 @@
-> [!IMPORTANT]
-> Moonveil development is being paused.
->
-> The installer is now stable and the project is in a useable state. No active updates are planned for the foreseeable future.
->
-> The repository will remain available and contributions are welcome. Branch protection is no longer enforced so if you contribute, please keep the codebase clean and follow the existing structure and standards......
-
+> [!Note]
+> Moonveil development is back one the track with more updates.
 
 <p align="center">
   <a href="https://github.com/notcandy001/Moonveil">
