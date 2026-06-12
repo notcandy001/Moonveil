@@ -3,7 +3,6 @@
 --  ┻┛┗┛┗┛┗┛┛┗┛┗ ┻ ┻┗┛┛┗┗┛
 
 -- Sourcing matugen colors (already required from hyprland.lua)
--- See https://wiki.hypr.land/Configuring/Basics/Variables/
 
 hl.config({
     general = {
