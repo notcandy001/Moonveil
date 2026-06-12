@@ -3,7 +3,6 @@
 --  ┛┗┛┗┛┗┛┻┛┻┛┗┻┛┗┛
 --   CrescentShell Keybinds
 
--- See https://wiki.hypr.land/Configuring/Basics/Binds/
 
 local mainMod = "SUPER"
 
