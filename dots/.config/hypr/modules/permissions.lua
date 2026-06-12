@@ -2,7 +2,6 @@
 --  ┃┃┣ ┣┫┃┃┃┃┗┓┗┓┃┃┃┃┃┗┓
 --  ┣┛┗┛┛┗┛ ┗┻┗┛┗┛┻┗┛┛┗┗┛
 
--- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Permissions/
 -- Note: permission changes require a Hyprland restart
 
 -- hl.config({
