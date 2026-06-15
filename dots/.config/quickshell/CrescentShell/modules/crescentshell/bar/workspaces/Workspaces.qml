@@ -82,6 +82,7 @@ Item {
     // ── Input handlers ────────────────────────────────────────
     WheelHandler {
         onWheel: (event) => {
+            if (!RodctlService.running) return
             if (event.angleDelta.y < 0) Hyprland.dispatch(`workspace r+1`)
             else Hyprland.dispatch(`workspace r-1`)
         }
@@ -91,6 +92,7 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.BackButton
         onPressed: (event) => {
+            if (!RodctlService.running) return
             if (event.button === Qt.BackButton)
                 Hyprland.dispatch(`togglespecialworkspace`)
         }
@@ -240,7 +242,7 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: Hyprland.dispatch(`workspace ${parent.wsValue}`)
+                        onClicked: { if (RodctlService.running) Hyprland.dispatch(`workspace ${parent.wsValue}`) }
                     }
                 }
             }

@@ -89,9 +89,10 @@ Item {
     implicitWidth: root.vertical ? Appearance.sizes.verticalBarWidth : (root.workspaceButtonWidth * root.workspacesShown)
     implicitHeight: root.vertical ? (root.workspaceButtonWidth * root.workspacesShown) : Appearance.sizes.barHeight
 
-    // Scroll to switch workspaces
+    // Scroll to switch workspaces — gated on rodctl daemon
     WheelHandler {
         onWheel: (event) => {
+            if (!RodctlService.running) return
             if (event.angleDelta.y < 0)
                 Hyprland.dispatch(`workspace r+1`);
             else if (event.angleDelta.y > 0)
@@ -104,6 +105,7 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.BackButton
         onPressed: (event) => {
+            if (!RodctlService.running) return
             if (event.button === Qt.BackButton) {
                 Hyprland.dispatch(`togglespecialworkspace`);
             } 
@@ -204,7 +206,7 @@ Item {
                 property int workspaceValue: workspaceGroup * root.workspacesShown + index + 1
                 implicitHeight: vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
                 implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.verticalBarWidth
-                onPressed: Hyprland.dispatch(`workspace ${workspaceValue}`)
+                onPressed: RodctlService.running ? Hyprland.dispatch(`workspace ${workspaceValue}`) : null
                 width: vertical ? undefined : workspaceButtonWidth
                 height: vertical ? workspaceButtonWidth : undefined
 

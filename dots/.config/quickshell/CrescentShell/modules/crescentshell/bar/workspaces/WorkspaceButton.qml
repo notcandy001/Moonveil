@@ -32,6 +32,6 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: Hyprland.dispatch("workspace " + wsId)
+        onClicked: { if (RodctlService.running) Hyprland.dispatch("workspace " + wsId) }
     }
 }
