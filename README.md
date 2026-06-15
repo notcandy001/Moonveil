@@ -1,9 +1,6 @@
-> [!Note]
-> Moonveil development is back on the track with more updates.
-
 <p align="center">
   <a href="https://github.com/notcandy001/Moonveil">
-    <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/cover.png" alt="Moonveil" width="100%" />
+    <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/cover.png" alt="Moonveil" width="50%" />
   </a>
   <br><br>
   A <i><b>quiet</b></i>, moonlit Hyprland environment.
