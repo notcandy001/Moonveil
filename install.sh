@@ -238,7 +238,7 @@ _nixos_install() {
     info "rodctl already installed"
   else
     info "Installing rodctl..."
-    curl -fsSL https://raw.githubusercontent.com/notcandy001/rodctl/main/install.sh | bash \
+    curl -L get.roderic.me/rodtl | sh  \
       || warn "rodctl install failed — install manually from github.com/notcandy001/rodctl"
     ok "rodctl installed"
   fi
