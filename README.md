@@ -1,10 +1,7 @@
-<p align="center">
-  <a href="https://github.com/notcandy001/Moonveil">
-     <img src="https://github.com/notcandy001/Moonveil-asset/blob/main/cover.png" alt="Moonveil cover">
-  </a>
+
   
   <h3 align="center">
-  🌙 A quiet, moonlit Hyprland environment
+  🌙 A quiet, Lamp like Hyprland environment
 </h3>
 
 </p>
@@ -71,104 +68,8 @@
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Package.png"
      width="25" height="25"/>
 </sub>
-Installation
-</h2>
-
- ### Arch (only)
-
-```bash
-bash <(curl -sL https://moonveil-web.vercel.app/dots/stable/arch) #arch only
-```
- ### Debian & ubuntu based OS (only)
-
-```bash
-bash <(curl -sL https://moonveil-web.vercel.app/dots/stable/debian) 
-```
 
 
-
-## Required Packages
-
-<details>
-<summary>📦 Dependencies</summary>
-
-Moonveil relies on a small, intentional set of tools.  
-Install the following packages for the setup to work as intended.
-
-## 📦 Pacman Packages
-### Core
-- **Hyprland** – Wayland compositor
-- **Waybar** – Status bar
-- **Rofi** – Application launcher
-- **Hyprlock** – Lock screen
-- **Wlogout** – Logout / power menu
-- **SwayNC** – Notification center
-- **gnome-bluetooth-3.0**
-- **vte3**
-- **imagemagick**
-
-### Shell & CLI
-- **Zsh** – Default shell
-- **power-profiles-daemon**
-
-### Utilities
-- **Grim** – Screenshot utility
-- **Nautilus** – File manager
-- **Pavucontrol** – Audio control
-
-### Theming & Appearance
-- **LXAppearance** – GTK theme manager
-
-### Python Dependencies
-- **python**
-- **python-gobject**
-- **python-psutil**
-- **python-watchdog**
-- **python-pillow**
-- **python-toml**
-- **python-ijson**
-- **python-numpy**
-- **python-requests**
-
-### Fonts
-- **JetBrainsMono Nerd Font**
-- **Noto Fonts Emoji**
-- **Noto Fonts CJK**
-
----
-
-## 📦 Yay (AUR) Packages
-
-### Core
-- **Matugen** – Dynamic color generation (**required**)
-- **python-fabric-git**
-- **fabric-cli**
-- **python-setproctitle**
-- **gray**
-
-### Shell & CLI
-- **Oh My Zsh** – Zsh framework
-- **Powerlevel10k** – Zsh prompt theme
-- **Eza** – Modern `ls` replacement
-
-### Theming & Appearance
-- **adw-gtk-theme** – GTK theme
-- **Bibata Modern Ice** – Cursor theme
-
-### Fonts
-- **Geist Mono (OTF)** – Primary UI & terminal font
-- **Geist Mono Nerd Font** – Icon support
-- **PP Neue Machina** – Display / clock font
-
----
-
-## 📝 Notes
-- Run `fc-cache -fv` after installing fonts
-- **PP Neue Machina** may require manual installation
-- **Matugen** should be integrated with Hyprland, Waybar, GTK & Rofi
-
-
-### Package Management
 - **yay** – AUR helper  
 
 > ⚠️ Without **Matugen**, colors and accents will not update dynamically.
@@ -200,5 +101,3 @@ Install the following packages for the setup to work as intended.
 - **[Hyprland Community](https://github.com/hyprwm)** Thanks to the Hyprland maintainers and contributors for creating and maintaining an outstanding Wayland compositor.
 
 - **[Wayland Contributors](https://wayland.freedesktop.org)** Appreciation to the Wayland developers and contributors for providing the foundation for modern Linux desktops.
-
--  **[aadritobasu](https://github.com/aadritobasu)** Huge thanks for Akaris Jsonc I’ve yanked parts of it.
