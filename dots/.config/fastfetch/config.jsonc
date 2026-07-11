@@ -1,84 +1,65 @@
-// Inspired by Catnap
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
     "logo": {
-        "type": "small",
+        
+      "source":"~/.config/fastfetch/ax.png",    
+         "type": "auto",                    // 'auto' detects the best protocol for your terminal
+        "width": 14,                       // Adjust width (in characters)
         "padding": {
-            "top": 1
+            "top": 1,
+            "right": 4,
+            "left": 3
         }
     },
     "display": {
-        "separator": " "
+        "separator": ": ",
+        "color": {
+            "keys": "white"
+        }
     },
     "modules": [
         {
-            "key": "╭───────────╮",
-            "type": "custom"
+            "type": "custom",
+            "format": "┌─────────────────────────────────┐",
+            "outputColor": "37"
         },
         {
-            "key": "│ {#31} user    {#keys}│",
             "type": "title",
-            "format": "{user-name}"
+            "key": " {#34}  title   {#keys}",
+            "format": "{user-name}@{host-name}"
         },
         {
-            "key": "│ {#32}󰇅 hname   {#keys}│",
-            "type": "title",
-            "format": "{host-name}"
+            "type": "os",
+            "key": "{#34}   os      {#keys}"
         },
         {
-            "key": "│ {#33}󰅐 uptime  {#keys}│",
-            "type": "uptime"
+            "type": "wm",
+            "key": "{#34}   de      {#keys}"
         },
         {
-            "key": "│ {#34}{icon} distro  {#keys}│",
-            "type": "os"
+            "type": "shell",
+            "key": "{#34}   shell   {#keys}"
         },
         {
-            "key": "│ {#35} kernel  {#keys}│",
-            "type": "kernel"
+            "type": "terminal",
+            "key": "{#34}   terminal{#keys}"
         },
         {
-            "key": "│ {#36} wm      {#keys}│",
-            "type": "wm"
+            "type": "uptime",
+            "key": "{#34}  󰔚 uptime  {#keys}"
         },
         {
-            "key": "│ {#36}󰇄 desktop {#keys}│",
-            "type": "de"
+            "type": "packages",
+            "key": " {#34}  package {#keys}"
         },
         {
-            "key": "│ {#31} term    {#keys}│",
-            "type": "terminal"
-        },
+            "type": "custom",
+           "format": "└─────────────────────────────────┘",
+	    "outputColor": "37"
+                    },
         {
-            "key": "│ {#32} shell   {#keys}│",
-            "type": "shell"
-        },
-        {
-            "key": "│ {#33}󰍛 cpu     {#keys}│",
-            "type": "cpu",
-            "showPeCoreCount": true
-        },
-        {
-            "key": "│ {#34}󰉉 disk    {#keys}│",
-            "type": "disk",
-            "folders": "/"
-        },
-        {
-            "key": "│ {#36} memory  {#keys}│",
-            "type": "memory"
-        },
-        {
-            "key": "├───────────┤",
-            "type": "custom"
-        },
-        {
-            "key": "│ {#39} colors  {#keys}│",
-            "type": "colors",
-            "symbol": "circle"
-        },
-        {
-            "key": "╰───────────╯",
-            "type": "custom"
-        }
+            "type": "custom",
+           "format": "{#31}C   {#32}A    {#33}N    {#34}D    {#35}Y    {#0}火"        
+	}    
     ]
 }

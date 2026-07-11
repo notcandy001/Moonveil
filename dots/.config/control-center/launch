@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-cd ~/.config/control-center || exit 1
-python3 main.py
