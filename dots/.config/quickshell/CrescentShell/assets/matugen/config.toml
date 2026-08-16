@@ -1,6 +1,0 @@
-[config]
-version_check = false
-
-[templates.crescentshell]
-input_path = '~/.config/matugen/templates/colors.json'
-output_path = '~/.local/state/quickshell/user/generated/colors.json'

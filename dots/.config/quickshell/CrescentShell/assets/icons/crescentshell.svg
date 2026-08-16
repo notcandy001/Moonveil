@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <mask id="m">
-      <rect width="100" height="100" fill="white"/>
-      <circle cx="62" cy="38" r="32" fill="black"/>
-    </mask>
-  </defs>
-  <circle cx="46" cy="50" r="38" fill="#cdd6f4" mask="url(#m)"/>
-</svg>

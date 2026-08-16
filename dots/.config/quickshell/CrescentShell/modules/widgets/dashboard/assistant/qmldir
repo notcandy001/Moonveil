@@ -1,4 +1,0 @@
-module qs.modules.widgets.dashboard.assistant
-AssistantTab 1.0 AssistantTab.qml
-CodeBlock 1.0 CodeBlock.qml
-ModelSelectorPopup 1.0 ModelSelectorPopup.qml

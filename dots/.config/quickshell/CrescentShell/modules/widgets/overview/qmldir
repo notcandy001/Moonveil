@@ -1,8 +1,0 @@
-module qs.modules.widgets.overview
-Overview 1.0 Overview.qml
-OverviewButton 1.0 OverviewButton.qml
-OverviewPopup 1.0 OverviewPopup.qml
-OverviewView 1.0 OverviewView.qml
-OverviewWindow 1.0 OverviewWindow.qml
-ScrollingOverview 1.0 ScrollingOverview.qml
-ScrollingWorkspace 1.0 ScrollingWorkspace.qml
