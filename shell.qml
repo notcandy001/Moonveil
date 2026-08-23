@@ -1,6 +1,10 @@
+import QtQuick
 import Quickshell
 import Quickshell.Io
-import "./src/modules/pill"
+// These are local component directories, not installed QML modules.  Use a
+// relative directory import so this config works without adding a qmldir file
+// or changing Quickshell's global import paths.
+import "src/modules/pill" as PillModule
 
 // Trez — single persistent process, single QML engine.
 // Phase 1: hidden-by-default panel + toggle pill.
@@ -13,7 +17,7 @@ ShellRoot {
         // Hidden on startup. No visible surface while idle.
         visible: false
 
-        anchor {
+        anchors {
             top: true
             left: true
         }
@@ -35,7 +39,7 @@ ShellRoot {
         Loader {
             id: pillLoader
             active: window.visible
-            sourceComponent: Pill {}
+            sourceComponent: PillModule.Pill {}
         }
 
         // IPC entrypoint: `qs ipc call trez toggle`

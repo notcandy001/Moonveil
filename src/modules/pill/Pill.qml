@@ -1,5 +1,6 @@
 import QtQuick
-import "../../services"
+// Battery.qml is a sibling local component, rather than an installed module.
+import "../services" as Services
 
 // This component is only ever alive while the PanelWindow is visible
 // (see shell.qml's Loader). That means the Timer below only ticks while
@@ -21,7 +22,7 @@ Rectangle {
     border.color: "#33FFFFFF"
     border.width: 1
 
-    Battery {
+    Services.Battery {
         id: battery
     }
 
