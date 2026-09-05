@@ -3,7 +3,10 @@ use tracing::{info, warn};
 
 use crate::wayland::WaylandRuntime;
 
-use super::{config::Config, event::{Event, EventBus}};
+use super::{
+    config::Config,
+    event::{Event, EventBus},
+};
 
 pub struct Runtime {
     config: Config,
@@ -57,11 +60,13 @@ impl Runtime {
             if let Some(wl) = self.wayland.as_mut() {
                 if let Err(err) = wl.dispatch_pending() {
                     warn!(error = %err, "Wayland dispatch failed; stopping runtime");
-                    self.running = false;
+                    self.request_shutdown()?;
                 }
             } else {
-                self.running = false;
+                self.request_shutdown()?;
             }
+
+            self.process_events();
 
             std::thread::sleep(std::time::Duration::from_millis(10));
         }

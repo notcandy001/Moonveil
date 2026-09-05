@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 
 pub fn init(configured_level: &str) -> Result<()> {
     let filter = match std::env::var_os("RUST_LOG") {
