@@ -5,10 +5,10 @@ use anyhow::Result;
 use tracing::info;
 
 fn main() -> Result<()> {
-    core::logging::init()?;
+    let config = core::config::Config::load_default()?;
+    core::logging::init(&config.runtime.log_level)?;
     info!("starting adaptive-shell");
 
-    let config = core::config::Config::load_default()?;
     let mut runtime = core::lifecycle::Runtime::new(config);
     runtime.start()?;
 

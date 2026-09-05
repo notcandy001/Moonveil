@@ -1,10 +1,12 @@
 use anyhow::Result;
 use tracing::{info, warn};
+
 use crate::wayland::WaylandRuntime;
+
 use super::{config::Config, event::{Event, EventBus}};
 
 pub struct Runtime {
-    _config: Config,
+    config: Config,
     events: EventBus,
     wayland: Option<WaylandRuntime>,
     running: bool,
@@ -12,24 +14,46 @@ pub struct Runtime {
 
 impl Runtime {
     pub fn new(config: Config) -> Self {
-        Self { _config: config, events: EventBus::new(), wayland: None, running: false }
+        Self {
+            config,
+            events: EventBus::new(),
+            wayland: None,
+            running: false,
+        }
     }
 
     pub fn start(&mut self) -> Result<()> {
         self.running = true;
-        info!("shell runtime started");
+        info!(log_level = %self.config.runtime.log_level, "shell runtime started");
         Ok(())
     }
 
-    pub fn attach_wayland(&mut self, wayland: WaylandRuntime) { self.wayland = Some(wayland); }
+    pub fn attach_wayland(&mut self, wayland: WaylandRuntime) {
+        self.wayland = Some(wayland);
+    }
+
+    pub fn request_shutdown(&self) -> Result<()> {
+        self.events
+            .sender()
+            .send(Event::Shutdown)
+            .map_err(|err| anyhow::anyhow!("sending shutdown event: {err}"))
+    }
+
+    fn process_events(&mut self) {
+        while let Some(event) = self.events.try_recv() {
+            match event {
+                Event::Shutdown => self.running = false,
+            }
+        }
+    }
 
     pub fn run(&mut self) -> Result<()> {
         while self.running {
-            if let Some(event) = self.events.try_recv() {
-                match event {
-                    Event::Shutdown => self.running = false,
-                }
+            self.process_events();
+            if !self.running {
+                break;
             }
+
             if let Some(wl) = self.wayland.as_mut() {
                 if let Err(err) = wl.dispatch_pending() {
                     warn!(error = %err, "Wayland dispatch failed; stopping runtime");
@@ -38,6 +62,7 @@ impl Runtime {
             } else {
                 self.running = false;
             }
+
             std::thread::sleep(std::time::Duration::from_millis(10));
         }
         info!("shell runtime stopped");
@@ -48,11 +73,21 @@ impl Runtime {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn runtime_starts_stopped_state_then_starts() {
         let mut runtime = Runtime::new(Config::default());
         assert!(!runtime.running);
         runtime.start().unwrap();
         assert!(runtime.running);
+    }
+
+    #[test]
+    fn shutdown_event_stops_running_runtime() {
+        let mut runtime = Runtime::new(Config::default());
+        runtime.start().unwrap();
+        runtime.request_shutdown().unwrap();
+        runtime.process_events();
+        assert!(!runtime.running);
     }
 }
